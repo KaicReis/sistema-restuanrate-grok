@@ -98,6 +98,9 @@ export interface Preco extends Registro {
 }
 export interface Database {
   version: 1 | 2;
+  capitais?: import("./capital").Capital[];
+  compras?: import("./purchases").Compra[];
+  importacoes?: { data: unknown; criadoEm: string }[];
   receitas?: ReceitaCasa[];
   alugueis?: Rateio[];
   legadoV1?: unknown;

@@ -1,3 +1,4 @@
+import { v3Schema } from "../validation-v3";
 import type { Database } from "../types";
 import { migrar } from "./migrate";
 import { validarRateio } from "../v2";
@@ -237,6 +238,26 @@ export function validarBackup(value: unknown): Database {
       )
         throw new Error("Ingrediente duplicado no mesmo canal.");
   }
+  v3Schema.parse(db);
+  for (const rows of [db.capitais ?? [], db.compras ?? []])
+    for (const row of rows)
+      if (
+        !db.restaurantes.some(
+          (r) => r.id === row.restaurante_id && r.id !== "a-vila" && !r.grupo,
+        )
+      )
+        throw new Error("Operação v3 inválida");
+  if (
+    new Set((db.compras ?? []).map((c) => c.id)).size !==
+    (db.compras ?? []).length
+  )
+    throw new Error("Compra duplicada");
+  if (
+    new Set(
+      (db.capitais ?? []).map((c) => c.restaurante_id + ":" + c.competencia),
+    ).size !== (db.capitais ?? []).length
+  )
+    throw new Error("Capital duplicado");
   return db;
 }
 export interface Repositorio {
@@ -263,6 +284,8 @@ export const repositorio: Repositorio = {
     validarBackup(db);
     try {
       localStorage.setItem(KEY, JSON.stringify(db));
+      if (typeof window !== "undefined")
+        window.dispatchEvent(new CustomEvent("vila-save", { detail: db }));
     } catch {
       throw new Error(
         "Não foi possível salvar no navegador. Verifique o espaço disponível e as permissões de armazenamento.",

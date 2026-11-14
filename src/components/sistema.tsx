@@ -1,4 +1,7 @@
 "use client";
+import { CapitalGiro } from "./capital";
+import { Compras } from "./compras";
+import { mesclarDados } from "@/lib/import-data";
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownToLine,
@@ -30,6 +33,8 @@ import { Insumos, Fichas, Receitas } from "./producao";
 import { Precos } from "./precos";
 import { Modal } from "./ui";
 const pages = [
+  { id: "capital", label: "Capital de giro", icon: TrendingUp },
+  { id: "compras", label: "Compras", icon: Store },
   { id: "visao", label: "Visão geral", icon: LayoutDashboard },
   { id: "dna", label: "DNA mensal", icon: Dna },
   { id: "canais", label: "Canais de venda", icon: Store },
@@ -40,6 +45,8 @@ const pages = [
   { id: "restaurantes", label: "Restaurantes", icon: Building2 },
 ] as const;
 const descriptions: Record<Page, string> = {
+  capital: "Planeje o dinheiro necessário para manter sua operação.",
+  compras: "Lance notas, revise os itens e acompanhe as compras.",
   visao: "Uma visão clara dos números. Um próximo passo mais seguro.",
   dna: "Transforme a realidade do seu restaurante em uma base para precificar.",
   canais: "Cada canal tem seus custos. Seu preço precisa acompanhar.",
@@ -181,7 +188,7 @@ export default function Sistema() {
     if (!backup) return;
     try {
       const data = preparar(
-        structuredClone(backup),
+        mesclarDados(atual.current ?? backup, backup),
         backup.restaurantes[0].id,
         mes,
       );
@@ -321,7 +328,12 @@ export default function Sistema() {
           <div className="nav-caption">GESTÃO DO RESTAURANTE</div>
           <nav aria-label="Menu principal">
             {pages
-              .filter((p) => restaurante.id !== "a-vila" || p.id === "visao")
+              .filter(
+                (p) =>
+                  restaurante.id !== "a-vila" ||
+                  p.id === "visao" ||
+                  p.id === "capital",
+              )
               .map((p) => (
                 <button
                   key={p.id}
@@ -340,7 +352,7 @@ export default function Sistema() {
               <div>
                 <strong>Seus dados, com você</strong>
                 <small>
-                  Salvos neste navegador.
+                  Cópia local e nuvem quando configurada.
                   <br />
                   Exporte backups regularmente.
                 </small>
@@ -352,7 +364,7 @@ export default function Sistema() {
               <ArrowUpRight size={16} />
             </button>
             <div className="sidebar-foot">
-              FEITO PARA QUEM EMPREENDE <span>v2.0</span>
+              FEITO PARA QUEM EMPREENDE <span>v3.0</span>
             </div>
           </div>
         </aside>
@@ -432,8 +444,15 @@ export default function Sistema() {
               key={`${id}:${mes}:${page}:${revisao}`}
               className="page-content"
             >
-              {restaurante.id === "a-vila" ? (
-                <Vila />
+              {page === "capital" ? (
+                <CapitalGiro consolidado={restaurante.id === "a-vila"} />
+              ) : page === "compras" ? (
+                <Compras />
+              ) : restaurante.id === "a-vila" ? (
+                <>
+                  <Vila />
+                  <CapitalGiro consolidado />
+                </>
               ) : page === "visao" ? (
                 <Overview />
               ) : page === "dna" ? (
@@ -453,13 +472,13 @@ export default function Sistema() {
               )}
             </div>
             <p className="notice">
-              Lembrete: exporte seu backup regularmente. Os dados ficam neste
-              navegador.
+              Exporte backups regularmente. Acompanhe o estado de sincronização
+              no aviso acima.
             </p>
             <footer className="main-footer">
               <span>
-                <span className="status-dot" /> Armazenamento local · sem
-                sincronização entre dispositivos
+                <span className="status-dot" /> Cópia local · sincronização
+                quando o banco está configurado
               </span>
               <span>Clareza nos custos. Saúde no negócio.</span>
             </footer>
@@ -482,8 +501,9 @@ export default function Sistema() {
       {backup && (
         <Modal title="Importar backup" close={() => setBackup(null)}>
           <div className="notice warning">
-            Esta ação substituirá todos os dados deste navegador, de todos os
-            restaurantes. Exporte o backup atual antes de continuar.
+            Os dados serão mesclados. Nos conflitos, o backup importado
+            prevalece. As duas versões integrais ficam arquivadas no próximo
+            backup exportado (campo importacoes).
           </div>
           <p className="modal-copy">
             O arquivo contém {backup.restaurantes.length} restaurante(s),{" "}
@@ -495,7 +515,7 @@ export default function Sistema() {
               Cancelar
             </button>
             <button className="button primary" onClick={confirmarImportacao}>
-              Substituir e importar
+              Mesclar e importar
             </button>
           </div>
         </Modal>

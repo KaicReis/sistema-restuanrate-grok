@@ -1,4 +1,9 @@
+import { Cloud } from "@/components/cloud";
 import Sistema from "@/components/sistema";
 export default function Page() {
-  return <Sistema />;
+  return (
+    <Cloud>
+      <Sistema />
+    </Cloud>
+  );
 }
