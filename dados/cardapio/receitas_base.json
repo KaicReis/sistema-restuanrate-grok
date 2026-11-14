@@ -1,0 +1,1346 @@
+{
+  "observacao": "Receitas da casa (preparos / sub-receitas) implícitas pelas descrições, no espírito do que o Kaic pediu (ex.: maionese verde feita na casa e depois colocada nos pratos). Os insumos de cada preparo estão marcados como 'sugestão, confirmar com Kaic'. Não há quantidades nem preços.",
+  "totais": {
+    "receitas_base": 43
+  },
+  "receitas_base": [
+    {
+      "nome": "Maionese verde",
+      "insumos": [
+        {
+          "nome": "Ovos",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Ervas verdes (salsa, cebolinha e/ou hortelã)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Limão",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Mostarda",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "X Salada",
+        "X Burguer 2.0",
+        "X Bacon 2.0",
+        "Nativo's",
+        "Chicken",
+        "Adicional de molhos (se a maionese verde estiver entre os molhos — confirmar)"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "O catálogo Anota AI chama de 'nossa maionese verde da casa'. É o preparo que o Kaic citou como exemplo (receita feita na casa e depois colocada nos pratos). As ervas e o modo de fazer NÃO estão no cardápio — tudo aqui é sugestão."
+    },
+    {
+      "nome": "Creme cheddar",
+      "insumos": [
+        {
+          "nome": "Queijo cheddar",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Creme de leite",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Leite",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "X Bacon 2.0"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "Preparação citada no X Bacon 2.0. Composição não descrita no PDF."
+    },
+    {
+      "nome": "Farofa de bacon",
+      "insumos": [
+        {
+          "nome": "Bacon",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Farinha de mandioca (se for farofa clássica; pode ser só bacon crocante triturado — confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "X Bacon 2.0"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "O PDF não diz se é farofa com farinha de mandioca ou bacon crocante moído ('farofa crocante de bacon' no catálogo Anota AI)."
+    },
+    {
+      "nome": "Crispy de cebola",
+      "insumos": [
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Farinha de trigo ou farinha de rosca/panko",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "X Burguer 2.0"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "Cebola frita crocante da casa, citada no X Burguer 2.0."
+    },
+    {
+      "nome": "Costela desfiada",
+      "insumos": [
+        {
+          "nome": "Costela bovina",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Temperos (confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Nativo's"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "Preparo citado no lanche Nativo's. Tempo, corte e tempero a confirmar com Kaic."
+    },
+    {
+      "nome": "Creme de gorgonzola",
+      "insumos": [
+        {
+          "nome": "Queijo gorgonzola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Creme de leite",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Franklyn"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "Citado no Franklyn. Composição não descrita no PDF."
+    },
+    {
+      "nome": "Cebola caramelizada",
+      "insumos": [
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Açúcar",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Franklyn"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "Citada no Franklyn. Quantidades e se usa açúcar/manteiga/vinagre são sugestão."
+    },
+    {
+      "nome": "Blend de hambúrguer",
+      "insumos": [
+        {
+          "nome": "Carne para blend de hambúrguer (cortes a confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "X Salada (150g)",
+        "X Burguer 2.0 (120g)",
+        "X Bacon 2.0 (120g)",
+        "Franklyn (150g)",
+        "Nativo's (150g)",
+        "Adicional blend 150g",
+        "Adicional blend de 120g"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "O catálogo Anota AI chama de 'burger artesanal'. Confirmar se a carne é moída e porcionada na casa (120g e 150g) e quais cortes entram. Não inventar rendimento."
+    },
+    {
+      "nome": "Frango empanado",
+      "insumos": [
+        {
+          "nome": "Frango (filé ou peito)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Empanamento (ver receita base)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Temperos (confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Chicken"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "O PDF informa 100g no lanche Chicken. Confirmar se é o mesmo empanado usado em outros pratos de frango."
+    },
+    {
+      "nome": "Base de milkshake",
+      "insumos": [
+        {
+          "nome": "Sorvete ou base láctea",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Leite",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Milkshake Ovomaltine",
+        "Milkshake Nutella",
+        "Milkshake Ninho",
+        "Milkshake Paçoca",
+        "Milkshake Morango"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "O PDF só nomeia o sabor. A base é sugestão. Cada sabor acrescenta o insumo correspondente (Ovomaltine, Nutella, Ninho, paçoca, morango)."
+    },
+    {
+      "nome": "Picles de pepino",
+      "insumos": [
+        {
+          "nome": "Pepino",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Vinagre de arroz ou outro vinagre",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Açúcar",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Adicional de picles"
+      ],
+      "restaurantes": [
+        "Bora Burguer's"
+      ],
+      "observacao": "Só se o picles for feito na casa. Se compram pronto, esta receita base não se aplica e o insumo é o picles industrializado."
+    },
+    {
+      "nome": "Arroz de sushi (shari)",
+      "insumos": [
+        {
+          "nome": "Arroz japonês",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Vinagre de arroz",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Açúcar",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Todos os combinados",
+        "Temaki Philadelphia (todas as opções)",
+        "Temaki Hot",
+        "Niguiri (todas as opções)",
+        "Gunkan (todas as opções)",
+        "Hossomaki (todas as opções)",
+        "Joy (todas as opções)",
+        "Uramaki (todas as opções)",
+        "Hots Filadélfia e camarão",
+        "Oniguiri de salmão",
+        "Monte seu poke (se a base for arroz — confirmar)"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Não está escrito no PDF, mas é o preparo-base de quase todo o sushi. O catálogo Anota AI tem inclusive 'Porção extra de arroz shari' (R$ 25,00), item que não aparece nestes PDFs. Sashimi não usa shari."
+    },
+    {
+      "nome": "Molho tarê",
+      "insumos": [
+        {
+          "nome": "Shoyu",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Mirin",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Açúcar",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Niguiri maçaricado",
+        "Joy maçaricado",
+        "Joy de camarão maçaricado",
+        "Combinado Patimirim (joy e niguiri maçaricados)",
+        "Possivelmente alguns hots — confirmar"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Sugestão clássica para peças maçaricadas. O PDF não nomeia o molho. Confirmar se a casa usa tarê, manteiga, ou outro acabamento."
+    },
+    {
+      "nome": "Sunomono de pepino",
+      "insumos": [
+        {
+          "nome": "Pepino",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Vinagre de arroz",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Açúcar",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Sunomono de pepino"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Porção extra do PDF. Composição clássica, a confirmar."
+    },
+    {
+      "nome": "Gengibre em conserva (gari)",
+      "insumos": [
+        {
+          "nome": "Gengibre fresco",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Vinagre de arroz",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Açúcar",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Gengibre (porção extra)",
+        "Acompanha o sushi em geral (não escrito no PDF)"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Só se for feito na casa. Se compram o gari pronto, cadastre só o insumo 'Gengibre em conserva'."
+    },
+    {
+      "nome": "Empanamento",
+      "insumos": [
+        {
+          "nome": "Farinha de trigo",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Ovos",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Farinha de rosca ou panko",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Frango empanado (Chicken)",
+        "Temaki Hot (se for empanado — confirmar)",
+        "Hot Filadélfia",
+        "Hot de camarão",
+        "Hot Ball",
+        "Camarão VG empanado",
+        "Isca de frango (se empanada)",
+        "Isca de peixe (se empanada)",
+        "Camarão empanado (combo Rio da Barra)",
+        "Parmegiana de frango",
+        "Parmegiana de contra-filé",
+        "Batata à dorê"
+      ],
+      "restaurantes": [
+        "Bora Burguer's",
+        "Nativo's Sushi"
+      ],
+      "observacao": "Preparo reutilizável. Confirmar se a casa usa o mesmo padrão (à milanesa, panko, só farinha) em todos esses pratos."
+    },
+    {
+      "nome": "Molho branco",
+      "insumos": [
+        {
+          "nome": "Leite",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Farinha de trigo",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Creme de leite",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Massa de camarão ao molho branco"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Citado no PDF ('Ao Molho Branco'). Composição clássica, a confirmar. Confirmar também o tipo de massa (no salão do catálogo Anota AI: espaguete)."
+    },
+    {
+      "nome": "Molho sugo",
+      "insumos": [
+        {
+          "nome": "Tomate pelado ou molho de tomate",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Azeite ou óleo",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Ervas (confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Massa ao sugo"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Citado no PDF só pelo nome. Confirmar se leva proteína."
+    },
+    {
+      "nome": "Molho de alcaparras",
+      "insumos": [
+        {
+          "nome": "Alcaparras",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Limão",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Vinho branco (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Salmão ao molho de alcaparras"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Citado no nome do prato. Composição não descrita no PDF."
+    },
+    {
+      "nome": "Molho madeira",
+      "insumos": [
+        {
+          "nome": "Vinho madeira ou vinho tinto",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Caldo",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Molho inglês (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Filé mignon ao molho madeira"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Citado no nome do prato. Composição não descrita no PDF."
+    },
+    {
+      "nome": "Molho de camarão",
+      "insumos": [
+        {
+          "nome": "Camarão",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Creme de leite ou leite",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Filé de peixe ao molho de camarão"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Citado no nome do prato. Composição não descrita no PDF."
+    },
+    {
+      "nome": "Strogonoff",
+      "insumos": [
+        {
+          "nome": "Proteína (frango ou carne, conforme o prato)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Creme de leite",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Ketchup ou molho de tomate",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Molho inglês",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Champignon (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Strogonoff de frango",
+        "Strogonoff de carne"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF só nomeia o prato e o acompanhamento (arroz). Ingredientes clássicos, a confirmar. No salão do catálogo Anota AI existe também strogonoff de camarão, que não está neste PDF de delivery."
+    },
+    {
+      "nome": "Parmegiana",
+      "insumos": [
+        {
+          "nome": "Proteína (frango ou contra-filé)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Empanamento",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Molho sugo ou molho de tomate",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Mussarela",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Queijo parmesão (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Parmegiana de frango",
+        "Parmegiana de contra-filé"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF só nomeia o prato e os acompanhamentos (batata frita e arroz). A montagem (empanar, fritar/assar, gratinar) é da casa."
+    },
+    {
+      "nome": "Bobó de camarão",
+      "insumos": [
+        {
+          "nome": "Camarão",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Aipim",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Leite de coco",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Azeite de dendê (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Tomate (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Azeite ou óleo",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Bobó de camarão"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF só nomeia o prato e o arroz. Ingredientes clássicos baianos, a confirmar — principalmente se usam dendê e aipim."
+    },
+    {
+      "nome": "Purê de batata",
+      "insumos": [
+        {
+          "nome": "Batata",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Leite",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Purê de batata (acompanhamento)",
+        "Salmão ao molho de alcaparras",
+        "Filé mignon ao molho madeira"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Aparece como acompanhamento avulso e junto de dois principais."
+    },
+    {
+      "nome": "Risoto base",
+      "insumos": [
+        {
+          "nome": "Arroz arbóreo (ou outra variedade — confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga ou azeite",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Caldo",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Queijo parmesão (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Vinho branco (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Risoto de carne de sol",
+        "Risoto de camarão com siciliano",
+        "Risoto de filé mignon",
+        "Risoto de shitake",
+        "Risoto de polvo"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF não descreve a base. Cada risoto acrescenta seus insumos específicos (carne de sol, queijo coalho, banana da terra, camarão, limão siciliano, filé mignon, shitake, polvo, leite de coco)."
+    },
+    {
+      "nome": "Yakisoba",
+      "insumos": [
+        {
+          "nome": "Macarrão para yakisoba",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Legumes diversos (listar com Kaic)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Shoyu ou molho de yakisoba",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Yakissoba de carne",
+        "Yakissoba de frango",
+        "Yakissoba de camarão",
+        "Yakissoba de shitaki"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF só informa a proteína. Massa, legumes e molho são sugestão."
+    },
+    {
+      "nome": "Batata frita",
+      "insumos": [
+        {
+          "nome": "Batata",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Batata frita (petisco)",
+        "Parmegiana de frango",
+        "Parmegiana de contra-filé",
+        "Combo Mirante (fritas)"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Confirmar se descascam e cortam na casa ou se usam batata pré-frita."
+    },
+    {
+      "nome": "Batata à dorê",
+      "insumos": [
+        {
+          "nome": "Batata",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Empanamento",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Filé de peixe ao molho de camarão"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Acompanhamento citado no PDF. Confirmar o modo (à milanesa, à dorê com ovo/farinha)."
+    },
+    {
+      "nome": "Aipim frito",
+      "insumos": [
+        {
+          "nome": "Aipim (mandioca)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Aipim frito (petisco)",
+        "Carne de sol",
+        "Combo Rio da Barra",
+        "Combo Rio Verde"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ]
+    },
+    {
+      "nome": "Coxinha",
+      "insumos": [
+        {
+          "nome": "Frango",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Farinha de trigo (massa)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga ou óleo",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Leite (se a massa for com leite)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Empanamento",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Combo Mirante",
+        "Combo Rio da Barra",
+        "Combo Rio Verde"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Aparece nos três combos. Confirmar se é feita na casa ou comprada pronta (salgado). Se for comprada, cadastre a coxinha pronta como insumo e ignore esta receita base."
+    },
+    {
+      "nome": "Tulipa de frango",
+      "insumos": [
+        {
+          "nome": "Tulipa de frango",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Temperos (confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura (se for frita)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Combo Rio da Barra"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF só escreve 'Tulipa'. Confirmar se é tulipa de frango e o preparo (frita, assada, empanada)."
+    },
+    {
+      "nome": "Massa de pastel",
+      "insumos": [
+        {
+          "nome": "Farinha de trigo",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo ou gordura",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Água",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Pastel de carne seca com cream cheese",
+        "Pastel de queijo",
+        "Pastel de camarão"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Só se a massa for feita na casa. Se compram a massa pronta ou o pastel pronto, cadastre o insumo correspondente."
+    },
+    {
+      "nome": "Guioza",
+      "insumos": [
+        {
+          "nome": "Massa para guioza (pronta ou farinha + água)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Recheio (carne suína, carne bovina ou legumes — conforme o sabor)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola ou cebolinha",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Shoyu (se usar no recheio ou no molho)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Guioza suína",
+        "Guioza bovina",
+        "Guioza de legumes"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF não diz se a massa e o recheio são feitos na casa. Porção: 5 unidades."
+    },
+    {
+      "nome": "Rolinho primavera / harumaki",
+      "insumos": [
+        {
+          "nome": "Folha ou massa para harumaki",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Recheio conforme o sabor",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Harumaki de salmão",
+        "Romeu e Julieta",
+        "Banana com doce de leite"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Três sabores no PDF. Recheios: salmão (demais itens a confirmar); Romeu e Julieta (sugestão: queijo e goiabada, não escrito); banana e doce de leite (escrito)."
+    },
+    {
+      "nome": "Farofa",
+      "insumos": [
+        {
+          "nome": "Farinha de mandioca",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Manteiga ou óleo",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Ovos (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Bacon (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Farofa (acompanhamento)"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF não descreve a composição da farofa de acompanhamento — não confundir com a farofa de bacon da Bora."
+    },
+    {
+      "nome": "Feijão",
+      "insumos": [
+        {
+          "nome": "Feijão (tipo a confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo ou bacon (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Feijão (acompanhamento)"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Tipo e tempero a confirmar."
+    },
+    {
+      "nome": "Arroz branco",
+      "insumos": [
+        {
+          "nome": "Arroz branco (de acompanhamento)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Alho (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo ou azeite",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Arroz (acompanhamento)",
+        "Salmão ao molho de alcaparras",
+        "Strogonoff de frango",
+        "Strogonoff de carne",
+        "Filé mignon ao molho madeira",
+        "Parmegiana de frango",
+        "Parmegiana de contra-filé",
+        "Filé de peixe ao molho de camarão",
+        "Bobó de camarão"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Arroz de acompanhamento, distinto do arroz de sushi (shari) e do arroz de risoto."
+    },
+    {
+      "nome": "Isca de frango",
+      "insumos": [
+        {
+          "nome": "Frango (filé)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Empanamento (se for empanada — confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Isca de frango"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF não descreve o preparo."
+    },
+    {
+      "nome": "Isca de peixe",
+      "insumos": [
+        {
+          "nome": "Peixe (espécie a confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Empanamento (se for empanada — confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Isca de peixe"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF não descreve espécie nem preparo."
+    },
+    {
+      "nome": "Camarão empanado",
+      "insumos": [
+        {
+          "nome": "Camarão",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Empanamento",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Sal",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Camarão VG empanado",
+        "Combo Rio da Barra"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Confirmar se o camarão do combo é o mesmo VG do petisco."
+    },
+    {
+      "nome": "Frango frito",
+      "insumos": [
+        {
+          "nome": "Frango",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Temperos (confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo para fritura",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Empanamento (se usar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Combo Mirante"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "O PDF só escreve 'Frango frito'. Confirmar corte (pedaços, filé, passarinho) e se é o mesmo preparo da isca ou da tulipa."
+    },
+    {
+      "nome": "Carne de sol (preparo da casa)",
+      "insumos": [
+        {
+          "nome": "Carne de sol",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Cebola (se for acebolada — confirmar)",
+          "observacao": "sugestão, confirmar com Kaic"
+        },
+        {
+          "nome": "Óleo ou manteiga",
+          "observacao": "sugestão, confirmar com Kaic"
+        }
+      ],
+      "pratos_que_usam": [
+        "Carne de sol (petisco, com aipim e queijo coalho)",
+        "Combo Mirante",
+        "Combo Rio Verde",
+        "Risoto de carne de sol"
+      ],
+      "restaurantes": [
+        "Nativo's Sushi"
+      ],
+      "observacao": "Confirmar como a casa dessalga, corta e finaliza a carne de sol, para reutilizar o mesmo preparo nos pratos."
+    }
+  ]
+}

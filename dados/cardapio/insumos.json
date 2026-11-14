@@ -1,0 +1,843 @@
+{
+  "observacao": "Nenhum preço conhecido — preco é sempre null. unidade_compra_sugerida é palpite operacional, não uma quantidade de ficha técnica. Itens com origem de sugestão ou implícitos precisam da confirmação do Kaic antes de entrar no sistema como fato.",
+  "totais": {
+    "insumos": 106
+  },
+  "insumos": [
+    {
+      "nome": "Salmão",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Usado em sushi, harumaki, salmão ao molho de alcaparras e possivelmente no poke."
+    },
+    {
+      "nome": "Atum",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Peixe branco",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Espécie não informada no PDF (tilápia, bijupirá, robalo, outro?). Também aparece 'filé de peixe' e 'isca de peixe' — pode ser o mesmo peixe ou outro."
+    },
+    {
+      "nome": "Camarão",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Aparece como camarão, camarão VM e camarão VG. Confirmar calibres/siglas e se é o mesmo produto com tamanhos diferentes."
+    },
+    {
+      "nome": "Polvo",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Mencionado no risoto de polvo. O catálogo Anota AI também cita polvo nos combinados e no niguiri Mix — não está neste PDF."
+    },
+    {
+      "nome": "Ovas de peixe",
+      "unidade_compra_sugerida": "un",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no catálogo Anota AI de 05/11/2026, não impresso nestes PDFs",
+      "observacao": "Citadas nos combinados e no niguiri Mix do catálogo Anota AI. Unidade de compra a confirmar (bandeja, kg, un)."
+    },
+    {
+      "nome": "Carne para blend de hambúrguer",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "O cardápio chama de 'blend' 120g e 150g; o catálogo Anota AI diz 'burger artesanal'. Confirmar cortes da mistura e se é moída na casa."
+    },
+    {
+      "nome": "Costela bovina",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Para a costela desfiada do lanche Nativo's. Confirmar o corte exato."
+    },
+    {
+      "nome": "Frango (filé ou peito)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Chicken, isca, strogonoff, parmegiana, yakissoba, coxinha, frango frito, tulipa (se for de frango). Confirmar cortes por prato."
+    },
+    {
+      "nome": "Tulipa de frango",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "No combo Rio da Barra. Confirmar se é tulipa de frango e se chega pronta ou é cortada na casa."
+    },
+    {
+      "nome": "Filé mignon",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Contra-filé",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Parmegiana de contra-filé."
+    },
+    {
+      "nome": "Carne bovina (outras preparações)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Para strogonoff de carne, yakissoba de carne e guioza bovina. Confirmar o corte de cada um."
+    },
+    {
+      "nome": "Carne de sol",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Carne seca",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Recheio do pastel. Confirmar se é a mesma da carne de sol ou outro produto."
+    },
+    {
+      "nome": "Carne suína (para guioza)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Linguiça",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Combo Rio Verde, frita. Tipo/marca não informado."
+    },
+    {
+      "nome": "Bacon",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Lanches da Bora e farofa de bacon."
+    },
+    {
+      "nome": "Kani / surimi",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "proteína",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Comum no uramaki Califórnia, mas NÃO mencionado no PDF. Confirmar se usam e se o Califórnia vegano do Espelho troca esse item."
+    },
+    {
+      "nome": "Tomate",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "X Salada e Chicken."
+    },
+    {
+      "nome": "Cebola roxa",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "X Salada."
+    },
+    {
+      "nome": "Cebola",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Crispy de cebola, cebola caramelizada; também típica de molhos, farofa, strogonoff (sugestão)."
+    },
+    {
+      "nome": "Alface",
+      "unidade_compra_sugerida": "un",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "X Salada e Chicken. Unidade pode ser kg ou maço — confirmar."
+    },
+    {
+      "nome": "Rúcula",
+      "unidade_compra_sugerida": "un",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Franklyn e Nativo's."
+    },
+    {
+      "nome": "Pepino",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Sunomono; também típico de picles e Califórnia (este último é sugestão)."
+    },
+    {
+      "nome": "Alho",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Camarão VM ao alho e óleo; típico de vários molhos (sugestão)."
+    },
+    {
+      "nome": "Banana",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Rolinho de banana com doce de leite."
+    },
+    {
+      "nome": "Banana da terra",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Risoto de carne de sol."
+    },
+    {
+      "nome": "Morango",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Milkshake de morango. Confirmar se é fresco, polpa ou calda."
+    },
+    {
+      "nome": "Alcaparras",
+      "unidade_compra_sugerida": "un",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Pode ser mercearia/conserva. Unidade de compra a confirmar (vidro)."
+    },
+    {
+      "nome": "Limão siciliano",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "O PDF do risoto só diz 'siciliano'; o catálogo Anota AI escreve 'limão siciliano'."
+    },
+    {
+      "nome": "Shitake",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Risoto, yakissoba e peças veganas (hosso/hot). O PDF alterna 'shitake' e 'shitaki'."
+    },
+    {
+      "nome": "Aipim (mandioca)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Aipim frito, carne de sol, combos e, se o bobó for da casa, o creme (sugestão clássica, confirmar)."
+    },
+    {
+      "nome": "Batata",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Batata frita, purê e batata à dorê."
+    },
+    {
+      "nome": "Gengibre fresco",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Só se o gari for feito na casa. Se compram gengibre em conserva, este item pode não ser necessário."
+    },
+    {
+      "nome": "Legumes diversos (guioza e yakissoba)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "O PDF só escreve 'legumes' na guioza. Típico: cenoura, repolho, cebolinha, brócolis, pimentão, acelga. Listar com Kaic o que de fato entra."
+    },
+    {
+      "nome": "Ervas para maionese verde (salsa, cebolinha e/ou hortelã)",
+      "unidade_compra_sugerida": "un",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "A maionese verde é da casa, mas as ervas não estão no PDF. Confirmar o buquê."
+    },
+    {
+      "nome": "Limão (taiti ou outro)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Comum em maionese, molhos e peixes; não mencionado no PDF."
+    },
+    {
+      "nome": "Champignon",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "hortifruti",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Comum em strogonoff; não mencionado no PDF."
+    },
+    {
+      "nome": "Queijo cheddar",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Fatiado ou em barra? Confirmar. Também entra no creme cheddar (sugestão)."
+    },
+    {
+      "nome": "Mussarela",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "X Salada, Franklyn e, por sugestão, parmegiana e pastel de queijo."
+    },
+    {
+      "nome": "Queijo prato",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Chicken."
+    },
+    {
+      "nome": "Queijo gorgonzola",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Creme de gorgonzola do Franklyn."
+    },
+    {
+      "nome": "Queijo coalho",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Carne de sol e risoto de carne de sol."
+    },
+    {
+      "nome": "Cream cheese (tipo Philadelphia)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Escrito no pastel ('cream chesse'). O nome Temaki Philadelphia e as descrições de uramaki no catálogo Anota AI também apontam cream cheese, embora o PDF do temaki/uramaki não o escreva."
+    },
+    {
+      "nome": "Queijo parmesão",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Típico de parmegiana e risoto; não está no PDF."
+    },
+    {
+      "nome": "Leite",
+      "unidade_compra_sugerida": "L",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Típico de milkshake, molho branco e purê."
+    },
+    {
+      "nome": "Creme de leite",
+      "unidade_compra_sugerida": "un",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Típico de strogonoff, molho branco, bobó, creme cheddar e creme de gorgonzola."
+    },
+    {
+      "nome": "Manteiga",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Típica de purê, molhos, cebola caramelizada, farofa e risoto."
+    },
+    {
+      "nome": "Leite Ninho (leite em pó)",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Milkshake Ninho. Confirmar se usam o composto lácteo Ninho ou outro leite em pó."
+    },
+    {
+      "nome": "Doce de leite",
+      "unidade_compra_sugerida": "un",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Rolinho banana com doce de leite. Confirmar se é comprado ou feito na casa."
+    },
+    {
+      "nome": "Pão brioche",
+      "unidade_compra_sugerida": "un",
+      "categoria": "padaria",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "X Salada, X Burguer 2.0, X Bacon 2.0, Chicken."
+    },
+    {
+      "nome": "Pão australiano",
+      "unidade_compra_sugerida": "un",
+      "categoria": "padaria",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Franklyn e Nativo's."
+    },
+    {
+      "nome": "Arroz japonês (para sushi)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "implícito típico da preparação (sugestão, confirmar com Kaic)",
+      "observacao": "Não escrito nas peças, mas necessário para niguiri, joy, uramaki, hossomaki, gunkan, temaki, oniguiri e a maior parte dos combinados."
+    },
+    {
+      "nome": "Vinagre de arroz",
+      "unidade_compra_sugerida": "L",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Para o shari e, em geral, para o sunomono e o gari."
+    },
+    {
+      "nome": "Açúcar",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Shari, sunomono, gari, cebola caramelizada, molho tarê."
+    },
+    {
+      "nome": "Sal",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)"
+    },
+    {
+      "nome": "Alga nori",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "implícito típico da preparação (sugestão, confirmar com Kaic)",
+      "observacao": "Típica de temaki, hossomaki, uramaki, gunkan e oniguiri. Não escrita no PDF."
+    },
+    {
+      "nome": "Shoyu (molho de soja)",
+      "unidade_compra_sugerida": "L",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "implícito típico da preparação (sugestão, confirmar com Kaic)",
+      "observacao": "Acompanha o sushi e entra em molhos (tarê, yakisoba). Não escrito no PDF, exceto como acompanhamento implícito."
+    },
+    {
+      "nome": "Wasabi",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Porção extra. Confirmar pasta pronta ou pó."
+    },
+    {
+      "nome": "Gengibre em conserva (gari)",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Porção extra. Só precisa ser comprado se NÃO for feito na casa."
+    },
+    {
+      "nome": "Gergelim branco",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no catálogo Anota AI de 05/11/2026, não impresso nestes PDFs",
+      "observacao": "Descrição do uramaki de salmão/atum no catálogo Anota AI."
+    },
+    {
+      "nome": "Gergelim preto",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no catálogo Anota AI de 05/11/2026, não impresso nestes PDFs",
+      "observacao": "Descrição do uramaki de salmão/atum no catálogo Anota AI."
+    },
+    {
+      "nome": "Mirin",
+      "unidade_compra_sugerida": "L",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Comum no molho tarê; confirmar se usam."
+    },
+    {
+      "nome": "Óleo (soja ou outro)",
+      "unidade_compra_sugerida": "L",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Camarão ao alho e óleo; também fritura e maionese (sugestão). Confirmar se há óleos separados (maionese vs. fritura)."
+    },
+    {
+      "nome": "Óleo para fritura",
+      "unidade_compra_sugerida": "L",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Hots, empanados, batata, aipim, pastel, coxinha, harumaki, crispy."
+    },
+    {
+      "nome": "Azeite",
+      "unidade_compra_sugerida": "L",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Pode entrar em molhos e risoto; não está no PDF."
+    },
+    {
+      "nome": "Farinha de trigo",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Empanamento, molho branco, massa de pastel/coxinha/guioza, se forem da casa."
+    },
+    {
+      "nome": "Farinha de rosca ou panko",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Empanados, hots, frango empanado, crispy de cebola."
+    },
+    {
+      "nome": "Farinha de mandioca",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Farofa de acompanhamento e, possivelmente, farofa de bacon da Bora (confirmar se é farofa ou bacon crocante triturado)."
+    },
+    {
+      "nome": "Amido de milho ou fécula",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Pode entrar em empanados, molhos e massas; confirmar."
+    },
+    {
+      "nome": "Ovos",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Maionese da casa, empanamento, farofa, massas."
+    },
+    {
+      "nome": "Mostarda",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Comum na maionese da casa; também no lanche Original do catálogo Anota AI, que não está neste PDF."
+    },
+    {
+      "nome": "Ketchup",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Comum em strogonoff e no lanche Original do catálogo Anota AI (não está neste PDF)."
+    },
+    {
+      "nome": "Molho inglês",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Comum em strogonoff e molho madeira; não está no PDF."
+    },
+    {
+      "nome": "Tomate pelado ou molho de tomate",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Molho sugo e parmegiana."
+    },
+    {
+      "nome": "Leite de coco",
+      "unidade_compra_sugerida": "L",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Risoto de polvo. Também é clássico no bobó (sugestão, confirmar)."
+    },
+    {
+      "nome": "Azeite de dendê",
+      "unidade_compra_sugerida": "L",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Clássico do bobó baiano; não está no PDF. Confirmar se o bobó da casa usa dendê."
+    },
+    {
+      "nome": "Arroz branco (de acompanhamento)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Arroz arbóreo (ou outro para risoto)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "implícito típico da preparação (sugestão, confirmar com Kaic)",
+      "observacao": "Necessário aos risotos; o PDF não especifica a variedade."
+    },
+    {
+      "nome": "Feijão",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Tipo não informado (carioca, preto...)."
+    },
+    {
+      "nome": "Massa tipo espaguete (ou outra para 'Massas')",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "implícito típico da preparação (sugestão, confirmar com Kaic)",
+      "observacao": "O PDF não nomeia a massa; no salão do catálogo Anota AI aparece 'Spaguetti'."
+    },
+    {
+      "nome": "Macarrão para yakisoba",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "implícito típico da preparação (sugestão, confirmar com Kaic)"
+    },
+    {
+      "nome": "Folha ou massa para harumaki / rolinho primavera",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "implícito típico da preparação (sugestão, confirmar com Kaic)",
+      "observacao": "Confirmar se compram a massa pronta ou fazem na casa."
+    },
+    {
+      "nome": "Massa para guioza",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "implícito típico da preparação (sugestão, confirmar com Kaic)",
+      "observacao": "Confirmar se compram pronta ou fazem na casa."
+    },
+    {
+      "nome": "Massa para pastel",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "implícito típico da preparação (sugestão, confirmar com Kaic)",
+      "observacao": "Confirmar se compram pronta ou fazem na casa. Se fizerem, os insumos passam a ser farinha, gordura, etc."
+    },
+    {
+      "nome": "Picles",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Adicional da Bora. Confirmar se é comprado ou se é picles da casa (receita base 'Picles de pepino')."
+    },
+    {
+      "nome": "Goiabada",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Típica do rolinho Romeu e Julieta, cujo recheio não está escrito no PDF."
+    },
+    {
+      "nome": "Queijo para Romeu e Julieta (minas ou mussarela)",
+      "unidade_compra_sugerida": "kg",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Típico do rolinho Romeu e Julieta; não está escrito no PDF. Se for a mesma mussarela já listada, unificar."
+    },
+    {
+      "nome": "Ovomaltine",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Nutella (creme de avelã)",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Paçoca",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Sorvete ou base láctea para milkshake",
+      "unidade_compra_sugerida": "L",
+      "categoria": "laticínio",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "O PDF não descreve a base dos milkshakes. Confirmar se usam sorvete, leite + gelo, ou outra base."
+    },
+    {
+      "nome": "Caldo (carne, legumes ou peixe)",
+      "unidade_compra_sugerida": "L",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Típico de risoto, molho madeira e yakisoba; pode ser feito na casa. Confirmar."
+    },
+    {
+      "nome": "Vinho madeira (ou vinho tinto para o molho)",
+      "unidade_compra_sugerida": "L",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Para o molho madeira. Confirmar o vinho usado."
+    },
+    {
+      "nome": "Vinho branco",
+      "unidade_compra_sugerida": "L",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "sugestão para receita da casa (confirmar com Kaic)",
+      "observacao": "Às vezes entra em risoto e molho de alcaparras; não está no PDF."
+    },
+    {
+      "nome": "Polpa de fruta para suco",
+      "unidade_compra_sugerida": "un",
+      "categoria": "mercearia",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Suco 300ml — sabores a consultar."
+    },
+    {
+      "nome": "Água sem gás",
+      "unidade_compra_sugerida": "un",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Confirmar marca e volume."
+    },
+    {
+      "nome": "Água com gás",
+      "unidade_compra_sugerida": "un",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Confirmar marca e volume."
+    },
+    {
+      "nome": "Tônica",
+      "unidade_compra_sugerida": "un",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Marca não informada."
+    },
+    {
+      "nome": "Coca-Cola lata",
+      "unidade_compra_sugerida": "un",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Guaraná lata",
+      "unidade_compra_sugerida": "un",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Marca não informada no PDF."
+    },
+    {
+      "nome": "Coca-Cola 1L",
+      "unidade_compra_sugerida": "un",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Guaraná 1L",
+      "unidade_compra_sugerida": "un",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "mencionado no cardápio"
+    },
+    {
+      "nome": "Cerveja long neck",
+      "unidade_compra_sugerida": "un",
+      "categoria": "bebida",
+      "preco": null,
+      "origem": "mencionado no cardápio",
+      "observacao": "Marcas não informadas neste PDF. No salão do catálogo Anota AI a R$ 15,00: Corona, Heineken, Praya e Budweiser."
+    },
+    {
+      "nome": "Embalagem delivery (genérica)",
+      "unidade_compra_sugerida": "un",
+      "categoria": "embalagem",
+      "preco": null,
+      "origem": "mencionado no catálogo Anota AI de 05/11/2026, não impresso nestes PDFs",
+      "observacao": "O catálogo Anota AI tem o item 'Embalagem delivery' a R$ 5,00. Estes PDFs não listam embalagens. Precisamos que Kaic informe os tipos reais (pote de sushi, marmita, copo de milkshake, sacola, hashi, molheira, papel, etc.). Não inventar a lista completa."
+    }
+  ]
+}

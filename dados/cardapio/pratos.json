@@ -1,0 +1,1705 @@
+{
+  "fonte": {
+    "pdfs": [
+      {
+        "arquivo": "Menu delivery (Canva, 21/09/2026, 6 páginas, A4)",
+        "identificacao": "Nativo's Sushi Delivery — Instagram nativos.sushi, tel. (73) 98253-8180",
+        "restaurante": "Nativo's Sushi"
+      },
+      {
+        "arquivo": "Cardapio BORA Burguer's (Canva, 03/11/2026, 1 página, A4, autor Kaic Reis)",
+        "identificacao": "BORA BURGUER'S",
+        "restaurante": "Bora Burguer's"
+      }
+    ],
+    "observacao_a_vila": "Nenhum dos dois PDFs menciona A Vila. Todos os pratos brasileiros (principais, petiscos, risotos, massas, yakissoba, combos) estão no cardápio branded Nativo's Sushi Delivery.",
+    "catalogo_apoio": "Catálogo Anota AI de 05/11/2026 em /workspace/anotaai_catalogo_2026-11-05 foi usado só para notas (descrições mais completas, itens que não estão nestes PDFs e diferenças de preço). A descrição verbatim e o preço de cada prato vêm dos PDFs enviados em 14/11/2026.",
+    "gerado_em": "2026-11-14T18:30:00-03:00",
+    "fuso": "America/Sao_Paulo"
+  },
+  "totais": {
+    "pratos": 113,
+    "bora_burguers": 18,
+    "nativos_sushi": 95
+  },
+  "pratos": [
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Hambúrgueres",
+      "nome": "X Salada",
+      "descricao": "PÃO BRIOCHE, BLEND 150G, TOMATE, CEBOLA ROXA, MUSSARELA, BACON, ALFACE E MAIONESE VERDE",
+      "preco": 44.0,
+      "ingredientes_mencionados": [
+        "pão brioche",
+        "blend 150g",
+        "tomate",
+        "cebola roxa",
+        "mussarela",
+        "bacon",
+        "alface",
+        "maionese verde"
+      ],
+      "receitas_base_sugeridas": [
+        "Blend de hambúrguer",
+        "Maionese verde"
+      ],
+      "notas": "Preços deste PDF (03/11/2026) estão mais altos que os do catálogo Anota AI de 05/11/2026. Usamos o preço impresso neste PDF. No Anota AI o preço era R$ 37,00 e a maionese era chamada de 'nossa maionese verde da casa'."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Hambúrgueres",
+      "nome": "X Burguer 2.0",
+      "descricao": "PÃO BRIOCHE, BLEND 120G, QUEIJO CHEDDAR CRISPY DE CEBOLA E MAIONESE VERDE.",
+      "preco": 36.0,
+      "ingredientes_mencionados": [
+        "pão brioche",
+        "blend 120g",
+        "queijo cheddar",
+        "crispy de cebola",
+        "maionese verde"
+      ],
+      "receitas_base_sugeridas": [
+        "Blend de hambúrguer",
+        "Crispy de cebola",
+        "Maionese verde"
+      ],
+      "notas": "O PDF junta 'QUEIJO CHEDDAR CRISPY DE CEBOLA' sem vírgula; interpretamos como queijo cheddar + crispy de cebola (como no Anota AI). Confirmar. Preços deste PDF (03/11/2026) estão mais altos que os do catálogo Anota AI de 05/11/2026. Usamos o preço impresso neste PDF. No Anota AI o X-Burguer era R$ 24,90."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Hambúrgueres",
+      "nome": "Franklyn",
+      "descricao": "PÃO AUSTRALIANO, BLEND DE 150G,CREME DE GORGONZOLA, MUSSARELA, CEBOLA CARAMELIZADA, BACON E RÚCULA",
+      "preco": 52.0,
+      "ingredientes_mencionados": [
+        "pão australiano",
+        "blend de 150g",
+        "creme de gorgonzola",
+        "mussarela",
+        "cebola caramelizada",
+        "bacon",
+        "rúcula"
+      ],
+      "receitas_base_sugeridas": [
+        "Blend de hambúrguer",
+        "Creme de gorgonzola",
+        "Cebola caramelizada"
+      ],
+      "notas": "No Anota AI delivery (05/11) saía com batata frita a R$ 37,00; no salão o preço já era R$ 52,00. Neste PDF não há batata frita na descrição."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Hambúrgueres",
+      "nome": "Chicken",
+      "descricao": "PÃO BRIOCHE, ALFACE, TOMATE, FRANGO EMPANADO 100G, QUEIJO PRATO E MAIONESE VERDE.",
+      "preco": 39.0,
+      "ingredientes_mencionados": [
+        "pão brioche",
+        "alface",
+        "tomate",
+        "frango empanado 100g",
+        "queijo prato",
+        "maionese verde"
+      ],
+      "receitas_base_sugeridas": [
+        "Frango empanado",
+        "Empanamento",
+        "Maionese verde"
+      ],
+      "notas": "Preços deste PDF (03/11/2026) estão mais altos que os do catálogo Anota AI de 05/11/2026. Usamos o preço impresso neste PDF. No Anota AI o preço era R$ 23,90."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Hambúrgueres",
+      "nome": "X Bacon 2.0",
+      "descricao": "PÃO BRIOCHE, QUEIJO CHEDDAR, BLEND DE 120G, CREME CHEDDAR, FAROFA DE BACON E MAIONESE VERDE",
+      "preco": 38.0,
+      "ingredientes_mencionados": [
+        "pão brioche",
+        "queijo cheddar",
+        "blend de 120g",
+        "creme cheddar",
+        "farofa de bacon",
+        "maionese verde"
+      ],
+      "receitas_base_sugeridas": [
+        "Blend de hambúrguer",
+        "Creme cheddar",
+        "Farofa de bacon",
+        "Maionese verde"
+      ],
+      "notas": "Neste PDF (versão 2.0) inclui maionese verde e custa R$ 38,00. No Anota AI o X-Bacon era R$ 24,90 e a descrição não citava maionese verde."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Hambúrgueres",
+      "nome": "Nativo's",
+      "descricao": "PÃO AUSTRALIANO, QUEIJO CHEDDAR, BLEND DE 150G, COSTELA DESFIADA, RÚCULA E MAIONESE VERDE",
+      "preco": 52.0,
+      "ingredientes_mencionados": [
+        "pão australiano",
+        "queijo cheddar",
+        "blend de 150g",
+        "costela desfiada",
+        "rúcula",
+        "maionese verde"
+      ],
+      "receitas_base_sugeridas": [
+        "Blend de hambúrguer",
+        "Costela desfiada",
+        "Maionese verde"
+      ],
+      "notas": "No Anota AI delivery (05/11) saía com batata frita a R$ 42,00; no salão o preço já era R$ 52,00. Neste PDF não há batata frita na descrição."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Milkshakes",
+      "nome": "Milkshake Ovomaltine",
+      "descricao": null,
+      "preco": 22.0,
+      "ingredientes_mencionados": [
+        "Ovomaltine"
+      ],
+      "receitas_base_sugeridas": [
+        "Base de milkshake"
+      ],
+      "notas": "O PDF só imprime o sabor e o preço. A base (sorvete, leite etc.) não está descrita."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Milkshakes",
+      "nome": "Milkshake Nutella",
+      "descricao": null,
+      "preco": 24.0,
+      "ingredientes_mencionados": [
+        "Nutella"
+      ],
+      "receitas_base_sugeridas": [
+        "Base de milkshake"
+      ],
+      "notas": "O PDF só imprime o sabor e o preço. A base não está descrita."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Milkshakes",
+      "nome": "Milkshake Ninho",
+      "descricao": null,
+      "preco": 20.0,
+      "ingredientes_mencionados": [
+        "Ninho"
+      ],
+      "receitas_base_sugeridas": [
+        "Base de milkshake"
+      ],
+      "notas": "O PDF só imprime o sabor e o preço. A base não está descrita."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Milkshakes",
+      "nome": "Milkshake Paçoca",
+      "descricao": null,
+      "preco": 21.0,
+      "ingredientes_mencionados": [
+        "paçoca"
+      ],
+      "receitas_base_sugeridas": [
+        "Base de milkshake"
+      ],
+      "notas": "O PDF só imprime o sabor e o preço. A base não está descrita."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Milkshakes",
+      "nome": "Milkshake Morango",
+      "descricao": null,
+      "preco": 20.0,
+      "ingredientes_mencionados": [
+        "morango"
+      ],
+      "receitas_base_sugeridas": [
+        "Base de milkshake"
+      ],
+      "notas": "O PDF só imprime o sabor e o preço. Não diz se usa morango fresco, polpa ou calda."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Adicionais",
+      "nome": "Adicional de molhos",
+      "descricao": null,
+      "preco": 6.0,
+      "ingredientes_mencionados": [
+        "molhos"
+      ],
+      "receitas_base_sugeridas": [
+        "Maionese verde"
+      ],
+      "notas": "O PDF não diz quais molhos entram neste adicional."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Adicionais",
+      "nome": "Adicional de queijo",
+      "descricao": null,
+      "preco": 6.0,
+      "ingredientes_mencionados": [
+        "queijo"
+      ],
+      "notas": "O PDF não diz qual queijo (cheddar, mussarela, prato, gorgonzola...)."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Adicionais",
+      "nome": "Adicional de saladas",
+      "descricao": null,
+      "preco": 4.0,
+      "ingredientes_mencionados": [
+        "saladas"
+      ],
+      "notas": "O PDF não detalha o que entra em 'saladas' (alface, tomate, cebola roxa, rúcula...)."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Adicionais",
+      "nome": "Adicional de bacon",
+      "descricao": "BACON OU PICLES  (mesmo preço no PDF)",
+      "preco": 7.0,
+      "ingredientes_mencionados": [
+        "bacon"
+      ]
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Adicionais",
+      "nome": "Adicional de picles",
+      "descricao": "BACON OU PICLES  (mesmo preço no PDF)",
+      "preco": 7.0,
+      "ingredientes_mencionados": [
+        "picles"
+      ],
+      "receitas_base_sugeridas": [
+        "Picles de pepino"
+      ],
+      "notas": "Confirmar se o picles é feito na casa ou comprado pronto."
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Adicionais",
+      "nome": "Adicional blend 150g",
+      "descricao": null,
+      "preco": 12.0,
+      "ingredientes_mencionados": [
+        "blend 150g"
+      ],
+      "receitas_base_sugeridas": [
+        "Blend de hambúrguer"
+      ]
+    },
+    {
+      "restaurante": "Bora Burguer's",
+      "categoria": "Adicionais",
+      "nome": "Adicional blend de 120g",
+      "descricao": null,
+      "preco": 10.0,
+      "ingredientes_mencionados": [
+        "blend de 120g"
+      ],
+      "receitas_base_sugeridas": [
+        "Blend de hambúrguer"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Combinados",
+      "nome": "Taípe",
+      "descricao": "4 Joy, 3 Niguiri, 3 Sashimis, 2 Gunkan, 2 Uramakis, 2 Hossomakis e 5 Hot",
+      "preco": 90.0,
+      "ingredientes_mencionados": [
+        "joy",
+        "niguiri",
+        "sashimi",
+        "gunkan",
+        "uramaki",
+        "hossomaki",
+        "hot"
+      ],
+      "porcao_impressa": "20 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "No catálogo Anota AI de 05/11/2026 (texto da imagem no gestor), os combinados Taípe, Trancoso, Caraíva e Quadrado 'acompanham salmão, atum, peixe-branco, polvo, camarão e ovas de peixe'. Essa frase NÃO está impressa neste PDF; entra só como nota. O PDF também não detalha o peixe de cada peça."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Combinados",
+      "nome": "Trancoso",
+      "descricao": "6 Joy, 5 Niguiri, 5 Sashimis, 5 Gunkan,5 Uramakis, 4 Hossomakis e 10 Hot",
+      "preco": 177.9,
+      "ingredientes_mencionados": [
+        "joy",
+        "niguiri",
+        "sashimi",
+        "gunkan",
+        "uramaki",
+        "hossomaki",
+        "hot"
+      ],
+      "porcao_impressa": "40 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "No catálogo Anota AI de 05/11/2026 (texto da imagem no gestor), os combinados Taípe, Trancoso, Caraíva e Quadrado 'acompanham salmão, atum, peixe-branco, polvo, camarão e ovas de peixe'. Essa frase NÃO está impressa neste PDF; entra só como nota. O PDF também não detalha o peixe de cada peça."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Combinados",
+      "nome": "Caraíva",
+      "descricao": "8 Joy, 6 Niguiri, 7 Sashimis, 6 Gunkan, 10 Uramakis, 8 Hossomakis e 15 Hot",
+      "preco": 270.0,
+      "ingredientes_mencionados": [
+        "joy",
+        "niguiri",
+        "sashimi",
+        "gunkan",
+        "uramaki",
+        "hossomaki",
+        "hot"
+      ],
+      "porcao_impressa": "60 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "No catálogo Anota AI de 05/11/2026 (texto da imagem no gestor), os combinados Taípe, Trancoso, Caraíva e Quadrado 'acompanham salmão, atum, peixe-branco, polvo, camarão e ovas de peixe'. Essa frase NÃO está impressa neste PDF; entra só como nota. O PDF também não detalha o peixe de cada peça."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Combinados",
+      "nome": "Quadrado",
+      "descricao": "8 Gunkan, 10 Uramaki, 8 Hossomaki, 10 joy, 8 Niguiri, 9 Sashimis e 25 Hot",
+      "preco": 373.0,
+      "ingredientes_mencionados": [
+        "gunkan",
+        "uramaki",
+        "hossomaki",
+        "joy",
+        "niguiri",
+        "sashimi",
+        "hot"
+      ],
+      "porcao_impressa": "80 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "No catálogo Anota AI de 05/11/2026 (texto da imagem no gestor), os combinados Taípe, Trancoso, Caraíva e Quadrado 'acompanham salmão, atum, peixe-branco, polvo, camarão e ovas de peixe'. Essa frase NÃO está impressa neste PDF; entra só como nota. O PDF também não detalha o peixe de cada peça."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Combinados",
+      "nome": "Patimirim",
+      "descricao": "5 Dragon Orange, 4 Joy maçaricados e 3 Niguiri maçaricados",
+      "preco": 65.0,
+      "ingredientes_mencionados": [
+        "dragon orange",
+        "joy maçaricado",
+        "niguiri maçaricado"
+      ],
+      "porcao_impressa": "12 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)",
+        "Molho tarê"
+      ],
+      "notas": "O PDF não descreve o recheio do Dragon Orange nem o peixe do joy/niguiri maçaricado."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Combinados",
+      "nome": "Espelho (Vegano)",
+      "descricao": "4 Joy, 3 Niguiri, 4 Hosso shitake, 4 Uramaki Califórnia e 5 Hot shitaki",
+      "preco": 89.9,
+      "ingredientes_mencionados": [
+        "joy",
+        "niguiri",
+        "hossomaki de shitake",
+        "uramaki califórnia",
+        "hot de shitake"
+      ],
+      "porcao_impressa": "20 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "Combinado anunciado como vegano, mas inclui Uramaki Califórnia, que em geral leva kani (não vegano). Confirmar a receita vegana do Califórnia e dos Joy/Niguiri deste combo. O PDF escreve 'shitake' e 'shitaki'."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Temaki",
+      "nome": "Temaki Philadelphia — Salmão",
+      "descricao": "Salmão, Atum ou Peixe branco",
+      "preco": 41.0,
+      "ingredientes_mencionados": [
+        "salmão"
+      ],
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O nome 'Philadelphia' sugere cream cheese, mas o PDF não o escreve. 'Sem arroz tem adicional de R$ 10,00' aparece visualmente sob o Temaki Hot; confirmar se vale também para o Philadelphia."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Temaki",
+      "nome": "Temaki Philadelphia — Atum",
+      "descricao": "Salmão, Atum ou Peixe branco",
+      "preco": 41.0,
+      "ingredientes_mencionados": [
+        "atum"
+      ],
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "Mesmo item do PDF, opção atum. Cream cheese não está escrito."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Temaki",
+      "nome": "Temaki Philadelphia — Peixe branco",
+      "descricao": "Salmão, Atum ou Peixe branco",
+      "preco": 41.0,
+      "ingredientes_mencionados": [
+        "peixe branco"
+      ],
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "Mesmo item do PDF, opção peixe branco. Qual espécie? Cream cheese não está escrito."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Temaki",
+      "nome": "Temaki Hot",
+      "descricao": "Sem arroz tem adicional de R$10,00",
+      "preco": 46.0,
+      "ingredientes_mencionados": [],
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)",
+        "Empanamento"
+      ],
+      "notas": "O PDF não descreve o recheio do Temaki Hot (salmão, cream cheese, empanado?)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Temaki",
+      "nome": "Adicional temaki sem arroz",
+      "descricao": "Sem arroz tem adicional de R$10,00",
+      "preco": 10.0,
+      "ingredientes_mencionados": [],
+      "notas": "Adicional impresso sob o Temaki Hot. Confirmar se também vale para o Philadelphia."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Niguiri",
+      "nome": "Niguiri de salmão",
+      "descricao": null,
+      "preco": 33.0,
+      "ingredientes_mencionados": [
+        "salmão"
+      ],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Niguiri",
+      "nome": "Niguiri de peixe branco",
+      "descricao": null,
+      "preco": 33.0,
+      "ingredientes_mencionados": [
+        "peixe branco"
+      ],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não informa a espécie do peixe branco."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Niguiri",
+      "nome": "Niguiri de atum",
+      "descricao": null,
+      "preco": 33.0,
+      "ingredientes_mencionados": [
+        "atum"
+      ],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Niguiri",
+      "nome": "Niguiri Mix",
+      "descricao": null,
+      "preco": 33.0,
+      "ingredientes_mencionados": [],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "Sem descrição no PDF. No catálogo Anota AI de 05/11/2026: 'Polvo, Mix de Peixes e Ovas'. Essa descrição não está neste PDF."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Niguiri",
+      "nome": "Niguiri maçaricado",
+      "descricao": null,
+      "preco": 34.9,
+      "ingredientes_mencionados": [],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)",
+        "Molho tarê"
+      ],
+      "notas": "O PDF não diz qual peixe é maçaricado (em geral salmão; confirmar)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Niguiri",
+      "nome": "Niguiri vegano",
+      "descricao": null,
+      "preco": 34.9,
+      "ingredientes_mencionados": [],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não descreve o recheio/cobertura vegana."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Gunkan",
+      "nome": "Gunkan de salmão",
+      "descricao": null,
+      "preco": 42.0,
+      "ingredientes_mencionados": [
+        "salmão"
+      ],
+      "porcao_impressa": "8 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Gunkan",
+      "nome": "Gunkan de atum",
+      "descricao": null,
+      "preco": 42.0,
+      "ingredientes_mencionados": [
+        "atum"
+      ],
+      "porcao_impressa": "8 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Gunkan",
+      "nome": "Gunkan de peixe branco",
+      "descricao": null,
+      "preco": 42.0,
+      "ingredientes_mencionados": [
+        "peixe branco"
+      ],
+      "porcao_impressa": "8 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não informa a espécie do peixe branco. Também não diz se leva cream cheese, ovas ou outro topping."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Hossomaki",
+      "nome": "Hossomaki de salmão",
+      "descricao": null,
+      "preco": 44.0,
+      "ingredientes_mencionados": [
+        "salmão"
+      ],
+      "porcao_impressa": "8 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Hossomaki",
+      "nome": "Hossomaki de atum",
+      "descricao": null,
+      "preco": 44.0,
+      "ingredientes_mencionados": [
+        "atum"
+      ],
+      "porcao_impressa": "8 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Hossomaki",
+      "nome": "Hossomaki de peixe branco",
+      "descricao": null,
+      "preco": 44.0,
+      "ingredientes_mencionados": [
+        "peixe branco"
+      ],
+      "porcao_impressa": "8 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não informa a espécie do peixe branco."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Sashimi",
+      "nome": "Sashimi de salmão",
+      "descricao": null,
+      "preco": 48.0,
+      "ingredientes_mencionados": [
+        "salmão"
+      ],
+      "porcao_impressa": "6 un",
+      "notas": "Sashimi não usa arroz; só o peixe (e normalmente gengibre/wasabi/shoyu de acompanhamento)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Sashimi",
+      "nome": "Sashimi de atum",
+      "descricao": null,
+      "preco": 48.0,
+      "ingredientes_mencionados": [
+        "atum"
+      ],
+      "porcao_impressa": "6 un"
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Sashimi",
+      "nome": "Sashimi de peixe branco",
+      "descricao": null,
+      "preco": 48.0,
+      "ingredientes_mencionados": [
+        "peixe branco"
+      ],
+      "porcao_impressa": "6 un",
+      "notas": "O PDF não informa a espécie do peixe branco."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Joy",
+      "nome": "Joy de salmão",
+      "descricao": null,
+      "preco": 33.0,
+      "ingredientes_mencionados": [
+        "salmão"
+      ],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não descreve o formato nem os outros ingredientes do Joy (cream cheese, nori, etc.)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Joy",
+      "nome": "Joy de atum",
+      "descricao": null,
+      "preco": 33.0,
+      "ingredientes_mencionados": [
+        "atum"
+      ],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não descreve o formato nem os outros ingredientes do Joy (cream cheese, nori, etc.)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Joy",
+      "nome": "Joy vegano",
+      "descricao": null,
+      "preco": 34.9,
+      "ingredientes_mencionados": [],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não descreve os ingredientes do Joy vegano."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Joy",
+      "nome": "Joy maçaricado",
+      "descricao": null,
+      "preco": 34.9,
+      "ingredientes_mencionados": [],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)",
+        "Molho tarê"
+      ],
+      "notas": "O PDF não diz qual peixe é maçaricado."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Joy",
+      "nome": "Joy de camarão maçaricado",
+      "descricao": null,
+      "preco": 37.0,
+      "ingredientes_mencionados": [
+        "camarão"
+      ],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)",
+        "Molho tarê"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Uramaki",
+      "nome": "Uramaki de salmão",
+      "descricao": null,
+      "preco": 51.0,
+      "ingredientes_mencionados": [
+        "salmão"
+      ],
+      "porcao_impressa": "10 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "Sem descrição neste PDF. No catálogo Anota AI de 05/11/2026: 'enrolado com o arroz para fora, envolto em gergelim branco e preto, Cream Chesse e recheado com salmão'."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Uramaki",
+      "nome": "Uramaki de atum",
+      "descricao": null,
+      "preco": 51.0,
+      "ingredientes_mencionados": [
+        "atum"
+      ],
+      "porcao_impressa": "10 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "Sem descrição neste PDF. No catálogo Anota AI de 05/11/2026: 'arroz para fora, envolto em gergelim preto e branco, Cream Cheese e recheado com Atum fresco'."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Uramaki",
+      "nome": "Uramaki Califórnia",
+      "descricao": null,
+      "preco": 51.0,
+      "ingredientes_mencionados": [],
+      "porcao_impressa": "10 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não descreve o recheio (kani, pepino, manga/abacate, cream cheese? é comum, mas não está escrito). Também aparece no combinado vegano Espelho — confirmar versão vegana."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Uramaki",
+      "nome": "Uramaki de camarão",
+      "descricao": null,
+      "preco": 63.0,
+      "ingredientes_mencionados": [
+        "camarão"
+      ],
+      "porcao_impressa": "10 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não descreve os demais ingredientes (cream cheese, gergelim etc.)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Uramaki",
+      "nome": "Uramaki Dragon Orange",
+      "descricao": null,
+      "preco": 59.0,
+      "ingredientes_mencionados": [],
+      "porcao_impressa": "10 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não descreve o recheio nem o molho 'orange'. Confirmar com Kaic."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Hots",
+      "nome": "Hot Filadélfia",
+      "descricao": null,
+      "preco": 52.0,
+      "ingredientes_mencionados": [],
+      "porcao_impressa": "10 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)",
+        "Empanamento"
+      ],
+      "notas": "O PDF não descreve o recheio. O nome sugere salmão e cream cheese, empanado e frito; confirmar."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Hots",
+      "nome": "Hot de camarão",
+      "descricao": null,
+      "preco": 64.0,
+      "ingredientes_mencionados": [
+        "camarão"
+      ],
+      "porcao_impressa": "10 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)",
+        "Empanamento"
+      ],
+      "notas": "O PDF não descreve os demais ingredientes."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Hots",
+      "nome": "Hot Ball",
+      "descricao": null,
+      "preco": 41.0,
+      "ingredientes_mencionados": [],
+      "porcao_impressa": "10 un",
+      "receitas_base_sugeridas": [
+        "Empanamento"
+      ],
+      "notas": "O PDF não descreve o recheio da Hot Ball (costuma ser cream cheese, às vezes com salmão; confirmar). Pode não levar arroz."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Poke",
+      "nome": "Monte seu poke",
+      "descricao": "Verificar opções no link",
+      "preco": 56.9,
+      "ingredientes_mencionados": [],
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF não lista as opções de base, proteínas e acompanhamentos. É preciso o link ou a lista da casa."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Oniguiri",
+      "nome": "Oniguiri de salmão",
+      "descricao": null,
+      "preco": 38.0,
+      "ingredientes_mencionados": [
+        "salmão"
+      ],
+      "porcao_impressa": "2 un",
+      "receitas_base_sugeridas": [
+        "Arroz de sushi (shari)"
+      ],
+      "notas": "O PDF escreve 'ONIGUIRI' (grafia Onigiri). Não descreve se leva nori, cream cheese ou outro recheio além do salmão."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Guioza",
+      "nome": "Guioza suína",
+      "descricao": null,
+      "preco": 52.0,
+      "ingredientes_mencionados": [
+        "carne suína"
+      ],
+      "porcao_impressa": "5 un",
+      "receitas_base_sugeridas": [
+        "Guioza"
+      ],
+      "notas": "O PDF não descreve o recheio completo nem se a massa é feita na casa."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Guioza",
+      "nome": "Guioza bovina",
+      "descricao": null,
+      "preco": 52.0,
+      "ingredientes_mencionados": [
+        "carne bovina"
+      ],
+      "porcao_impressa": "5 un",
+      "receitas_base_sugeridas": [
+        "Guioza"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Guioza",
+      "nome": "Guioza de legumes",
+      "descricao": null,
+      "preco": 52.0,
+      "ingredientes_mencionados": [
+        "legumes"
+      ],
+      "porcao_impressa": "5 un",
+      "receitas_base_sugeridas": [
+        "Guioza"
+      ],
+      "notas": "O PDF não lista quais legumes."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Rolinho primavera",
+      "nome": "Harumaki de salmão",
+      "descricao": null,
+      "preco": 15.0,
+      "ingredientes_mencionados": [
+        "salmão"
+      ],
+      "receitas_base_sugeridas": [
+        "Rolinho primavera / harumaki"
+      ],
+      "notas": "O PDF não descreve os demais recheios (cream cheese, cebolinha etc.)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Rolinho primavera",
+      "nome": "Romeu e Julieta",
+      "descricao": null,
+      "preco": 15.0,
+      "ingredientes_mencionados": [],
+      "receitas_base_sugeridas": [
+        "Rolinho primavera / harumaki"
+      ],
+      "notas": "O nome clássico sugere queijo e goiabada, mas o PDF não escreve os ingredientes."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Rolinho primavera",
+      "nome": "Banana com doce de leite",
+      "descricao": null,
+      "preco": 15.0,
+      "ingredientes_mencionados": [
+        "banana",
+        "doce de leite"
+      ],
+      "receitas_base_sugeridas": [
+        "Rolinho primavera / harumaki"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Porção extra",
+      "nome": "Sunomono de pepino",
+      "descricao": null,
+      "preco": 4.9,
+      "ingredientes_mencionados": [
+        "pepino"
+      ],
+      "receitas_base_sugeridas": [
+        "Sunomono de pepino"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Porção extra",
+      "nome": "Wasabi",
+      "descricao": null,
+      "preco": 4.9,
+      "ingredientes_mencionados": [
+        "wasabi"
+      ],
+      "notas": "Em geral é comprado pronto (pasta ou pó). Confirmar se há preparo na casa."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Porção extra",
+      "nome": "Gengibre",
+      "descricao": null,
+      "preco": 4.9,
+      "ingredientes_mencionados": [
+        "gengibre"
+      ],
+      "receitas_base_sugeridas": [
+        "Gengibre em conserva (gari)"
+      ],
+      "notas": "Confirmar se o gari é feito na casa ou comprado pronto."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Massas",
+      "nome": "Massa de camarão ao molho branco",
+      "descricao": "Ao Molho Branco",
+      "preco": 89.0,
+      "ingredientes_mencionados": [
+        "camarão",
+        "molho branco"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Molho branco"
+      ],
+      "notas": "No salão do catálogo Anota AI o item aparece como 'Spaguetti de Camarão Ao Molho Branco'. Confirmar o tipo de massa."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Massas",
+      "nome": "Massa ao sugo",
+      "descricao": null,
+      "preco": 55.0,
+      "ingredientes_mencionados": [
+        "molho sugo"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Molho sugo"
+      ],
+      "notas": "O PDF não diz se leva proteína nem o tipo de massa."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Camarão VM ao alho e óleo",
+      "descricao": null,
+      "preco": 87.0,
+      "ingredientes_mencionados": [
+        "camarão VM",
+        "alho",
+        "óleo"
+      ],
+      "notas": "O PDF e o catálogo Anota AI usam a sigla 'VM' sem explicar. Hipótese (confirmar): tamanho/calibre médio, ou 'vermelho médio'. Não inventar quantidade."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Batata frita",
+      "descricao": null,
+      "preco": 29.0,
+      "ingredientes_mencionados": [
+        "batata"
+      ],
+      "receitas_base_sugeridas": [
+        "Batata frita"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Aipim frito",
+      "descricao": null,
+      "preco": 27.0,
+      "ingredientes_mencionados": [
+        "aipim"
+      ],
+      "receitas_base_sugeridas": [
+        "Aipim frito"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Isca de frango",
+      "descricao": null,
+      "preco": 78.0,
+      "ingredientes_mencionados": [
+        "frango"
+      ],
+      "receitas_base_sugeridas": [
+        "Isca de frango",
+        "Empanamento"
+      ],
+      "notas": "O PDF não diz se é empanada, à milanesa ou apenas frita."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Isca de peixe",
+      "descricao": null,
+      "preco": 88.0,
+      "ingredientes_mencionados": [
+        "peixe"
+      ],
+      "receitas_base_sugeridas": [
+        "Isca de peixe",
+        "Empanamento"
+      ],
+      "notas": "O PDF não informa a espécie nem o tipo de preparo (empanada?)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Camarão VG empanado",
+      "descricao": null,
+      "preco": 115.0,
+      "ingredientes_mencionados": [
+        "camarão VG"
+      ],
+      "receitas_base_sugeridas": [
+        "Camarão empanado",
+        "Empanamento"
+      ],
+      "notas": "Sigla 'VG' sem explicação. Hipótese (confirmar): tamanho/calibre grande, ou 'vermelho grande'. É o petisco mais caro da seção."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Carne de sol",
+      "descricao": "Aipim e Queijo coalho",
+      "preco": 89.0,
+      "ingredientes_mencionados": [
+        "carne de sol",
+        "aipim",
+        "queijo coalho"
+      ],
+      "receitas_base_sugeridas": [
+        "Carne de sol (preparo da casa)",
+        "Aipim frito"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Pastel de carne seca com cream cheese",
+      "descricao": "Carne seca com cream chesse, Queijo ou Camarão",
+      "preco": 59.0,
+      "ingredientes_mencionados": [
+        "carne seca",
+        "cream cheese"
+      ],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Massa de pastel"
+      ],
+      "notas": "O PDF escreve 'cream chesse'. Mesmo preço para as três opções."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Pastel de queijo",
+      "descricao": "Carne seca com cream chesse, Queijo ou Camarão",
+      "preco": 59.0,
+      "ingredientes_mencionados": [
+        "queijo"
+      ],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Massa de pastel"
+      ],
+      "notas": "O PDF não diz qual queijo."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Petiscos",
+      "nome": "Pastel de camarão",
+      "descricao": "Carne seca com cream chesse, Queijo ou Camarão",
+      "preco": 59.0,
+      "ingredientes_mencionados": [
+        "camarão"
+      ],
+      "porcao_impressa": "6 un",
+      "receitas_base_sugeridas": [
+        "Massa de pastel"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Combo",
+      "nome": "Combo Mirante",
+      "descricao": "Coxinha, Carne de sol, Fritas e Frango frito",
+      "preco": 78.0,
+      "ingredientes_mencionados": [
+        "coxinha",
+        "carne de sol",
+        "fritas",
+        "frango frito"
+      ],
+      "receitas_base_sugeridas": [
+        "Coxinha",
+        "Carne de sol (preparo da casa)",
+        "Batata frita",
+        "Frango frito"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Combo",
+      "nome": "Combo Rio da Barra",
+      "descricao": "Camarão empanado, Aipim, Tulipa e Coxinha",
+      "preco": 155.0,
+      "ingredientes_mencionados": [
+        "camarão empanado",
+        "aipim",
+        "tulipa",
+        "coxinha"
+      ],
+      "receitas_base_sugeridas": [
+        "Camarão empanado",
+        "Aipim frito",
+        "Tulipa de frango",
+        "Coxinha",
+        "Empanamento"
+      ],
+      "notas": "No catálogo Anota AI de 05/11/2026 a descrição era 'Camarão empanado, aipim, tulipa e salgado' (em vez de coxinha). Usamos o texto deste PDF."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Combo",
+      "nome": "Combo Rio Verde",
+      "descricao": "Carne de sol, Linguiça frita, Aipim e Coxinha",
+      "preco": 120.0,
+      "ingredientes_mencionados": [
+        "carne de sol",
+        "linguiça frita",
+        "aipim",
+        "coxinha"
+      ],
+      "porcao_impressa": "60 un",
+      "receitas_base_sugeridas": [
+        "Carne de sol (preparo da casa)",
+        "Aipim frito",
+        "Coxinha"
+      ],
+      "notas": "O PDF imprime '60 UN', o que é incomum para este tipo de combo. No catálogo Anota AI de 05/11/2026 a descrição era 'Carne sol, linguiça frita, aipim, coxinha e esfiha' (a esfiha não aparece neste PDF) e o preço era o mesmo, sem '60 un'. Confirmar composição e a porção."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Principais",
+      "nome": "Salmão ao molho de alcaparras",
+      "descricao": "Purê de Batata e Arroz",
+      "preco": 93.0,
+      "ingredientes_mencionados": [
+        "salmão",
+        "molho de alcaparras",
+        "purê de batata",
+        "arroz"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Molho de alcaparras",
+        "Purê de batata",
+        "Arroz branco"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Principais",
+      "nome": "Strogonoff de frango",
+      "descricao": "Arroz",
+      "preco": 69.0,
+      "ingredientes_mencionados": [
+        "frango",
+        "strogonoff",
+        "arroz"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Strogonoff",
+        "Arroz branco"
+      ],
+      "notas": "O PDF não lista os ingredientes do strogonoff (creme de leite, champignon, etc.)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Principais",
+      "nome": "Strogonoff de carne",
+      "descricao": "Arroz",
+      "preco": 73.0,
+      "ingredientes_mencionados": [
+        "carne",
+        "strogonoff",
+        "arroz"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Strogonoff",
+        "Arroz branco"
+      ],
+      "notas": "O PDF não informa o corte da carne nem os ingredientes do molho."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Principais",
+      "nome": "Filé mignon ao molho madeira",
+      "descricao": "Purê de Batata e Arroz",
+      "preco": 99.0,
+      "ingredientes_mencionados": [
+        "filé mignon",
+        "molho madeira",
+        "purê de batata",
+        "arroz"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Molho madeira",
+        "Purê de batata",
+        "Arroz branco"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Principais",
+      "nome": "Parmegiana de frango",
+      "descricao": "Batata frita e Arroz",
+      "preco": 92.0,
+      "ingredientes_mencionados": [
+        "frango",
+        "parmegiana",
+        "batata frita",
+        "arroz"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Parmegiana",
+        "Empanamento",
+        "Batata frita",
+        "Arroz branco"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Principais",
+      "nome": "Parmegiana de contra-filé",
+      "descricao": "Batata frita e Arroz",
+      "preco": 102.0,
+      "ingredientes_mencionados": [
+        "contra-filé",
+        "parmegiana",
+        "batata frita",
+        "arroz"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Parmegiana",
+        "Empanamento",
+        "Batata frita",
+        "Arroz branco"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Principais",
+      "nome": "Filé de peixe ao molho de camarão",
+      "descricao": "Batata à dorê e Arroz",
+      "preco": 129.0,
+      "ingredientes_mencionados": [
+        "filé de peixe",
+        "molho de camarão",
+        "batata à dorê",
+        "arroz"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Molho de camarão",
+        "Batata à dorê",
+        "Arroz branco"
+      ],
+      "notas": "O PDF não informa a espécie do filé de peixe."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Principais",
+      "nome": "Bobó de camarão",
+      "descricao": "Arroz",
+      "preco": 219.0,
+      "ingredientes_mencionados": [
+        "camarão",
+        "bobó",
+        "arroz"
+      ],
+      "porcao_impressa": "Serve 2 pessoas",
+      "receitas_base_sugeridas": [
+        "Bobó de camarão",
+        "Arroz branco"
+      ],
+      "notas": "Único principal que serve 2 pessoas. Ingredientes clássicos do bobó (aipim, leite de coco, dendê, etc.) não estão no PDF."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Risotos",
+      "nome": "Risoto de carne de sol",
+      "descricao": "Com Queijo coalho e Banana da terra",
+      "preco": 85.0,
+      "ingredientes_mencionados": [
+        "carne de sol",
+        "queijo coalho",
+        "banana da terra"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Risoto base",
+        "Carne de sol (preparo da casa)"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Risotos",
+      "nome": "Risoto de camarão com siciliano",
+      "descricao": null,
+      "preco": 89.0,
+      "ingredientes_mencionados": [
+        "camarão",
+        "siciliano"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Risoto base"
+      ],
+      "notas": "No catálogo Anota AI o nome é 'Risoto de Camarão com Limão Siciliano'. Neste PDF só aparece 'SICILIANO'."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Risotos",
+      "nome": "Risoto de filé mignon",
+      "descricao": null,
+      "preco": 85.0,
+      "ingredientes_mencionados": [
+        "filé mignon"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Risoto base"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Risotos",
+      "nome": "Risoto de shitake",
+      "descricao": null,
+      "preco": 71.0,
+      "ingredientes_mencionados": [
+        "shitake"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Risoto base"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Risotos",
+      "nome": "Risoto de polvo",
+      "descricao": "Com Leite de coco",
+      "preco": 89.0,
+      "ingredientes_mencionados": [
+        "polvo",
+        "leite de coco"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Risoto base"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Yakissoba",
+      "nome": "Yakissoba de carne",
+      "descricao": null,
+      "preco": 64.0,
+      "ingredientes_mencionados": [
+        "carne"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Yakisoba"
+      ],
+      "notas": "O PDF não lista legumes, massa nem molho, nem o corte da carne."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Yakissoba",
+      "nome": "Yakissoba de frango",
+      "descricao": null,
+      "preco": 52.0,
+      "ingredientes_mencionados": [
+        "frango"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Yakisoba"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Yakissoba",
+      "nome": "Yakissoba de camarão",
+      "descricao": null,
+      "preco": 73.0,
+      "ingredientes_mencionados": [
+        "camarão"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Yakisoba"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Yakissoba",
+      "nome": "Yakissoba de shitaki",
+      "descricao": null,
+      "preco": 52.0,
+      "ingredientes_mencionados": [
+        "shitake"
+      ],
+      "porcao_impressa": "Serve uma pessoa",
+      "receitas_base_sugeridas": [
+        "Yakisoba"
+      ],
+      "notas": "O PDF escreve 'SHITAKI' nesta seção e 'SHITAKE' no risoto."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Acompanhamentos",
+      "nome": "Arroz",
+      "descricao": null,
+      "preco": 20.0,
+      "ingredientes_mencionados": [
+        "arroz"
+      ],
+      "receitas_base_sugeridas": [
+        "Arroz branco"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Acompanhamentos",
+      "nome": "Farofa",
+      "descricao": null,
+      "preco": 15.0,
+      "ingredientes_mencionados": [
+        "farofa"
+      ],
+      "receitas_base_sugeridas": [
+        "Farofa"
+      ],
+      "notas": "O PDF não descreve se leva bacon, ovos, cebola etc."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Acompanhamentos",
+      "nome": "Feijão",
+      "descricao": null,
+      "preco": 20.0,
+      "ingredientes_mencionados": [
+        "feijão"
+      ],
+      "receitas_base_sugeridas": [
+        "Feijão"
+      ],
+      "notas": "O PDF não diz o tipo (carioca, preto, tropeiro...)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Acompanhamentos",
+      "nome": "Purê de batata",
+      "descricao": null,
+      "preco": 20.0,
+      "ingredientes_mencionados": [
+        "purê de batata"
+      ],
+      "receitas_base_sugeridas": [
+        "Purê de batata"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Bebidas",
+      "nome": "Água sem gás",
+      "descricao": null,
+      "preco": 7.0,
+      "ingredientes_mencionados": [
+        "água sem gás"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Bebidas",
+      "nome": "Água com gás",
+      "descricao": null,
+      "preco": 7.0,
+      "ingredientes_mencionados": [
+        "água com gás"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Bebidas",
+      "nome": "Tônica",
+      "descricao": null,
+      "preco": 9.0,
+      "ingredientes_mencionados": [
+        "tônica"
+      ],
+      "notas": "O PDF não informa a marca."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Bebidas",
+      "nome": "Coca-Cola lata",
+      "descricao": null,
+      "preco": 8.0,
+      "ingredientes_mencionados": [
+        "Coca-Cola lata"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Bebidas",
+      "nome": "Guaraná lata",
+      "descricao": null,
+      "preco": 8.0,
+      "ingredientes_mencionados": [
+        "guaraná lata"
+      ],
+      "notas": "O PDF não informa a marca (Antarctica ou outra)."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Bebidas",
+      "nome": "Coca-Cola 1L",
+      "descricao": null,
+      "preco": 13.0,
+      "ingredientes_mencionados": [
+        "Coca-Cola 1L"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Bebidas",
+      "nome": "Guaraná 1L",
+      "descricao": null,
+      "preco": 13.0,
+      "ingredientes_mencionados": [
+        "guaraná 1L"
+      ]
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Bebidas",
+      "nome": "Long neck",
+      "descricao": null,
+      "preco": 15.0,
+      "ingredientes_mencionados": [
+        "cerveja long neck"
+      ],
+      "notas": "O PDF não informa a marca. No cardápio de salão do catálogo Anota AI (05/11/2026) as long necks a R$ 15,00 eram Corona, Heineken, Praya e Budweiser. Confirmar quais valem para o delivery."
+    },
+    {
+      "restaurante": "Nativo's Sushi",
+      "categoria": "Bebidas",
+      "nome": "Suco 300ml",
+      "descricao": "Polpa (consultar sabores disponíveis)",
+      "preco": 7.0,
+      "ingredientes_mencionados": [
+        "polpa de fruta"
+      ],
+      "notas": "Sabores não estão no PDF."
+    }
+  ]
+}
