@@ -1,3 +1,5 @@
+import { Numeric } from "./numeric";
+import { numeroBR } from "@/lib/dna";
 import type { ReactNode } from "react";
 import { X, Plus } from "lucide-react";
 export function Field({
@@ -27,7 +29,7 @@ export function Money({
   required?: boolean;
 }) {
   return (
-    <input
+    <Numeric
       aria-label={name}
       name={name}
       type="number"
@@ -134,4 +136,4 @@ export function Modal({
 export const formString = (f: FormData, name: string) =>
   String(f.get(name) ?? "").trim();
 export const formNumber = (f: FormData, name: string) =>
-  Number(formString(f, name));
+  numeroBR(formString(f, name));

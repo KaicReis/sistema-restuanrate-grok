@@ -1,3 +1,4 @@
+import { migrar } from "./migrate";
 import type { Database, DNA, Canal } from "../types";
 export const competenciaAtual = () =>
   new Intl.DateTimeFormat("sv-SE", {
@@ -34,7 +35,7 @@ export function novosCanais(
   );
 }
 export function criarBase(): Database {
-  return {
+  return migrar({
     version: 1,
     restaurantes: [
       { id: "a-vila", nome: "A Vila", regime: "Simples" },
@@ -46,7 +47,7 @@ export function criarBase(): Database {
     insumos: [],
     produtos: [],
     precos: [],
-  };
+  });
 }
 export function historicoVila(): DNA {
   return {

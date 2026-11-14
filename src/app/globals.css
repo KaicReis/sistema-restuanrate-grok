@@ -2246,3 +2246,169 @@ h1 {
     scroll-behavior: auto !important;
   }
 }
+/* v2: grids adaptam-se ao conteúdo e aos dispositivos menores. */
+.pricing-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 20px;
+}
+.price-card {
+  min-width: 0;
+}
+.suggested-price {
+  font-size: clamp(25px, 3vw, 36px);
+}
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-width: 0;
+}
+.recipe-item {
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  align-items: end;
+}
+.month-controls {
+  display: flex;
+  gap: 8px;
+}
+.month-controls input {
+  width: 90px;
+}
+.month-controls select {
+  text-transform: capitalize;
+}
+.comparison {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) 2fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 0;
+}
+.comparison small {
+  grid-column: 1/-1;
+}
+.chart-track {
+  height: 24px;
+  background: #e9eee8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.chart-track > div {
+  height: 100%;
+  min-width: 0;
+  border-radius: 8px;
+}
+.month-chart {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 18px 0;
+}
+.month-bar {
+  min-width: 110px;
+  flex: 1;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.month-bar strong {
+  font-size: 12px;
+}
+.column-track {
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: #f4f6f2;
+}
+.column-track > div {
+  background: #234f42;
+  width: 60%;
+  border-radius: 8px 8px 0 0;
+}
+.month-bar small {
+  font-size: 11px;
+}
+.restaurant-switch select {
+  appearance: auto;
+}
+.negative {
+  overflow-wrap: anywhere;
+}
+input:invalid:not(:placeholder-shown) {
+  border-color: #bd6a58;
+}
+@media (max-width: 760px) {
+  .fixed-row,
+  .recipe-item {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    width: 100%;
+    gap: 12px;
+  }
+  .fixed-row .field,
+  .rate-row .field {
+    width: 100%;
+  }
+  .top-actions .button span {
+    display: inline !important;
+    font-size: 11px;
+  }
+  .top-actions {
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .topbar {
+    height: auto;
+    min-height: 74px;
+    padding: 12px;
+  }
+  .top-actions .button {
+    padding: 7px;
+  }
+  .profile {
+    display: none;
+  }
+  .comparison {
+    grid-template-columns: 1fr;
+  }
+  .comparison small {
+    grid-column: auto;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .stat strong {
+    font-size: 24px;
+  }
+  .ingredient-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .month-select {
+    max-width: 100%;
+  }
+  .recipe-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 420px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .breadcrumb > span {
+    display: none;
+  }
+  .form-grid,
+  .form-grid.four {
+    grid-template-columns: 1fr;
+  }
+  .topbar {
+    flex-wrap: wrap;
+  }
+  .month-controls {
+    width: 100%;
+  }
+}

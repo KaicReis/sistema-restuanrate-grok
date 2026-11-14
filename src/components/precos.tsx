@@ -1,4 +1,6 @@
 "use client";
+import { insumosMes } from "@/lib/v2";
+import { Numeric } from "./numeric";
 import { useState } from "react";
 import {
   AlertTriangle,
@@ -94,8 +96,8 @@ export function Precos() {
                 <div>
                   <h2>{p.nome}</h2>
                   <p>
-                    {p.rendimento} porção(ões) por receita · custos atuais dos
-                    insumos
+                    {p.rendimento} porção(ões) por receita · custos da
+                    competência selecionada
                   </p>
                 </div>
               </div>
@@ -136,11 +138,36 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
       (p) => p.produto_id === produto.id && p.canal_id === canal.id,
     ),
     [valor, setValor] = useState(
-      registro ? (registro.valor / 100).toFixed(2) : "",
+      registro
+        ? (registro.valor / 100).toFixed(2).replace(".", ",")
+        : produto.precoCardapio && canal.nome === "Salão"
+          ? (produto.precoCardapio / 100).toFixed(2).replace(".", ",")
+          : "",
     );
-  const entrada = entradaPreco(dna, canal, produto, db.insumos),
-    result = calcularPrecoDNA(entrada),
-    margens = registro ? calcularMargens(entrada, registro.valor) : null,
+  let entrada;
+  try {
+    entrada = entradaPreco(
+      dna,
+      canal,
+      produto,
+      insumosMes(db, dna.competencia),
+      db.receitas,
+    );
+  } catch (e) {
+    return (
+      <div className="price-card">
+        <h3>{canal.nome}</h3>
+        <p className="negative">{(e as Error).message}</p>
+        <p>Complete a ficha e os preços dos insumos antes de precificar.</p>
+        {registro && <p>Preço praticado: {dinheiro(registro.valor)}</p>}
+      </div>
+    );
+  }
+  const result = calcularPrecoDNA(entrada),
+    margens =
+      valor && /^\d+(?:[,.]\d+)?$/.test(valor)
+        ? calcularMargens(entrada, paraCentavos(valor))
+        : null,
     abaixo = registro && result.viavel && registro.valor < result.precoMinimo;
   function save(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -172,7 +199,7 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
               ? "Abaixo da meta"
               : registro && margens
                 ? "Meta atendida"
-                : "Simulação"}
+                : "Informe o preço praticado"}
         </span>
       </div>
       {result.viavel ? (
@@ -223,7 +250,7 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
       </div>
       <form onSubmit={save} className="price-form">
         <Field label="Preço praticado (R$)">
-          <input
+          <Numeric
             aria-label={`Preço praticado de ${produto.nome} em ${canal.nome}`}
             type="number"
             min="0.01"
@@ -244,6 +271,16 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
           <Check size={20} />
         </button>
       </form>
+      {result.viavel && (
+        <button
+          className="button"
+          onClick={() =>
+            setValor((result.precoMinimo / 100).toFixed(2).replace(".", ","))
+          }
+        >
+          Usar preço sugerido
+        </button>
+      )}
       <div className="margin-metrics">
         <div>
           <span>Diferença para o mínimo</span>

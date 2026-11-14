@@ -1,0 +1,4708 @@
+{
+  "insumos": [
+    {
+      "id": "seed-bora-i0",
+      "restaurante_id": "bora",
+      "nome": "Salmão",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-bora-i6",
+      "restaurante_id": "bora",
+      "nome": "Carne para blend de hambúrguer",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-bora-i7",
+      "restaurante_id": "bora",
+      "nome": "Costela bovina",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-bora-i8",
+      "restaurante_id": "bora",
+      "nome": "Frango (filé ou peito)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-bora-i17",
+      "restaurante_id": "bora",
+      "nome": "Bacon",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-bora-i19",
+      "restaurante_id": "bora",
+      "nome": "Tomate",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i20",
+      "restaurante_id": "bora",
+      "nome": "Cebola roxa",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i21",
+      "restaurante_id": "bora",
+      "nome": "Cebola",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i22",
+      "restaurante_id": "bora",
+      "nome": "Alface",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i23",
+      "restaurante_id": "bora",
+      "nome": "Rúcula",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i24",
+      "restaurante_id": "bora",
+      "nome": "Pepino",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i25",
+      "restaurante_id": "bora",
+      "nome": "Alho",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i28",
+      "restaurante_id": "bora",
+      "nome": "Morango",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i30",
+      "restaurante_id": "bora",
+      "nome": "Limão siciliano",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i36",
+      "restaurante_id": "bora",
+      "nome": "Ervas para maionese verde (salsa, cebolinha e/ou hortelã)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i37",
+      "restaurante_id": "bora",
+      "nome": "Limão (taiti ou outro)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-bora-i39",
+      "restaurante_id": "bora",
+      "nome": "Queijo cheddar",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i40",
+      "restaurante_id": "bora",
+      "nome": "Mussarela",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i41",
+      "restaurante_id": "bora",
+      "nome": "Queijo prato",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i42",
+      "restaurante_id": "bora",
+      "nome": "Queijo gorgonzola",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i43",
+      "restaurante_id": "bora",
+      "nome": "Queijo coalho",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i45",
+      "restaurante_id": "bora",
+      "nome": "Queijo parmesão",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i46",
+      "restaurante_id": "bora",
+      "nome": "Leite",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i47",
+      "restaurante_id": "bora",
+      "nome": "Creme de leite",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i48",
+      "restaurante_id": "bora",
+      "nome": "Manteiga",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i49",
+      "restaurante_id": "bora",
+      "nome": "Leite Ninho (leite em pó)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i50",
+      "restaurante_id": "bora",
+      "nome": "Doce de leite",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i51",
+      "restaurante_id": "bora",
+      "nome": "Pão brioche",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "padaria"
+    },
+    {
+      "id": "seed-bora-i52",
+      "restaurante_id": "bora",
+      "nome": "Pão australiano",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "padaria"
+    },
+    {
+      "id": "seed-bora-i54",
+      "restaurante_id": "bora",
+      "nome": "Vinagre de arroz",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i55",
+      "restaurante_id": "bora",
+      "nome": "Açúcar",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i56",
+      "restaurante_id": "bora",
+      "nome": "Sal",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i64",
+      "restaurante_id": "bora",
+      "nome": "Óleo (soja ou outro)",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i65",
+      "restaurante_id": "bora",
+      "nome": "Óleo para fritura",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i67",
+      "restaurante_id": "bora",
+      "nome": "Farinha de trigo",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i68",
+      "restaurante_id": "bora",
+      "nome": "Farinha de rosca ou panko",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i69",
+      "restaurante_id": "bora",
+      "nome": "Farinha de mandioca",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i71",
+      "restaurante_id": "bora",
+      "nome": "Ovos",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i72",
+      "restaurante_id": "bora",
+      "nome": "Mostarda",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i75",
+      "restaurante_id": "bora",
+      "nome": "Tomate pelado ou molho de tomate",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i76",
+      "restaurante_id": "bora",
+      "nome": "Leite de coco",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i86",
+      "restaurante_id": "bora",
+      "nome": "Picles",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i88",
+      "restaurante_id": "bora",
+      "nome": "Queijo para Romeu e Julieta (minas ou mussarela)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i89",
+      "restaurante_id": "bora",
+      "nome": "Ovomaltine",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i90",
+      "restaurante_id": "bora",
+      "nome": "Nutella (creme de avelã)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i91",
+      "restaurante_id": "bora",
+      "nome": "Paçoca",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-bora-i92",
+      "restaurante_id": "bora",
+      "nome": "Sorvete ou base láctea para milkshake",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-bora-i105",
+      "restaurante_id": "bora",
+      "nome": "Embalagem delivery (genérica)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "embalagem"
+    },
+    {
+      "id": "seed-bora-extra3-1",
+      "restaurante_id": "bora",
+      "nome": "Farinha de trigo ou farinha de rosca/panko",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-bora-extra4-4",
+      "restaurante_id": "bora",
+      "nome": "Temperos (confirmar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-bora-extra8-1",
+      "restaurante_id": "bora",
+      "nome": "Empanamento (ver receita base)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-bora-extra9-0",
+      "restaurante_id": "bora",
+      "nome": "Sorvete ou base láctea",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-bora-pronto10",
+      "restaurante_id": "bora",
+      "nome": "Picles de pepino",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-i0",
+      "restaurante_id": "nativos",
+      "nome": "Salmão",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i1",
+      "restaurante_id": "nativos",
+      "nome": "Atum",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i2",
+      "restaurante_id": "nativos",
+      "nome": "Peixe branco",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i3",
+      "restaurante_id": "nativos",
+      "nome": "Camarão",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i4",
+      "restaurante_id": "nativos",
+      "nome": "Polvo",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i5",
+      "restaurante_id": "nativos",
+      "nome": "Ovas de peixe",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i6",
+      "restaurante_id": "nativos",
+      "nome": "Carne para blend de hambúrguer",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i8",
+      "restaurante_id": "nativos",
+      "nome": "Frango (filé ou peito)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i9",
+      "restaurante_id": "nativos",
+      "nome": "Tulipa de frango",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i10",
+      "restaurante_id": "nativos",
+      "nome": "Filé mignon",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i11",
+      "restaurante_id": "nativos",
+      "nome": "Contra-filé",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i12",
+      "restaurante_id": "nativos",
+      "nome": "Carne bovina (outras preparações)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i13",
+      "restaurante_id": "nativos",
+      "nome": "Carne de sol",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i14",
+      "restaurante_id": "nativos",
+      "nome": "Carne seca",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i15",
+      "restaurante_id": "nativos",
+      "nome": "Carne suína (para guioza)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i16",
+      "restaurante_id": "nativos",
+      "nome": "Linguiça",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i17",
+      "restaurante_id": "nativos",
+      "nome": "Bacon",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i18",
+      "restaurante_id": "nativos",
+      "nome": "Kani / surimi",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "proteína"
+    },
+    {
+      "id": "seed-nativos-i19",
+      "restaurante_id": "nativos",
+      "nome": "Tomate",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i20",
+      "restaurante_id": "nativos",
+      "nome": "Cebola roxa",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i21",
+      "restaurante_id": "nativos",
+      "nome": "Cebola",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i24",
+      "restaurante_id": "nativos",
+      "nome": "Pepino",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i25",
+      "restaurante_id": "nativos",
+      "nome": "Alho",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i26",
+      "restaurante_id": "nativos",
+      "nome": "Banana",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i27",
+      "restaurante_id": "nativos",
+      "nome": "Banana da terra",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i29",
+      "restaurante_id": "nativos",
+      "nome": "Alcaparras",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i30",
+      "restaurante_id": "nativos",
+      "nome": "Limão siciliano",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i31",
+      "restaurante_id": "nativos",
+      "nome": "Shitake",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i32",
+      "restaurante_id": "nativos",
+      "nome": "Aipim (mandioca)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i33",
+      "restaurante_id": "nativos",
+      "nome": "Batata",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i34",
+      "restaurante_id": "nativos",
+      "nome": "Gengibre fresco",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i35",
+      "restaurante_id": "nativos",
+      "nome": "Legumes diversos (guioza e yakissoba)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i36",
+      "restaurante_id": "nativos",
+      "nome": "Ervas para maionese verde (salsa, cebolinha e/ou hortelã)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i37",
+      "restaurante_id": "nativos",
+      "nome": "Limão (taiti ou outro)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i38",
+      "restaurante_id": "nativos",
+      "nome": "Champignon",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "hortifruti"
+    },
+    {
+      "id": "seed-nativos-i39",
+      "restaurante_id": "nativos",
+      "nome": "Queijo cheddar",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i40",
+      "restaurante_id": "nativos",
+      "nome": "Mussarela",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i41",
+      "restaurante_id": "nativos",
+      "nome": "Queijo prato",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i42",
+      "restaurante_id": "nativos",
+      "nome": "Queijo gorgonzola",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i43",
+      "restaurante_id": "nativos",
+      "nome": "Queijo coalho",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i44",
+      "restaurante_id": "nativos",
+      "nome": "Cream cheese (tipo Philadelphia)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i45",
+      "restaurante_id": "nativos",
+      "nome": "Queijo parmesão",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i46",
+      "restaurante_id": "nativos",
+      "nome": "Leite",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i47",
+      "restaurante_id": "nativos",
+      "nome": "Creme de leite",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i48",
+      "restaurante_id": "nativos",
+      "nome": "Manteiga",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i49",
+      "restaurante_id": "nativos",
+      "nome": "Leite Ninho (leite em pó)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i50",
+      "restaurante_id": "nativos",
+      "nome": "Doce de leite",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i53",
+      "restaurante_id": "nativos",
+      "nome": "Arroz japonês (para sushi)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i54",
+      "restaurante_id": "nativos",
+      "nome": "Vinagre de arroz",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i55",
+      "restaurante_id": "nativos",
+      "nome": "Açúcar",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i56",
+      "restaurante_id": "nativos",
+      "nome": "Sal",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i57",
+      "restaurante_id": "nativos",
+      "nome": "Alga nori",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i58",
+      "restaurante_id": "nativos",
+      "nome": "Shoyu (molho de soja)",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i59",
+      "restaurante_id": "nativos",
+      "nome": "Wasabi",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i60",
+      "restaurante_id": "nativos",
+      "nome": "Gengibre em conserva (gari)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i61",
+      "restaurante_id": "nativos",
+      "nome": "Gergelim branco",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i62",
+      "restaurante_id": "nativos",
+      "nome": "Gergelim preto",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i63",
+      "restaurante_id": "nativos",
+      "nome": "Mirin",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i64",
+      "restaurante_id": "nativos",
+      "nome": "Óleo (soja ou outro)",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i65",
+      "restaurante_id": "nativos",
+      "nome": "Óleo para fritura",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i66",
+      "restaurante_id": "nativos",
+      "nome": "Azeite",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i67",
+      "restaurante_id": "nativos",
+      "nome": "Farinha de trigo",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i68",
+      "restaurante_id": "nativos",
+      "nome": "Farinha de rosca ou panko",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i69",
+      "restaurante_id": "nativos",
+      "nome": "Farinha de mandioca",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i70",
+      "restaurante_id": "nativos",
+      "nome": "Amido de milho ou fécula",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i71",
+      "restaurante_id": "nativos",
+      "nome": "Ovos",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i73",
+      "restaurante_id": "nativos",
+      "nome": "Ketchup",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i74",
+      "restaurante_id": "nativos",
+      "nome": "Molho inglês",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i75",
+      "restaurante_id": "nativos",
+      "nome": "Tomate pelado ou molho de tomate",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i76",
+      "restaurante_id": "nativos",
+      "nome": "Leite de coco",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i77",
+      "restaurante_id": "nativos",
+      "nome": "Azeite de dendê",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i78",
+      "restaurante_id": "nativos",
+      "nome": "Arroz branco (de acompanhamento)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i79",
+      "restaurante_id": "nativos",
+      "nome": "Arroz arbóreo (ou outro para risoto)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i80",
+      "restaurante_id": "nativos",
+      "nome": "Feijão",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i81",
+      "restaurante_id": "nativos",
+      "nome": "Massa tipo espaguete (ou outra para 'Massas')",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i82",
+      "restaurante_id": "nativos",
+      "nome": "Macarrão para yakisoba",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i83",
+      "restaurante_id": "nativos",
+      "nome": "Folha ou massa para harumaki / rolinho primavera",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i84",
+      "restaurante_id": "nativos",
+      "nome": "Massa para guioza",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i85",
+      "restaurante_id": "nativos",
+      "nome": "Massa para pastel",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i87",
+      "restaurante_id": "nativos",
+      "nome": "Goiabada",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i88",
+      "restaurante_id": "nativos",
+      "nome": "Queijo para Romeu e Julieta (minas ou mussarela)",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "laticínio"
+    },
+    {
+      "id": "seed-nativos-i93",
+      "restaurante_id": "nativos",
+      "nome": "Caldo (carne, legumes ou peixe)",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i94",
+      "restaurante_id": "nativos",
+      "nome": "Vinho madeira (ou vinho tinto para o molho)",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i95",
+      "restaurante_id": "nativos",
+      "nome": "Vinho branco",
+      "unidade": "L",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i96",
+      "restaurante_id": "nativos",
+      "nome": "Polpa de fruta para suco",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "mercearia"
+    },
+    {
+      "id": "seed-nativos-i97",
+      "restaurante_id": "nativos",
+      "nome": "Água sem gás",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i98",
+      "restaurante_id": "nativos",
+      "nome": "Água com gás",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i99",
+      "restaurante_id": "nativos",
+      "nome": "Tônica",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i100",
+      "restaurante_id": "nativos",
+      "nome": "Coca-Cola lata",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i101",
+      "restaurante_id": "nativos",
+      "nome": "Guaraná lata",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i102",
+      "restaurante_id": "nativos",
+      "nome": "Coca-Cola 1L",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i103",
+      "restaurante_id": "nativos",
+      "nome": "Guaraná 1L",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i104",
+      "restaurante_id": "nativos",
+      "nome": "Cerveja long neck",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "bebida"
+    },
+    {
+      "id": "seed-nativos-i105",
+      "restaurante_id": "nativos",
+      "nome": "Embalagem delivery (genérica)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true,
+      "categoria": "embalagem"
+    },
+    {
+      "id": "seed-nativos-extra11-0",
+      "restaurante_id": "nativos",
+      "nome": "Arroz japonês",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra12-0",
+      "restaurante_id": "nativos",
+      "nome": "Shoyu",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-pronto14",
+      "restaurante_id": "nativos",
+      "nome": "Gengibre em conserva (gari)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra17-3",
+      "restaurante_id": "nativos",
+      "nome": "Azeite ou óleo",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra17-5",
+      "restaurante_id": "nativos",
+      "nome": "Ervas (confirmar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra18-2",
+      "restaurante_id": "nativos",
+      "nome": "Limão",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra18-3",
+      "restaurante_id": "nativos",
+      "nome": "Vinho branco (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra19-0",
+      "restaurante_id": "nativos",
+      "nome": "Vinho madeira ou vinho tinto",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra19-1",
+      "restaurante_id": "nativos",
+      "nome": "Caldo",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra19-4",
+      "restaurante_id": "nativos",
+      "nome": "Molho inglês (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra20-1",
+      "restaurante_id": "nativos",
+      "nome": "Creme de leite ou leite",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra21-0",
+      "restaurante_id": "nativos",
+      "nome": "Proteína (frango ou carne, conforme o prato)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra21-3",
+      "restaurante_id": "nativos",
+      "nome": "Ketchup ou molho de tomate",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra21-5",
+      "restaurante_id": "nativos",
+      "nome": "Champignon (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra22-0",
+      "restaurante_id": "nativos",
+      "nome": "Proteína (frango ou contra-filé)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra22-1",
+      "restaurante_id": "nativos",
+      "nome": "Empanamento",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra22-2",
+      "restaurante_id": "nativos",
+      "nome": "Molho sugo ou molho de tomate",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra22-4",
+      "restaurante_id": "nativos",
+      "nome": "Queijo parmesão (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra23-1",
+      "restaurante_id": "nativos",
+      "nome": "Aipim",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra23-3",
+      "restaurante_id": "nativos",
+      "nome": "Azeite de dendê (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra23-6",
+      "restaurante_id": "nativos",
+      "nome": "Tomate (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra25-0",
+      "restaurante_id": "nativos",
+      "nome": "Arroz arbóreo (ou outra variedade — confirmar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra25-2",
+      "restaurante_id": "nativos",
+      "nome": "Manteiga ou azeite",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra26-1",
+      "restaurante_id": "nativos",
+      "nome": "Legumes diversos (listar com Kaic)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra26-2",
+      "restaurante_id": "nativos",
+      "nome": "Shoyu ou molho de yakisoba",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra26-4",
+      "restaurante_id": "nativos",
+      "nome": "Óleo",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-pronto30",
+      "restaurante_id": "nativos",
+      "nome": "Coxinha",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra31-1",
+      "restaurante_id": "nativos",
+      "nome": "Temperos (confirmar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra31-2",
+      "restaurante_id": "nativos",
+      "nome": "Óleo para fritura (se for frita)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-pronto32",
+      "restaurante_id": "nativos",
+      "nome": "Massa de pastel",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-pronto33",
+      "restaurante_id": "nativos",
+      "nome": "Guioza",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-pronto34",
+      "restaurante_id": "nativos",
+      "nome": "Rolinho primavera / harumaki",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra35-1",
+      "restaurante_id": "nativos",
+      "nome": "Manteiga ou óleo",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra35-4",
+      "restaurante_id": "nativos",
+      "nome": "Ovos (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra35-5",
+      "restaurante_id": "nativos",
+      "nome": "Bacon (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra36-0",
+      "restaurante_id": "nativos",
+      "nome": "Feijão (tipo a confirmar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra36-3",
+      "restaurante_id": "nativos",
+      "nome": "Óleo ou bacon (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra37-1",
+      "restaurante_id": "nativos",
+      "nome": "Alho (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra37-2",
+      "restaurante_id": "nativos",
+      "nome": "Óleo ou azeite",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra38-0",
+      "restaurante_id": "nativos",
+      "nome": "Frango (filé)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra38-1",
+      "restaurante_id": "nativos",
+      "nome": "Empanamento (se for empanada — confirmar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra39-0",
+      "restaurante_id": "nativos",
+      "nome": "Peixe (espécie a confirmar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra41-0",
+      "restaurante_id": "nativos",
+      "nome": "Frango",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra41-3",
+      "restaurante_id": "nativos",
+      "nome": "Empanamento (se usar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra42-1",
+      "restaurante_id": "nativos",
+      "nome": "Cebola (se for acebolada — confirmar)",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-extra42-2",
+      "restaurante_id": "nativos",
+      "nome": "Óleo ou manteiga",
+      "unidade": "un",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-camarao-VM",
+      "restaurante_id": "nativos",
+      "nome": "Camarão VM",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    },
+    {
+      "id": "seed-nativos-camarao-VG",
+      "restaurante_id": "nativos",
+      "nome": "Camarão VG",
+      "unidade": "kg",
+      "quantidade": 1,
+      "preco": 0,
+      "rendimento": 100,
+      "precoPendente": true
+    }
+  ],
+  "receitas": [
+    {
+      "id": "seed-bora-r0",
+      "restaurante_id": "bora",
+      "nome": "Maionese verde",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [],
+      "pendente": true,
+      "notas": "O catálogo Anota AI chama de 'nossa maionese verde da casa'. É o preparo que o Kaic citou como exemplo (receita feita na casa e depois colocada nos pratos). As ervas e o modo de fazer NÃO estão no cardápio — tudo aqui é sugestão. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r1",
+      "restaurante_id": "bora",
+      "nome": "Creme cheddar",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-bora-i39",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i47",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i46",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i48",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Preparação citada no X Bacon 2.0. Composição não descrita no PDF. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r2",
+      "restaurante_id": "bora",
+      "nome": "Farofa de bacon",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [],
+      "pendente": true,
+      "notas": "O PDF não diz se é farofa com farinha de mandioca ou bacon crocante moído ('farofa crocante de bacon' no catálogo Anota AI). Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r3",
+      "restaurante_id": "bora",
+      "nome": "Crispy de cebola",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-bora-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-extra3-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Cebola frita crocante da casa, citada no X Burguer 2.0. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r4",
+      "restaurante_id": "bora",
+      "nome": "Costela desfiada",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-bora-i7",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i25",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-extra4-4",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Preparo citado no lanche Nativo's. Tempo, corte e tempero a confirmar com Kaic. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r5",
+      "restaurante_id": "bora",
+      "nome": "Creme de gorgonzola",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-bora-i42",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i47",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Citado no Franklyn. Composição não descrita no PDF. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r6",
+      "restaurante_id": "bora",
+      "nome": "Cebola caramelizada",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-bora-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i55",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i48",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Citada no Franklyn. Quantidades e se usa açúcar/manteiga/vinagre são sugestão. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r7",
+      "restaurante_id": "bora",
+      "nome": "Blend de hambúrguer",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [],
+      "pendente": true,
+      "notas": "O catálogo Anota AI chama de 'burger artesanal'. Confirmar se a carne é moída e porcionada na casa (120g e 150g) e quais cortes entram. Não inventar rendimento. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r8",
+      "restaurante_id": "bora",
+      "nome": "Frango empanado",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-bora-i8",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-extra8-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-extra4-4",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF informa 100g no lanche Chicken. Confirmar se é o mesmo empanado usado em outros pratos de frango. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r9",
+      "restaurante_id": "bora",
+      "nome": "Base de milkshake",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-bora-extra9-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i46",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF só nomeia o sabor. A base é sugestão. Cada sabor acrescenta o insumo correspondente (Ovomaltine, Nutella, Ninho, paçoca, morango). Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-bora-r15",
+      "restaurante_id": "bora",
+      "nome": "Empanamento",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-bora-i67",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i71",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i68",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-bora-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Preparo reutilizável. Confirmar se a casa usa o mesmo padrão (à milanesa, panko, só farinha) em todos esses pratos. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r11",
+      "restaurante_id": "nativos",
+      "nome": "Arroz de sushi (shari)",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra11-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i54",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i55",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Não está escrito no PDF, mas é o preparo-base de quase todo o sushi. O catálogo Anota AI tem inclusive 'Porção extra de arroz shari' (R$ 25,00), item que não aparece nestes PDFs. Sashimi não usa shari. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r12",
+      "restaurante_id": "nativos",
+      "nome": "Molho tarê",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra12-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i63",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i55",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Sugestão clássica para peças maçaricadas. O PDF não nomeia o molho. Confirmar se a casa usa tarê, manteiga, ou outro acabamento. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r13",
+      "restaurante_id": "nativos",
+      "nome": "Sunomono de pepino",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i24",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i54",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i55",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Porção extra do PDF. Composição clássica, a confirmar. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r15",
+      "restaurante_id": "nativos",
+      "nome": "Empanamento",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i67",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i71",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i68",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Preparo reutilizável. Confirmar se a casa usa o mesmo padrão (à milanesa, panko, só farinha) em todos esses pratos. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r16",
+      "restaurante_id": "nativos",
+      "nome": "Molho branco",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i46",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i48",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i67",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i47",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Citado no PDF ('Ao Molho Branco'). Composição clássica, a confirmar. Confirmar também o tipo de massa (no salão do catálogo Anota AI: espaguete). Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r17",
+      "restaurante_id": "nativos",
+      "nome": "Molho sugo",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i75",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i25",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra17-3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra17-5",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Citado no PDF só pelo nome. Confirmar se leva proteína. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r18",
+      "restaurante_id": "nativos",
+      "nome": "Molho de alcaparras",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i29",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i48",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra18-2",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra18-3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Citado no nome do prato. Composição não descrita no PDF. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r19",
+      "restaurante_id": "nativos",
+      "nome": "Molho madeira",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra19-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra19-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i48",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra19-4",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Citado no nome do prato. Composição não descrita no PDF. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r20",
+      "restaurante_id": "nativos",
+      "nome": "Molho de camarão",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra20-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i25",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i48",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Citado no nome do prato. Composição não descrita no PDF. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r21",
+      "restaurante_id": "nativos",
+      "nome": "Strogonoff",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra21-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i47",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra21-3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i74",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra21-5",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF só nomeia o prato e o acompanhamento (arroz). Ingredientes clássicos, a confirmar. No salão do catálogo Anota AI existe também strogonoff de camarão, que não está neste PDF de delivery. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r22",
+      "restaurante_id": "nativos",
+      "nome": "Parmegiana",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra22-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra22-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra22-2",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i40",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra22-4",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF só nomeia o prato e os acompanhamentos (batata frita e arroz). A montagem (empanar, fritar/assar, gratinar) é da casa. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r23",
+      "restaurante_id": "nativos",
+      "nome": "Bobó de camarão",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra23-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i76",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra23-3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i25",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra23-6",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra17-3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF só nomeia o prato e o arroz. Ingredientes clássicos baianos, a confirmar — principalmente se usam dendê e aipim. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r24",
+      "restaurante_id": "nativos",
+      "nome": "Purê de batata",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i33",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i46",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i48",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Aparece como acompanhamento avulso e junto de dois principais. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r25",
+      "restaurante_id": "nativos",
+      "nome": "Risoto base",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra25-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra25-2",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra19-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra22-4",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra18-3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF não descreve a base. Cada risoto acrescenta seus insumos específicos (carne de sol, queijo coalho, banana da terra, camarão, limão siciliano, filé mignon, shitake, polvo, leite de coco). Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r26",
+      "restaurante_id": "nativos",
+      "nome": "Yakisoba",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i82",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra26-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra26-2",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i25",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra26-4",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF só informa a proteína. Massa, legumes e molho são sugestão. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r27",
+      "restaurante_id": "nativos",
+      "nome": "Batata frita",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i33",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Confirmar se descascam e cortam na casa ou se usam batata pré-frita. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r28",
+      "restaurante_id": "nativos",
+      "nome": "Batata à dorê",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i33",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra22-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Acompanhamento citado no PDF. Confirmar o modo (à milanesa, à dorê com ovo/farinha). Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r29",
+      "restaurante_id": "nativos",
+      "nome": "Aipim frito",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i32",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": " Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r31",
+      "restaurante_id": "nativos",
+      "nome": "Tulipa de frango",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i9",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra31-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra31-2",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF só escreve 'Tulipa'. Confirmar se é tulipa de frango e o preparo (frita, assada, empanada). Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r35",
+      "restaurante_id": "nativos",
+      "nome": "Farofa",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i69",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra35-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i25",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra35-4",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra35-5",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF não descreve a composição da farofa de acompanhamento — não confundir com a farofa de bacon da Bora. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r36",
+      "restaurante_id": "nativos",
+      "nome": "Feijão",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra36-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i21",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i25",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra36-3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Tipo e tempero a confirmar. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r37",
+      "restaurante_id": "nativos",
+      "nome": "Arroz branco",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i78",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra37-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra37-2",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Arroz de acompanhamento, distinto do arroz de sushi (shari) e do arroz de risoto. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r38",
+      "restaurante_id": "nativos",
+      "nome": "Isca de frango",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra38-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra38-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF não descreve o preparo. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r39",
+      "restaurante_id": "nativos",
+      "nome": "Isca de peixe",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra39-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra38-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF não descreve espécie nem preparo. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r40",
+      "restaurante_id": "nativos",
+      "nome": "Camarão empanado",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra22-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i56",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Confirmar se o camarão do combo é o mesmo VG do petisco. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r41",
+      "restaurante_id": "nativos",
+      "nome": "Frango frito",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-extra41-0",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra31-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-i65",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra41-3",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "O PDF só escreve 'Frango frito'. Confirmar corte (pedaços, filé, passarinho) e se é o mesmo preparo da isca ou da tulipa. Composição e rendimento a confirmar pelo dono."
+    },
+    {
+      "id": "seed-nativos-r42",
+      "restaurante_id": "nativos",
+      "nome": "Carne de sol (preparo da casa)",
+      "rendimento": 0,
+      "unidade": "g",
+      "perda": 0,
+      "itens": [
+        {
+          "insumo_id": "seed-nativos-i13",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra42-1",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        },
+        {
+          "insumo_id": "seed-nativos-extra42-2",
+          "quantidade": 0,
+          "perda": 0,
+          "confirmar": true
+        }
+      ],
+      "pendente": true,
+      "notas": "Confirmar como a casa dessalga, corta e finaliza a carne de sol, para reutilizar o mesmo preparo nos pratos. Composição e rendimento a confirmar pelo dono."
+    }
+  ],
+  "produtos": [
+    {
+      "id": "seed-p0",
+      "restaurante_id": "bora",
+      "nome": "X Salada",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4400,
+      "notas": "PÃO BRIOCHE, BLEND 150G, TOMATE, CEBOLA ROXA, MUSSARELA, BACON, ALFACE E MAIONESE VERDE · Preços deste PDF (03/11/2026) estão mais altos que os do catálogo Anota AI de 05/11/2026. Usamos o preço impresso neste PDF. No Anota AI o preço era R$ 37,00 e a maionese era chamada de 'nossa maionese verde da casa'. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p1",
+      "restaurante_id": "bora",
+      "nome": "X Burguer 2.0",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3600,
+      "notas": "PÃO BRIOCHE, BLEND 120G, QUEIJO CHEDDAR CRISPY DE CEBOLA E MAIONESE VERDE. · O PDF junta 'QUEIJO CHEDDAR CRISPY DE CEBOLA' sem vírgula; interpretamos como queijo cheddar + crispy de cebola (como no Anota AI). Confirmar. Preços deste PDF (03/11/2026) estão mais altos que os do catálogo Anota AI de 05/11/2026. Usamos o preço impresso neste PDF. No Anota AI o X-Burguer era R$ 24,90. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p2",
+      "restaurante_id": "bora",
+      "nome": "Franklyn",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5200,
+      "notas": "PÃO AUSTRALIANO, BLEND DE 150G,CREME DE GORGONZOLA, MUSSARELA, CEBOLA CARAMELIZADA, BACON E RÚCULA · No Anota AI delivery (05/11) saía com batata frita a R$ 37,00; no salão o preço já era R$ 52,00. Neste PDF não há batata frita na descrição. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p3",
+      "restaurante_id": "bora",
+      "nome": "Chicken",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3900,
+      "notas": "PÃO BRIOCHE, ALFACE, TOMATE, FRANGO EMPANADO 100G, QUEIJO PRATO E MAIONESE VERDE. · Preços deste PDF (03/11/2026) estão mais altos que os do catálogo Anota AI de 05/11/2026. Usamos o preço impresso neste PDF. No Anota AI o preço era R$ 23,90. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p4",
+      "restaurante_id": "bora",
+      "nome": "X Bacon 2.0",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3800,
+      "notas": "PÃO BRIOCHE, QUEIJO CHEDDAR, BLEND DE 120G, CREME CHEDDAR, FAROFA DE BACON E MAIONESE VERDE · Neste PDF (versão 2.0) inclui maionese verde e custa R$ 38,00. No Anota AI o X-Bacon era R$ 24,90 e a descrição não citava maionese verde. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p5",
+      "restaurante_id": "bora",
+      "nome": "Nativo's",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5200,
+      "notas": "PÃO AUSTRALIANO, QUEIJO CHEDDAR, BLEND DE 150G, COSTELA DESFIADA, RÚCULA E MAIONESE VERDE · No Anota AI delivery (05/11) saía com batata frita a R$ 42,00; no salão o preço já era R$ 52,00. Neste PDF não há batata frita na descrição. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p6",
+      "restaurante_id": "bora",
+      "nome": "Milkshake Ovomaltine",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2200,
+      "notas": "O PDF só imprime o sabor e o preço. A base (sorvete, leite etc.) não está descrita. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p7",
+      "restaurante_id": "bora",
+      "nome": "Milkshake Nutella",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2400,
+      "notas": "O PDF só imprime o sabor e o preço. A base não está descrita. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p8",
+      "restaurante_id": "bora",
+      "nome": "Milkshake Ninho",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2000,
+      "notas": "O PDF só imprime o sabor e o preço. A base não está descrita. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p9",
+      "restaurante_id": "bora",
+      "nome": "Milkshake Paçoca",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2100,
+      "notas": "O PDF só imprime o sabor e o preço. A base não está descrita. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p10",
+      "restaurante_id": "bora",
+      "nome": "Milkshake Morango",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2000,
+      "notas": "O PDF só imprime o sabor e o preço. Não diz se usa morango fresco, polpa ou calda. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p11",
+      "restaurante_id": "bora",
+      "nome": "Adicional de molhos",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 600,
+      "notas": "O PDF não diz quais molhos entram neste adicional. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p12",
+      "restaurante_id": "bora",
+      "nome": "Adicional de queijo",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 600,
+      "notas": "O PDF não diz qual queijo (cheddar, mussarela, prato, gorgonzola...). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p13",
+      "restaurante_id": "bora",
+      "nome": "Adicional de saladas",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 400,
+      "notas": "O PDF não detalha o que entra em 'saladas' (alface, tomate, cebola roxa, rúcula...). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p14",
+      "restaurante_id": "bora",
+      "nome": "Adicional de bacon",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 700,
+      "notas": "BACON OU PICLES  (mesmo preço no PDF) · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p15",
+      "restaurante_id": "bora",
+      "nome": "Adicional de picles",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 700,
+      "notas": "BACON OU PICLES  (mesmo preço no PDF) · Confirmar se o picles é feito na casa ou comprado pronto. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p16",
+      "restaurante_id": "bora",
+      "nome": "Adicional blend 150g",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1200,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p17",
+      "restaurante_id": "bora",
+      "nome": "Adicional blend de 120g",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1000,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p18",
+      "restaurante_id": "nativos",
+      "nome": "Taípe",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 9000,
+      "notas": "4 Joy, 3 Niguiri, 3 Sashimis, 2 Gunkan, 2 Uramakis, 2 Hossomakis e 5 Hot · No catálogo Anota AI de 05/11/2026 (texto da imagem no gestor), os combinados Taípe, Trancoso, Caraíva e Quadrado 'acompanham salmão, atum, peixe-branco, polvo, camarão e ovas de peixe'. Essa frase NÃO está impressa neste PDF; entra só como nota. O PDF também não detalha o peixe de cada peça. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p19",
+      "restaurante_id": "nativos",
+      "nome": "Trancoso",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 17790,
+      "notas": "6 Joy, 5 Niguiri, 5 Sashimis, 5 Gunkan,5 Uramakis, 4 Hossomakis e 10 Hot · No catálogo Anota AI de 05/11/2026 (texto da imagem no gestor), os combinados Taípe, Trancoso, Caraíva e Quadrado 'acompanham salmão, atum, peixe-branco, polvo, camarão e ovas de peixe'. Essa frase NÃO está impressa neste PDF; entra só como nota. O PDF também não detalha o peixe de cada peça. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p20",
+      "restaurante_id": "nativos",
+      "nome": "Caraíva",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 27000,
+      "notas": "8 Joy, 6 Niguiri, 7 Sashimis, 6 Gunkan, 10 Uramakis, 8 Hossomakis e 15 Hot · No catálogo Anota AI de 05/11/2026 (texto da imagem no gestor), os combinados Taípe, Trancoso, Caraíva e Quadrado 'acompanham salmão, atum, peixe-branco, polvo, camarão e ovas de peixe'. Essa frase NÃO está impressa neste PDF; entra só como nota. O PDF também não detalha o peixe de cada peça. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p21",
+      "restaurante_id": "nativos",
+      "nome": "Quadrado",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 37300,
+      "notas": "8 Gunkan, 10 Uramaki, 8 Hossomaki, 10 joy, 8 Niguiri, 9 Sashimis e 25 Hot · No catálogo Anota AI de 05/11/2026 (texto da imagem no gestor), os combinados Taípe, Trancoso, Caraíva e Quadrado 'acompanham salmão, atum, peixe-branco, polvo, camarão e ovas de peixe'. Essa frase NÃO está impressa neste PDF; entra só como nota. O PDF também não detalha o peixe de cada peça. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p22",
+      "restaurante_id": "nativos",
+      "nome": "Patimirim",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 6500,
+      "notas": "5 Dragon Orange, 4 Joy maçaricados e 3 Niguiri maçaricados · O PDF não descreve o recheio do Dragon Orange nem o peixe do joy/niguiri maçaricado. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p23",
+      "restaurante_id": "nativos",
+      "nome": "Espelho (Vegano)",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 8990,
+      "notas": "4 Joy, 3 Niguiri, 4 Hosso shitake, 4 Uramaki Califórnia e 5 Hot shitaki · Combinado anunciado como vegano, mas inclui Uramaki Califórnia, que em geral leva kani (não vegano). Confirmar a receita vegana do Califórnia e dos Joy/Niguiri deste combo. O PDF escreve 'shitake' e 'shitaki'. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p24",
+      "restaurante_id": "nativos",
+      "nome": "Temaki Philadelphia — Salmão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4100,
+      "notas": "Salmão, Atum ou Peixe branco · O nome 'Philadelphia' sugere cream cheese, mas o PDF não o escreve. 'Sem arroz tem adicional de R$ 10,00' aparece visualmente sob o Temaki Hot; confirmar se vale também para o Philadelphia. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p25",
+      "restaurante_id": "nativos",
+      "nome": "Temaki Philadelphia — Atum",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4100,
+      "notas": "Salmão, Atum ou Peixe branco · Mesmo item do PDF, opção atum. Cream cheese não está escrito. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p26",
+      "restaurante_id": "nativos",
+      "nome": "Temaki Philadelphia — Peixe branco",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4100,
+      "notas": "Salmão, Atum ou Peixe branco · Mesmo item do PDF, opção peixe branco. Qual espécie? Cream cheese não está escrito. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p27",
+      "restaurante_id": "nativos",
+      "nome": "Temaki Hot",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4600,
+      "notas": "Sem arroz tem adicional de R$10,00 · O PDF não descreve o recheio do Temaki Hot (salmão, cream cheese, empanado?). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p28",
+      "restaurante_id": "nativos",
+      "nome": "Adicional temaki sem arroz",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1000,
+      "notas": "Sem arroz tem adicional de R$10,00 · Adicional impresso sob o Temaki Hot. Confirmar se também vale para o Philadelphia. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p29",
+      "restaurante_id": "nativos",
+      "nome": "Niguiri de salmão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3300,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p30",
+      "restaurante_id": "nativos",
+      "nome": "Niguiri de peixe branco",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3300,
+      "notas": "O PDF não informa a espécie do peixe branco. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p31",
+      "restaurante_id": "nativos",
+      "nome": "Niguiri de atum",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3300,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p32",
+      "restaurante_id": "nativos",
+      "nome": "Niguiri Mix",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3300,
+      "notas": "Sem descrição no PDF. No catálogo Anota AI de 05/11/2026: 'Polvo, Mix de Peixes e Ovas'. Essa descrição não está neste PDF. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p33",
+      "restaurante_id": "nativos",
+      "nome": "Niguiri maçaricado",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3490,
+      "notas": "O PDF não diz qual peixe é maçaricado (em geral salmão; confirmar). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p34",
+      "restaurante_id": "nativos",
+      "nome": "Niguiri vegano",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3490,
+      "notas": "O PDF não descreve o recheio/cobertura vegana. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p35",
+      "restaurante_id": "nativos",
+      "nome": "Gunkan de salmão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4200,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p36",
+      "restaurante_id": "nativos",
+      "nome": "Gunkan de atum",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4200,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p37",
+      "restaurante_id": "nativos",
+      "nome": "Gunkan de peixe branco",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4200,
+      "notas": "O PDF não informa a espécie do peixe branco. Também não diz se leva cream cheese, ovas ou outro topping. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p38",
+      "restaurante_id": "nativos",
+      "nome": "Hossomaki de salmão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4400,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p39",
+      "restaurante_id": "nativos",
+      "nome": "Hossomaki de atum",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4400,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p40",
+      "restaurante_id": "nativos",
+      "nome": "Hossomaki de peixe branco",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4400,
+      "notas": "O PDF não informa a espécie do peixe branco. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p41",
+      "restaurante_id": "nativos",
+      "nome": "Sashimi de salmão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4800,
+      "notas": "Sashimi não usa arroz; só o peixe (e normalmente gengibre/wasabi/shoyu de acompanhamento). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p42",
+      "restaurante_id": "nativos",
+      "nome": "Sashimi de atum",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4800,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p43",
+      "restaurante_id": "nativos",
+      "nome": "Sashimi de peixe branco",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4800,
+      "notas": "O PDF não informa a espécie do peixe branco. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p44",
+      "restaurante_id": "nativos",
+      "nome": "Joy de salmão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3300,
+      "notas": "O PDF não descreve o formato nem os outros ingredientes do Joy (cream cheese, nori, etc.). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p45",
+      "restaurante_id": "nativos",
+      "nome": "Joy de atum",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3300,
+      "notas": "O PDF não descreve o formato nem os outros ingredientes do Joy (cream cheese, nori, etc.). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p46",
+      "restaurante_id": "nativos",
+      "nome": "Joy vegano",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3490,
+      "notas": "O PDF não descreve os ingredientes do Joy vegano. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p47",
+      "restaurante_id": "nativos",
+      "nome": "Joy maçaricado",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3490,
+      "notas": "O PDF não diz qual peixe é maçaricado. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p48",
+      "restaurante_id": "nativos",
+      "nome": "Joy de camarão maçaricado",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3700,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p49",
+      "restaurante_id": "nativos",
+      "nome": "Uramaki de salmão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5100,
+      "notas": "Sem descrição neste PDF. No catálogo Anota AI de 05/11/2026: 'enrolado com o arroz para fora, envolto em gergelim branco e preto, Cream Chesse e recheado com salmão'. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p50",
+      "restaurante_id": "nativos",
+      "nome": "Uramaki de atum",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5100,
+      "notas": "Sem descrição neste PDF. No catálogo Anota AI de 05/11/2026: 'arroz para fora, envolto em gergelim preto e branco, Cream Cheese e recheado com Atum fresco'. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p51",
+      "restaurante_id": "nativos",
+      "nome": "Uramaki Califórnia",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5100,
+      "notas": "O PDF não descreve o recheio (kani, pepino, manga/abacate, cream cheese? é comum, mas não está escrito). Também aparece no combinado vegano Espelho — confirmar versão vegana. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p52",
+      "restaurante_id": "nativos",
+      "nome": "Uramaki de camarão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 6300,
+      "notas": "O PDF não descreve os demais ingredientes (cream cheese, gergelim etc.). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p53",
+      "restaurante_id": "nativos",
+      "nome": "Uramaki Dragon Orange",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5900,
+      "notas": "O PDF não descreve o recheio nem o molho 'orange'. Confirmar com Kaic. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p54",
+      "restaurante_id": "nativos",
+      "nome": "Hot Filadélfia",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5200,
+      "notas": "O PDF não descreve o recheio. O nome sugere salmão e cream cheese, empanado e frito; confirmar. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p55",
+      "restaurante_id": "nativos",
+      "nome": "Hot de camarão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 6400,
+      "notas": "O PDF não descreve os demais ingredientes. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p56",
+      "restaurante_id": "nativos",
+      "nome": "Hot Ball",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 4100,
+      "notas": "O PDF não descreve o recheio da Hot Ball (costuma ser cream cheese, às vezes com salmão; confirmar). Pode não levar arroz. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p57",
+      "restaurante_id": "nativos",
+      "nome": "Monte seu poke",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5690,
+      "notas": "Verificar opções no link · O PDF não lista as opções de base, proteínas e acompanhamentos. É preciso o link ou a lista da casa. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p58",
+      "restaurante_id": "nativos",
+      "nome": "Oniguiri de salmão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 3800,
+      "notas": "O PDF escreve 'ONIGUIRI' (grafia Onigiri). Não descreve se leva nori, cream cheese ou outro recheio além do salmão. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p59",
+      "restaurante_id": "nativos",
+      "nome": "Guioza suína",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5200,
+      "notas": "O PDF não descreve o recheio completo nem se a massa é feita na casa. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p60",
+      "restaurante_id": "nativos",
+      "nome": "Guioza bovina",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5200,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p61",
+      "restaurante_id": "nativos",
+      "nome": "Guioza de legumes",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5200,
+      "notas": "O PDF não lista quais legumes. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p62",
+      "restaurante_id": "nativos",
+      "nome": "Harumaki de salmão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1500,
+      "notas": "O PDF não descreve os demais recheios (cream cheese, cebolinha etc.). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p63",
+      "restaurante_id": "nativos",
+      "nome": "Romeu e Julieta",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1500,
+      "notas": "O nome clássico sugere queijo e goiabada, mas o PDF não escreve os ingredientes. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p64",
+      "restaurante_id": "nativos",
+      "nome": "Banana com doce de leite",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1500,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p65",
+      "restaurante_id": "nativos",
+      "nome": "Sunomono de pepino",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 490,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p66",
+      "restaurante_id": "nativos",
+      "nome": "Wasabi",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 490,
+      "notas": "Em geral é comprado pronto (pasta ou pó). Confirmar se há preparo na casa. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p67",
+      "restaurante_id": "nativos",
+      "nome": "Gengibre",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 490,
+      "notas": "Confirmar se o gari é feito na casa ou comprado pronto. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p68",
+      "restaurante_id": "nativos",
+      "nome": "Massa de camarão ao molho branco",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 8900,
+      "notas": "Ao Molho Branco · No salão do catálogo Anota AI o item aparece como 'Spaguetti de Camarão Ao Molho Branco'. Confirmar o tipo de massa. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p69",
+      "restaurante_id": "nativos",
+      "nome": "Massa ao sugo",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5500,
+      "notas": "O PDF não diz se leva proteína nem o tipo de massa. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p70",
+      "restaurante_id": "nativos",
+      "nome": "Camarão VM ao alho e óleo",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 8700,
+      "notas": "O PDF e o catálogo Anota AI usam a sigla 'VM' sem explicar. Hipótese (confirmar): tamanho/calibre médio, ou 'vermelho médio'. Não inventar quantidade. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p71",
+      "restaurante_id": "nativos",
+      "nome": "Batata frita",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2900,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p72",
+      "restaurante_id": "nativos",
+      "nome": "Aipim frito",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2700,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p73",
+      "restaurante_id": "nativos",
+      "nome": "Isca de frango",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 7800,
+      "notas": "O PDF não diz se é empanada, à milanesa ou apenas frita. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p74",
+      "restaurante_id": "nativos",
+      "nome": "Isca de peixe",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 8800,
+      "notas": "O PDF não informa a espécie nem o tipo de preparo (empanada?). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p75",
+      "restaurante_id": "nativos",
+      "nome": "Camarão VG empanado",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 11500,
+      "notas": "Sigla 'VG' sem explicação. Hipótese (confirmar): tamanho/calibre grande, ou 'vermelho grande'. É o petisco mais caro da seção. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p76",
+      "restaurante_id": "nativos",
+      "nome": "Carne de sol",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 8900,
+      "notas": "Aipim e Queijo coalho · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p77",
+      "restaurante_id": "nativos",
+      "nome": "Pastel de carne seca com cream cheese",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5900,
+      "notas": "Carne seca com cream chesse, Queijo ou Camarão · O PDF escreve 'cream chesse'. Mesmo preço para as três opções. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p78",
+      "restaurante_id": "nativos",
+      "nome": "Pastel de queijo",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5900,
+      "notas": "Carne seca com cream chesse, Queijo ou Camarão · O PDF não diz qual queijo. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p79",
+      "restaurante_id": "nativos",
+      "nome": "Pastel de camarão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5900,
+      "notas": "Carne seca com cream chesse, Queijo ou Camarão · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p80",
+      "restaurante_id": "nativos",
+      "nome": "Combo Mirante",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 7800,
+      "notas": "Coxinha, Carne de sol, Fritas e Frango frito · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p81",
+      "restaurante_id": "nativos",
+      "nome": "Combo Rio da Barra",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 15500,
+      "notas": "Camarão empanado, Aipim, Tulipa e Coxinha · No catálogo Anota AI de 05/11/2026 a descrição era 'Camarão empanado, aipim, tulipa e salgado' (em vez de coxinha). Usamos o texto deste PDF. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p82",
+      "restaurante_id": "nativos",
+      "nome": "Combo Rio Verde",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 12000,
+      "notas": "Carne de sol, Linguiça frita, Aipim e Coxinha · O PDF imprime '60 UN', o que é incomum para este tipo de combo. No catálogo Anota AI de 05/11/2026 a descrição era 'Carne sol, linguiça frita, aipim, coxinha e esfiha' (a esfiha não aparece neste PDF) e o preço era o mesmo, sem '60 un'. Confirmar composição e a porção. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p83",
+      "restaurante_id": "nativos",
+      "nome": "Salmão ao molho de alcaparras",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 9300,
+      "notas": "Purê de Batata e Arroz · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p84",
+      "restaurante_id": "nativos",
+      "nome": "Strogonoff de frango",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 6900,
+      "notas": "Arroz · O PDF não lista os ingredientes do strogonoff (creme de leite, champignon, etc.). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p85",
+      "restaurante_id": "nativos",
+      "nome": "Strogonoff de carne",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 7300,
+      "notas": "Arroz · O PDF não informa o corte da carne nem os ingredientes do molho. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p86",
+      "restaurante_id": "nativos",
+      "nome": "Filé mignon ao molho madeira",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 9900,
+      "notas": "Purê de Batata e Arroz · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p87",
+      "restaurante_id": "nativos",
+      "nome": "Parmegiana de frango",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 9200,
+      "notas": "Batata frita e Arroz · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p88",
+      "restaurante_id": "nativos",
+      "nome": "Parmegiana de contra-filé",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 10200,
+      "notas": "Batata frita e Arroz · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p89",
+      "restaurante_id": "nativos",
+      "nome": "Filé de peixe ao molho de camarão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 12900,
+      "notas": "Batata à dorê e Arroz · O PDF não informa a espécie do filé de peixe. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p90",
+      "restaurante_id": "nativos",
+      "nome": "Bobó de camarão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 21900,
+      "notas": "Arroz · Único principal que serve 2 pessoas. Ingredientes clássicos do bobó (aipim, leite de coco, dendê, etc.) não estão no PDF. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p91",
+      "restaurante_id": "nativos",
+      "nome": "Risoto de carne de sol",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 8500,
+      "notas": "Com Queijo coalho e Banana da terra · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p92",
+      "restaurante_id": "nativos",
+      "nome": "Risoto de camarão com siciliano",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 8900,
+      "notas": "No catálogo Anota AI o nome é 'Risoto de Camarão com Limão Siciliano'. Neste PDF só aparece 'SICILIANO'. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p93",
+      "restaurante_id": "nativos",
+      "nome": "Risoto de filé mignon",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 8500,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p94",
+      "restaurante_id": "nativos",
+      "nome": "Risoto de shitake",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 7100,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p95",
+      "restaurante_id": "nativos",
+      "nome": "Risoto de polvo",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 8900,
+      "notas": "Com Leite de coco · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p96",
+      "restaurante_id": "nativos",
+      "nome": "Yakissoba de carne",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 6400,
+      "notas": "O PDF não lista legumes, massa nem molho, nem o corte da carne. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p97",
+      "restaurante_id": "nativos",
+      "nome": "Yakissoba de frango",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5200,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p98",
+      "restaurante_id": "nativos",
+      "nome": "Yakissoba de camarão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 7300,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p99",
+      "restaurante_id": "nativos",
+      "nome": "Yakissoba de shitaki",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 5200,
+      "notas": "O PDF escreve 'SHITAKI' nesta seção e 'SHITAKE' no risoto. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p100",
+      "restaurante_id": "nativos",
+      "nome": "Arroz",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2000,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p101",
+      "restaurante_id": "nativos",
+      "nome": "Farofa",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1500,
+      "notas": "O PDF não descreve se leva bacon, ovos, cebola etc. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p102",
+      "restaurante_id": "nativos",
+      "nome": "Feijão",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2000,
+      "notas": "O PDF não diz o tipo (carioca, preto, tropeiro...). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p103",
+      "restaurante_id": "nativos",
+      "nome": "Purê de batata",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 2000,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p104",
+      "restaurante_id": "nativos",
+      "nome": "Água sem gás",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 700,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p105",
+      "restaurante_id": "nativos",
+      "nome": "Água com gás",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 700,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p106",
+      "restaurante_id": "nativos",
+      "nome": "Tônica",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 900,
+      "notas": "O PDF não informa a marca. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p107",
+      "restaurante_id": "nativos",
+      "nome": "Coca-Cola lata",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 800,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p108",
+      "restaurante_id": "nativos",
+      "nome": "Guaraná lata",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 800,
+      "notas": "O PDF não informa a marca (Antarctica ou outra). · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p109",
+      "restaurante_id": "nativos",
+      "nome": "Coca-Cola 1L",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1300,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p110",
+      "restaurante_id": "nativos",
+      "nome": "Guaraná 1L",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1300,
+      "notas": "Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p111",
+      "restaurante_id": "nativos",
+      "nome": "Long neck",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 1500,
+      "notas": "O PDF não informa a marca. No cardápio de salão do catálogo Anota AI (05/11/2026) as long necks a R$ 15,00 eram Corona, Heineken, Praya e Budweiser. Confirmar quais valem para o delivery. · Confirmar ficha e quantidades."
+    },
+    {
+      "id": "seed-p112",
+      "restaurante_id": "nativos",
+      "nome": "Suco 300ml",
+      "rendimento": 1,
+      "itens": [],
+      "embalagem": 0,
+      "pendente": true,
+      "precoCardapio": 700,
+      "notas": "Polpa (consultar sabores disponíveis) · Sabores não estão no PDF. · Confirmar ficha e quantidades."
+    }
+  ]
+}

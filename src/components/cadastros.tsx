@@ -1,4 +1,5 @@
 "use client";
+import { Numeric } from "./numeric";
 import { useState } from "react";
 import { Building2, Pencil, Plus, Store, Trash2 } from "lucide-react";
 import { dinheiro, paraCentavos, taxaCanal, percentual } from "@/lib/dna";
@@ -258,7 +259,7 @@ function CanalModal({
             label="Embalagem do canal (R$)"
             hint="Em branco: usar embalagem base da ficha."
           >
-            <input
+            <Numeric
               name="embalagem"
               type="number"
               min="0"
@@ -293,7 +294,7 @@ function CanalModal({
               />
             </Field>
             <Field label="Taxa (%)">
-              <input
+              <Numeric
                 type="number"
                 min="0"
                 max="100"
@@ -315,9 +316,10 @@ function CanalModal({
               type="button"
               className="icon-button danger"
               aria-label={`Remover taxa ${t.descricao}`}
-              onClick={() =>
-                setTaxas((rows) => rows.filter((r) => r.id !== t.id))
-              }
+              onClick={() => {
+                if (confirm("Excluir esta taxa?"))
+                  setTaxas((rows) => rows.filter((r) => r.id !== t.id));
+              }}
             >
               <Trash2 size={18} />
             </button>

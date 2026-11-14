@@ -1,6 +1,8 @@
 import type { Database } from "../types";
+import { migrar } from "./migrate";
+import { validarRateio } from "../v2";
 import { criarBase } from "./seed";
-const KEY = "dna-restaurante:v1";
+const KEY = "dna-restaurante:v2";
 const object = (v: unknown): v is Record<string, unknown> =>
   !!v && typeof v === "object" && !Array.isArray(v);
 const text = (v: unknown) =>
@@ -11,7 +13,7 @@ const money = (v: unknown) => num(v) && Number.isSafeInteger(v);
 const month = (v: unknown) =>
   typeof v === "string" && /^\d{4}-(0[1-9]|1[0-2])$/.test(v);
 export function validarBackup(value: unknown): Database {
-  if (!object(value) || value.version !== 1)
+  if (!object(value) || ![1, 2].includes(value.version as number))
     throw new Error("Backup inválido ou versão não suportada.");
   const collections = [
     "restaurantes",
@@ -108,18 +110,25 @@ export function validarBackup(value: unknown): Database {
         p.rendimento <= 0 ||
         !money(p.embalagem) ||
         !Array.isArray(p.itens) ||
-        !p.itens.length ||
+        (!p.itens.length && !p.pendente) ||
         p.itens.some(
           (i) =>
             !object(i) ||
             !num(i.quantidade) ||
-            i.quantidade <= 0 ||
+            (i.quantidade <= 0 && !i.confirmar) ||
             !num(i.perda) ||
             i.perda >= 100 ||
-            !db.insumos.some(
-              (s) =>
-                s.id === i.insumo_id && s.restaurante_id === p.restaurante_id,
-            ),
+            !(i.receita_id
+              ? (db.receitas ?? []).some(
+                  (r) =>
+                    r.id === i.receita_id &&
+                    r.restaurante_id === p.restaurante_id,
+                )
+              : db.insumos.some(
+                  (s) =>
+                    s.id === i.insumo_id &&
+                    s.restaurante_id === p.restaurante_id,
+                )),
         ),
     )
   )
@@ -144,6 +153,90 @@ export function validarBackup(value: unknown): Database {
     db.precos.length
   )
     throw new Error("Preço duplicado para o mesmo produto e canal.");
+  if (db.version === 2) {
+    if (!Array.isArray(db.receitas) || !Array.isArray(db.alugueis))
+      throw new Error("Coleções v2 ausentes.");
+    if (new Set(db.receitas.map((r) => r.id)).size !== db.receitas.length)
+      throw new Error("Receita duplicada.");
+    const visitar = (id: string, caminho: string[]) => {
+      if (caminho.includes(id))
+        throw new Error("Referência circular em receita da casa.");
+      const r = db.receitas!.find((r) => r.id === id)!;
+      if (
+        !r ||
+        !text(r.nome) ||
+        !db.restaurantes.some((x) => x.id === r.restaurante_id) ||
+        !num(r.rendimento) ||
+        (!r.pendente && r.rendimento <= 0) ||
+        !num(r.perda) ||
+        r.perda >= 100 ||
+        !["g", "kg", "L", "ml", "un"].includes(r.unidade) ||
+        !Array.isArray(r.itens) ||
+        (!r.pendente && !r.itens.length)
+      )
+        throw new Error("Receita da casa inválida.");
+      const refs = new Set<string>();
+      for (const i of r.itens) {
+        const key = i.receita_id || i.insumo_id;
+        if (refs.has(key)) throw new Error("Ingrediente duplicado.");
+        refs.add(key);
+        if (
+          !num(i.quantidade) ||
+          (!i.confirmar && i.quantidade <= 0) ||
+          !num(i.perda) ||
+          i.perda >= 100
+        )
+          throw new Error("Quantidade ou perda inválida.");
+        if (i.receita_id) {
+          if (
+            !db.receitas!.some(
+              (x) =>
+                x.id === i.receita_id && x.restaurante_id === r.restaurante_id,
+            )
+          )
+            throw new Error("Receita de outra operação.");
+          visitar(i.receita_id, [...caminho, id]);
+        } else if (
+          !db.insumos.some(
+            (x) =>
+              x.id === i.insumo_id && x.restaurante_id === r.restaurante_id,
+          )
+        )
+          throw new Error("Insumo de outra operação.");
+      }
+    };
+    db.receitas.forEach((r) => visitar(r.id, []));
+    db.alugueis.forEach((a) => validarRateio(a, db));
+    if (
+      new Set(db.alugueis.map((a) => a.competencia)).size !== db.alugueis.length
+    )
+      throw new Error("Aluguel duplicado no mês.");
+    for (const i of db.insumos)
+      for (const [mes, h] of Object.entries(i.historicoPrecos ?? {}))
+        if (
+          (mes !== "0000-01" && !month(mes)) ||
+          !money(h.preco) ||
+          !num(h.quantidade) ||
+          h.quantidade <= 0 ||
+          !num(h.rendimento, 100) ||
+          h.rendimento <= 0 ||
+          !["g", "kg", "L", "ml", "un"].includes(h.unidade)
+        )
+          throw new Error("Histórico de insumo inválido.");
+    for (const d of db.dnas)
+      if (
+        (d.cmvReal !== undefined && !money(d.cmvReal)) ||
+        (d.variaveisReais !== undefined && !money(d.variaveisReais))
+      )
+        throw new Error("Custos mensais inválidos.");
+    for (const p of db.produtos)
+      if (
+        new Set(
+          p.itens.map((i) => `${i.receita_id || i.insumo_id}:${i.canal ?? ""}`),
+        ).size !== p.itens.length
+      )
+        throw new Error("Ingrediente duplicado no mesmo canal.");
+  }
   return db;
 }
 export interface Repositorio {
@@ -155,10 +248,11 @@ export interface Repositorio {
 // Somente este módulo conhece localStorage. Uma implementação Postgres pode manter o mesmo contrato.
 export const repositorio: Repositorio = {
   carregar() {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return criarBase();
+    const raw =
+      localStorage.getItem(KEY) ?? localStorage.getItem("dna-restaurante:v1");
+    if (!raw) return migrar(criarBase());
     try {
-      return validarBackup(JSON.parse(raw));
+      return validarBackup(migrar(validarBackup(JSON.parse(raw))));
     } catch {
       throw new Error(
         "Não foi possível ler os dados locais. Eles foram preservados. Importe um backup válido para recuperar.",
@@ -179,7 +273,7 @@ export const repositorio: Repositorio = {
     return JSON.stringify(validarBackup(this.carregar()), null, 2);
   },
   importar(json) {
-    const db = validarBackup(JSON.parse(json));
+    const db = validarBackup(migrar(validarBackup(JSON.parse(json))));
     this.salvar(db);
     return db;
   },

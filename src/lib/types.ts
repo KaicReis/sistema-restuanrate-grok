@@ -3,6 +3,7 @@ export interface Restaurante {
   id: string;
   nome: string;
   regime: Regime;
+  grupo?: boolean;
 }
 export interface Registro {
   id: string;
@@ -23,6 +24,8 @@ export interface DNA extends Registro {
   imposto: number;
   margem: number;
   historico?: boolean;
+  cmvReal?: number;
+  variaveisReais?: number;
 }
 export interface Taxa {
   id: string;
@@ -43,9 +46,24 @@ export interface Insumo extends Registro {
   quantidade: number;
   preco: number;
   rendimento: number;
+  precoPendente?: boolean;
+  categoria?: string;
+  historicoPrecos?: Record<
+    string,
+    {
+      preco: number;
+      quantidade: number;
+      unidade: Unidade;
+      rendimento: number;
+      precoPendente?: boolean;
+    }
+  >;
 }
 export interface ItemFicha {
   insumo_id: string;
+  receita_id?: string;
+  canal?: string;
+  confirmar?: boolean;
   quantidade: number;
   perda: number;
 }
@@ -54,6 +72,24 @@ export interface Produto extends Registro {
   rendimento: number;
   itens: ItemFicha[];
   embalagem: number;
+  pendente?: boolean;
+  precoCardapio?: number;
+  notas?: string;
+}
+export interface ReceitaCasa extends Registro {
+  nome: string;
+  rendimento: number;
+  unidade: Unidade;
+  perda: number;
+  itens: ItemFicha[];
+  pendente?: boolean;
+  notas?: string;
+}
+export interface Rateio {
+  competencia: string;
+  valor: number;
+  regra: "faturamento" | "fixo";
+  percentuais: Record<string, number>;
 }
 export interface Preco extends Registro {
   produto_id: string;
@@ -61,7 +97,10 @@ export interface Preco extends Registro {
   valor: number;
 }
 export interface Database {
-  version: 1;
+  version: 1 | 2;
+  receitas?: ReceitaCasa[];
+  alugueis?: Rateio[];
+  legadoV1?: unknown;
   restaurantes: Restaurante[];
   dnas: DNA[];
   canais: Canal[];

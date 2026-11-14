@@ -18,12 +18,15 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import type { Database } from "@/lib/types";
+import { migrar } from "@/lib/storage/migrate";
 import { repositorio, validarBackup } from "@/lib/storage";
 import { competenciaAtual, novosCanais, novoDNA } from "@/lib/storage/seed";
 import { Context, type Page } from "./context";
 import { Overview, DNAEditor } from "./dna";
 import { Canais, Restaurantes } from "./cadastros";
-import { Insumos, Fichas } from "./producao";
+import { Vila } from "./vila";
+import { dnaComRateio } from "@/lib/v2";
+import { Insumos, Fichas, Receitas } from "./producao";
 import { Precos } from "./precos";
 import { Modal } from "./ui";
 const pages = [
@@ -31,6 +34,7 @@ const pages = [
   { id: "dna", label: "DNA mensal", icon: Dna },
   { id: "canais", label: "Canais de venda", icon: Store },
   { id: "insumos", label: "Insumos", icon: FlaskConical },
+  { id: "receitas", label: "Receitas da casa", icon: FlaskConical },
   { id: "fichas", label: "Fichas técnicas", icon: NotebookPen },
   { id: "precos", label: "Precificação", icon: TrendingUp },
   { id: "restaurantes", label: "Restaurantes", icon: Building2 },
@@ -40,6 +44,7 @@ const descriptions: Record<Page, string> = {
   dna: "Transforme a realidade do seu restaurante em uma base para precificar.",
   canais: "Cada canal tem seus custos. Seu preço precisa acompanhar.",
   insumos: "Custos atualizados na origem, fichas sempre em dia.",
+  receitas: "Preparos da casa com custo propagado aos pratos.",
   fichas: "Cada ingrediente conta. Conheça o custo real de cada porção.",
   precos: "Do custo à margem: encontre o preço que faz sentido.",
   restaurantes: "Cada operação com seus números, seu DNA e suas decisões.",
@@ -47,8 +52,34 @@ const descriptions: Record<Page, string> = {
 function preparar(db: Database, id: string, mes: string) {
   if (!db.dnas.some((d) => d.restaurante_id === id && d.competencia === mes))
     db.dnas.push(novoDNA(id, mes));
-  if (!db.canais.some((c) => c.restaurante_id === id && c.competencia === mes))
+  if (
+    id !== "a-vila" &&
+    !db.canais.some((c) => c.restaurante_id === id && c.competencia === mes)
+  )
     db.canais.push(...novosCanais(id, mes));
+  if (id !== "a-vila") {
+    const salao = db.canais.find(
+      (c) =>
+        c.restaurante_id === id && c.competencia === mes && c.nome === "Salão",
+    );
+    if (salao && mes >= "2026-11")
+      for (const p of db.produtos.filter(
+        (p) => p.restaurante_id === id && p.precoCardapio !== undefined,
+      )) {
+        if (
+          !db.precos.some(
+            (v) => v.produto_id === p.id && v.canal_id === salao.id,
+          )
+        )
+          db.precos.push({
+            id: crypto.randomUUID(),
+            restaurante_id: id,
+            produto_id: p.id,
+            canal_id: salao.id,
+            valor: p.precoCardapio!,
+          });
+      }
+  }
   return db;
 }
 export default function Sistema() {
@@ -103,12 +134,18 @@ export default function Sistema() {
   function selecionar(next: string, month = mes) {
     if (!atual.current || !month) return;
     if (
+      document.querySelector('form[data-dirty="true"]') &&
+      !confirm("Há alterações não salvas no DNA. Sair assim mesmo?")
+    )
+      return;
+    if (
       atualizar((draft) => {
         preparar(draft, next, month);
       }, "Competência selecionada.")
     ) {
       setId(next);
       setMes(month);
+      if (next === "a-vila" || id === "a-vila") setPage("visao");
     }
   }
   function exportar() {
@@ -132,7 +169,9 @@ export default function Sistema() {
     try {
       if (file.size > 10 * 1024 * 1024)
         throw new Error("O backup deve ter até 10 MB.");
-      setBackup(validarBackup(JSON.parse(await file.text())));
+      setBackup(
+        validarBackup(migrar(validarBackup(JSON.parse(await file.text())))),
+      );
     } catch (e) {
       setMessage(`Não foi possível importar: ${(e as Error).message}`);
     }
@@ -201,10 +240,13 @@ export default function Sistema() {
     );
   const restaurante =
       db.restaurantes.find((r) => r.id === id) ?? db.restaurantes[0],
-    dna = db.dnas.find(
-      (d) => d.restaurante_id === restaurante.id && d.competencia === mes,
-    )!;
+    dna = dnaComRateio(db, restaurante.id, mes);
   const ir = (p: Page) => {
+    if (
+      document.querySelector('form[data-dirty="true"]') &&
+      !confirm("Há alterações não salvas no DNA. Sair assim mesmo?")
+    )
+      return;
     setPage(p);
     setMenu(false);
   };
@@ -278,17 +320,19 @@ export default function Sistema() {
           </div>
           <div className="nav-caption">GESTÃO DO RESTAURANTE</div>
           <nav aria-label="Menu principal">
-            {pages.map((p) => (
-              <button
-                key={p.id}
-                onClick={() => ir(p.id)}
-                className={`nav-item ${page === p.id ? "active" : ""}`}
-              >
-                <p.icon size={19} />
-                <span>{p.label}</span>
-                {page === p.id && <span className="nav-dot" />}
-              </button>
-            ))}
+            {pages
+              .filter((p) => restaurante.id !== "a-vila" || p.id === "visao")
+              .map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => ir(p.id)}
+                  className={`nav-item ${page === p.id ? "active" : ""}`}
+                >
+                  <p.icon size={19} />
+                  <span>{p.label}</span>
+                  {page === p.id && <span className="nav-dot" />}
+                </button>
+              ))}
           </nav>
           <div className="sidebar-bottom">
             <div className="local-note">
@@ -308,7 +352,7 @@ export default function Sistema() {
               <ArrowUpRight size={16} />
             </button>
             <div className="sidebar-foot">
-              FEITO PARA QUEM EMPREENDE <span>v1.0</span>
+              FEITO PARA QUEM EMPREENDE <span>v2.0</span>
             </div>
           </div>
         </aside>
@@ -353,24 +397,44 @@ export default function Sistema() {
               </div>
               <label className="month-select">
                 <span>COMPETÊNCIA</span>
-                <input
-                  type="month"
-                  aria-label="Competência mensal"
-                  value={mes}
-                  min="2000-01"
-                  max="2100-12"
-                  onChange={(e) => {
-                    if (/^\d{4}-(0[1-9]|1[0-2])$/.test(e.target.value))
-                      selecionar(id, e.target.value);
-                  }}
-                />
+                <div className="month-controls">
+                  <select
+                    aria-label="Mês da competência"
+                    value={mes.slice(5)}
+                    onChange={(e) =>
+                      selecionar(id, `${mes.slice(0, 4)}-${e.target.value}`)
+                    }
+                  >
+                    {Array.from({ length: 12 }, (_, i) => (
+                      <option key={i} value={String(i + 1).padStart(2, "0")}>
+                        {new Intl.DateTimeFormat("pt-BR", {
+                          month: "long",
+                          timeZone: "UTC",
+                        }).format(new Date(Date.UTC(2026, i, 1)))}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    aria-label="Ano da competência"
+                    min="2000"
+                    max="2100"
+                    value={mes.slice(0, 4)}
+                    onChange={(e) => {
+                      if (/^20\d{2}$|^2100$/.test(e.target.value))
+                        selecionar(id, `${e.target.value}-${mes.slice(5)}`);
+                    }}
+                  />
+                </div>
               </label>
             </div>
             <div
               key={`${id}:${mes}:${page}:${revisao}`}
               className="page-content"
             >
-              {page === "visao" ? (
+              {restaurante.id === "a-vila" ? (
+                <Vila />
+              ) : page === "visao" ? (
                 <Overview />
               ) : page === "dna" ? (
                 <DNAEditor />
@@ -378,6 +442,8 @@ export default function Sistema() {
                 <Canais />
               ) : page === "insumos" ? (
                 <Insumos />
+              ) : page === "receitas" ? (
+                <Receitas />
               ) : page === "fichas" ? (
                 <Fichas />
               ) : page === "precos" ? (
@@ -386,6 +452,10 @@ export default function Sistema() {
                 <Restaurantes />
               )}
             </div>
+            <p className="notice">
+              Lembrete: exporte seu backup regularmente. Os dados ficam neste
+              navegador.
+            </p>
             <footer className="main-footer">
               <span>
                 <span className="status-dot" /> Armazenamento local · sem
@@ -455,8 +525,8 @@ export default function Sistema() {
             </p>
             <p>
               Taxas de canal e preços praticados são específicos da competência.
-              Insumos usam o preço atual e atualizam as fichas, inclusive ao
-              consultar meses anteriores.
+              Insumos guardam preços por competência. Receitas e pratos utilizam
+              os custos do mês selecionado.
             </p>
           </div>
         </Modal>

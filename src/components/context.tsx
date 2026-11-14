@@ -6,6 +6,7 @@ export type Page =
   | "dna"
   | "canais"
   | "insumos"
+  | "receitas"
   | "fichas"
   | "precos"
   | "restaurantes";

@@ -1,26 +1,23 @@
 "use client";
 import { useState } from "react";
-import {
-  ArrowRight,
-  FlaskConical,
-  NotebookPen,
-  Pencil,
-  Plus,
-  Search,
-  Trash2,
-} from "lucide-react";
-import type { Insumo, ItemFicha, Produto } from "@/lib/types";
+import type {
+  Insumo,
+  ItemFicha,
+  Produto,
+  ReceitaCasa,
+  Unidade,
+} from "@/lib/types";
 import {
   calcularCMV,
-  custoUnidadeUso,
+  custoReceita,
   dinheiro,
   paraCentavos,
   unidadeUso,
 } from "@/lib/dna";
+import { insumosMes } from "@/lib/v2";
 import { useSistema } from "./context";
 import {
   AddButton,
-  Empty,
   Field,
   Modal,
   Money,
@@ -28,196 +25,132 @@ import {
   formNumber,
   formString,
 } from "./ui";
+import { Numeric } from "./numeric";
 export function Insumos() {
-  const { db, restaurante, atualizar, avisar } = useSistema(),
-    [edit, setEdit] = useState<Insumo | "new" | null>(null),
-    [search, setSearch] = useState(""),
-    [sample, setSample] = useState(false);
-  const all = db.insumos.filter((i) => i.restaurante_id === restaurante.id),
-    rows = all.filter((i) =>
-      i.nome
-        .toLocaleLowerCase("pt-BR")
-        .includes(search.toLocaleLowerCase("pt-BR")),
+  const { db, restaurante, mes, atualizar, avisar } = useSistema();
+  const [edit, setEdit] = useState<Insumo | "new" | null>(null),
+    [busca, setBusca] = useState(""),
+    [error, setError] = useState("");
+  const rows = insumosMes(db, mes).filter(
+      (i) => i.restaurante_id === restaurante.id,
     ),
     record = edit && edit !== "new" ? edit : null;
   function save(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const f = new FormData(e.currentTarget),
-      insumo: Insumo = {
-        id: record?.id ?? crypto.randomUUID(),
-        restaurante_id: restaurante.id,
-        nome: formString(f, "nome"),
-        unidade: formString(f, "unidade") as Insumo["unidade"],
-        quantidade: formNumber(f, "quantidade"),
+    const f = new FormData(e.currentTarget);
+    try {
+      if (!formString(f, "nome"))
+        throw new Error("Nome: informe o nome do insumo.");
+      const snapshot = {
         preco: paraCentavos(formString(f, "preco")),
+        quantidade: formNumber(f, "quantidade"),
+        unidade: formString(f, "unidade") as Unidade,
         rendimento: formNumber(f, "rendimento"),
+        precoPendente: formString(f, "preco") === "",
       };
-    if (
-      atualizar((draft) => {
-        const i = draft.insumos.findIndex((x) => x.id === insumo.id);
-        if (i < 0) draft.insumos.push(insumo);
-        else draft.insumos[i] = insumo;
-      }, "Insumo salvo. Os custos das fichas foram recalculados.")
-    )
-      setEdit(null);
-  }
-  function seedBora() {
-    if (all.length) {
-      avisar(
-        "A demonstração só pode ser carregada com a lista de insumos vazia.",
-      );
-      return;
-    }
-    if (
-      atualizar((draft) => {
-        draft.insumos.push(
-          ...[
-            {
-              nome: "Pão brioche · exemplo abr/2025",
-              unidade: "un" as const,
-              quantidade: 1,
-              preco: 200,
-            },
-            {
-              nome: "Blend bovino · exemplo abr/2025",
-              unidade: "kg" as const,
-              quantidade: 1,
-              preco: 5000,
-            },
-            {
-              nome: "Mussarela · exemplo abr/2025",
-              unidade: "kg" as const,
-              quantidade: 1,
-              preco: 3300,
-            },
-            {
-              nome: "Embalagem · exemplo abr/2025",
-              unidade: "un" as const,
-              quantidade: 1,
-              preco: 200,
-            },
-          ].map((i) => ({
-            ...i,
-            id: crypto.randomUUID(),
-            restaurante_id: restaurante.id,
-            rendimento: 100,
-          })),
+      if (
+        snapshot.quantidade <= 0 ||
+        snapshot.rendimento <= 0 ||
+        snapshot.rendimento > 100
+      )
+        throw new Error(
+          "Quantidade deve ser positiva e rendimento entre 0 e 100%.",
         );
-      }, "Exemplos históricos abr/2025 carregados. Revise os preços atuais.")
-    )
-      setSample(false);
+      if (
+        atualizar((d) => {
+          const original = d.insumos.find((i) => i.id === record?.id);
+          const i: Insumo = {
+            ...original,
+            ...snapshot,
+            id: record?.id ?? crypto.randomUUID(),
+            restaurante_id: restaurante.id,
+            nome: formString(f, "nome"),
+            historicoPrecos: { ...original?.historicoPrecos, [mes]: snapshot },
+          };
+          if (original) d.insumos[d.insumos.indexOf(original)] = i;
+          else d.insumos.push(i);
+        }, "Insumo salvo nesta competência. Meses anteriores preservados.")
+      )
+        setEdit(null);
+    } catch (e) {
+      setError((e as Error).message);
+    }
   }
   return (
     <>
       <div className="section-toolbar">
-        <label className="search">
-          <Search size={18} />
-          <input
-            aria-label="Buscar insumo"
-            placeholder="Buscar insumo…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </label>
-        <AddButton onClick={() => setEdit("new")}>Novo insumo</AddButton>
+        <input
+          aria-label="Buscar insumo"
+          placeholder="Buscar insumo…"
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+        />
+        <AddButton
+          onClick={() => {
+            setError("");
+            setEdit("new");
+          }}
+        >
+          Novo insumo
+        </AddButton>
       </div>
       <div className="notice">
-        Quantidades de uso são normalizadas em <strong>g, ml ou un</strong>. O
-        rendimento representa a parte aproveitável da compra. Alterar o preço
-        recalcula todas as fichas, inclusive em meses anteriores.
+        Preços e condições de compra são guardados por mês. Preço em branco
+        significa pendente. VM e VG são tamanhos com custos independentes.
+        Embalagens devem entrar na ficha OU no custo do canal.
       </div>
-      {all.length ? (
-        <Panel
-          title="Sua base de ingredientes"
-          subtitle={`${all.length} insumo(s) neste restaurante`}
-        >
-          <div className="ingredient-list">
-            {rows.map((i) => (
-              <div key={i.id} className="ingredient-row">
-                <span className="ingredient-icon">
-                  <FlaskConical size={20} />
-                </span>
-                <div className="ingredient-name">
-                  <strong>{i.nome}</strong>
-                  <small>
-                    {i.quantidade} {i.unidade} por compra · {i.rendimento}% de
-                    rendimento
-                  </small>
-                </div>
-                <div className="ingredient-price">
-                  <strong>{dinheiro(i.preco)}</strong>
-                  <small>por embalagem de compra</small>
-                </div>
-                <div className="ingredient-unit">
-                  <strong>
-                    {(custoUnidadeUso(i).toNumber() / 100).toLocaleString(
-                      "pt-BR",
-                      { minimumFractionDigits: 2, maximumFractionDigits: 6 },
-                    )}{" "}
-                    R$/{unidadeUso(i)}
-                  </strong>
-                  <small>custo da unidade de uso</small>
-                </div>
-                <button
-                  className="icon-button"
-                  aria-label={`Editar insumo ${i.nome}`}
-                  onClick={() => setEdit(i)}
-                >
-                  <Pencil size={18} />
-                </button>
+      <Panel
+        title="Insumos da operação"
+        subtitle={`${rows.filter((i) => i.precoPendente).length} preços pendentes`}
+      >
+        {rows
+          .filter((i) =>
+            i.nome.toLocaleLowerCase().includes(busca.toLocaleLowerCase()),
+          )
+          .map((i) => (
+            <div className="ingredient-row" key={i.id}>
+              <div className="ingredient-name">
+                <strong>{i.nome}</strong>
+                <small>
+                  {i.quantidade.toLocaleString("pt-BR")} {i.unidade} ·{" "}
+                  {i.rendimento.toLocaleString("pt-BR")}% aproveitável
+                </small>
               </div>
-            ))}
-            {!rows.length && (
-              <p className="muted">Nenhum insumo encontrado para esta busca.</p>
-            )}
-          </div>
-        </Panel>
-      ) : (
-        <Empty
-          title="O preço começa nos ingredientes"
-          description="Cadastre a embalagem de compra, o preço pago e o rendimento para calcular o custo de uso."
-          action={
-            <AddButton onClick={() => setEdit("new")}>
-              Cadastrar primeiro insumo
-            </AddButton>
-          }
-        />
-      )}
-      {restaurante.id === "bora" && all.length === 0 && (
-        <div className="sample-bar">
-          <p>Insumos de exemplo disponíveis para Bora Burguer’s.</p>
-          <button className="text-button" onClick={() => setSample(true)}>
-            Carregar histórico abr/2025 <ArrowRight size={16} />
-          </button>
-        </div>
-      )}
-      {sample && (
-        <Modal title="Insumos de exemplo" close={() => setSample(false)}>
-          <p className="modal-copy">
-            Histórico abr/2025, não atual. Pão R$ 2/un; blend R$ 50/kg (R$ 7,50
-            por 150 g); mussarela R$ 33/kg; embalagem R$ 2/un. O rendimento
-            demonstrativo é 100%.
-          </p>
-          <button className="button primary" onClick={seedBora}>
-            Carregar exemplos históricos
-          </button>
-        </Modal>
-      )}
+              <strong className={i.precoPendente ? "negative" : ""}>
+                {i.precoPendente ? "Preço pendente" : dinheiro(i.preco)}
+              </strong>
+              <button
+                className="button"
+                onClick={() => {
+                  setError("");
+                  setEdit(i);
+                }}
+              >
+                Editar / histórico
+              </button>
+            </div>
+          ))}
+      </Panel>
       {edit && (
         <Modal
           title={record ? "Editar insumo" : "Novo insumo"}
           close={() => setEdit(null)}
         >
-          <form onSubmit={save}>
-            <Field label="Nome do insumo">
-              <input
-                name="nome"
-                required
-                maxLength={100}
-                autoFocus
-                defaultValue={record?.nome}
-                placeholder="Ex.: mussarela"
-              />
+          <form
+            onSubmit={save}
+            onInvalid={() =>
+              setError(
+                "Confira os campos destacados: nome, quantidade e rendimento são obrigatórios.",
+              )
+            }
+          >
+            {error && (
+              <p role="alert" className="negative">
+                {error}
+              </p>
+            )}
+            <Field label="Nome">
+              <input name="nome" required defaultValue={record?.nome} />
             </Field>
             <div className="form-grid">
               <Field label="Unidade de compra">
@@ -227,41 +160,76 @@ export function Insumos() {
                   ))}
                 </select>
               </Field>
-              <Field label="Quantidade na embalagem">
-                <input
+              <Field label="Quantidade da compra">
+                <Numeric
                   name="quantidade"
-                  type="number"
                   min="0.000001"
-                  step="any"
                   required
                   defaultValue={record?.quantidade ?? 1}
                 />
               </Field>
-              <Field label="Preço pago (R$)">
-                <Money name="preco" value={record?.preco} />
-              </Field>
-              <Field
-                label="Rendimento aproveitável (%)"
-                hint="Ex.: 80% significa perda de 20% da compra."
-              >
+              <Field label="Preço pago (R$), em branco = pendente">
                 <input
+                  name="preco"
+                  inputMode="decimal"
+                  defaultValue={
+                    record && !record.precoPendente
+                      ? (record.preco / 100).toFixed(2).replace(".", ",")
+                      : ""
+                  }
+                />
+              </Field>
+              <Field label="Rendimento aproveitável (%)">
+                <Numeric
                   name="rendimento"
-                  type="number"
                   min="0.000001"
                   max="100"
-                  step="any"
                   required
                   defaultValue={record?.rendimento ?? 100}
                 />
               </Field>
             </div>
+            {record && (
+              <Panel title="Histórico por competência">
+                {Object.entries(record.historicoPrecos ?? {})
+                  .sort(([a], [b]) => b.localeCompare(a))
+                  .map(([m, h]) => (
+                    <p key={m}>
+                      {m === "0000-01"
+                        ? "Base migrada da v1"
+                        : m.split("-").reverse().join("/")}{" "}
+                      · {h.precoPendente ? "Preço pendente" : dinheiro(h.preco)}{" "}
+                      · {h.quantidade.toLocaleString("pt-BR")} {h.unidade}
+                    </p>
+                  ))}
+              </Panel>
+            )}
             <div className="form-actions">
               <button
                 type="button"
-                className="button"
-                onClick={() => setEdit(null)}
+                className="button danger"
+                onClick={() => {
+                  if (!record || !confirm("Excluir este insumo?")) return;
+                  if (
+                    db.produtos.some((p) =>
+                      p.itens.some((x) => x.insumo_id === record.id),
+                    ) ||
+                    db.receitas?.some((p) =>
+                      p.itens.some((x) => x.insumo_id === record.id),
+                    )
+                  ) {
+                    avisar("Insumo em uso. Remova das fichas primeiro.");
+                    return;
+                  }
+                  if (
+                    atualizar((d) => {
+                      d.insumos = d.insumos.filter((i) => i.id !== record.id);
+                    })
+                  )
+                    setEdit(null);
+                }}
               >
-                Cancelar
+                Excluir insumo
               </button>
               <button className="button primary">Salvar insumo</button>
             </div>
@@ -272,115 +240,138 @@ export function Insumos() {
   );
 }
 export function Fichas() {
-  const { db, restaurante, ir, atualizar } = useSistema(),
-    [edit, setEdit] = useState<Produto | "new" | null>(null),
-    [search, setSearch] = useState("");
-  const insumos = db.insumos.filter((i) => i.restaurante_id === restaurante.id),
-    produtos = db.produtos.filter((p) => p.restaurante_id === restaurante.id),
-    rows = produtos.filter((p) =>
-      p.nome
-        .toLocaleLowerCase("pt-BR")
-        .includes(search.toLocaleLowerCase("pt-BR")),
-    );
+  return <Preparos casa={false} />;
+}
+export function Receitas() {
+  return <Preparos casa />;
+}
+function Preparos({ casa }: { casa: boolean }) {
+  const { db, restaurante, mes, atualizar } = useSistema();
+  const [edit, setEdit] = useState<Produto | ReceitaCasa | "new" | null>(null),
+    [busca, setBusca] = useState("");
+  const rows = (casa ? (db.receitas ?? []) : db.produtos).filter(
+      (p) => p.restaurante_id === restaurante.id,
+    ),
+    insumos = insumosMes(db, mes);
   return (
     <>
       <div className="section-toolbar">
-        <label className="search">
-          <Search size={18} />
-          <input
-            aria-label="Buscar ficha técnica"
-            placeholder="Buscar produto…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </label>
-        <AddButton onClick={() => setEdit("new")}>Nova ficha técnica</AddButton>
+        <input
+          aria-label="Buscar preparo"
+          placeholder="Buscar…"
+          value={busca}
+          onChange={(e) => setBusca(e.target.value)}
+        />
+        <AddButton onClick={() => setEdit("new")}>
+          {casa ? "Nova receita da casa" : "Nova ficha técnica"}
+        </AddButton>
       </div>
       <div className="notice">
-        CMV por porção = custo dos ingredientes com perdas ÷ rendimento. A
-        embalagem base fica separada e é aplicada uma única vez na precificação.
+        {casa
+          ? "Preparo feito na casa: rendimento em g, ml ou un. Composição sugerida precisa de confirmação. Comprados prontos ficam nos insumos."
+          : "Itens em g, ml ou un. Use “Todos os canais” para a base e “Salão” para cortesias. Embalagens: use ingredientes OU o valor separado, nunca os dois."}
       </div>
-      {!insumos.length ? (
-        <Empty
-          title="Primeiro, cadastre os insumos"
-          description="As fichas utilizam os custos atuais dos ingredientes do restaurante selecionado."
-          action={
-            <button className="button primary" onClick={() => ir("insumos")}>
-              Ir para insumos <ArrowRight size={17} />
-            </button>
-          }
-        />
-      ) : !produtos.length ? (
-        <Empty
-          title="Dê uma ficha a cada receita"
-          description="Selecione os ingredientes, informe as quantidades e descubra o CMV por porção."
-          action={
-            <AddButton onClick={() => setEdit("new")}>
-              Criar primeira ficha
-            </AddButton>
-          }
-        />
-      ) : (
-        <div className="recipe-grid">
-          {rows.map((p) => (
-            <Panel
-              key={p.id}
-              title={p.nome}
-              subtitle={`${p.rendimento} porção(ões) por receita`}
-              action={
-                <button
-                  className="icon-button"
-                  aria-label={`Editar ficha ${p.nome}`}
-                  onClick={() => setEdit(p)}
-                >
-                  <Pencil size={18} />
-                </button>
-              }
-            >
-              <div className="recipe-ingredients">
-                {p.itens.map((item, idx) => {
-                  const i = insumos.find((s) => s.id === item.insumo_id)!;
-                  return (
-                    <div key={idx}>
-                      <span>{i.nome}</span>
-                      <strong>
-                        {item.quantidade.toLocaleString("pt-BR")}{" "}
-                        {unidadeUso(i)}
-                        {item.perda > 0 && (
-                          <small> + {item.perda}% perda</small>
-                        )}
-                      </strong>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="recipe-cost">
-                <div>
-                  <small>CMV de ingredientes / porção</small>
-                  <strong>{dinheiro(calcularCMV(p, insumos))}</strong>
-                </div>
-                <div>
-                  <small>Embalagem base / porção</small>
-                  <strong>{dinheiro(p.embalagem)}</strong>
-                </div>
-              </div>
-            </Panel>
-          ))}
-          {!rows.length && <p>Nenhuma ficha encontrada.</p>}
-        </div>
-      )}
-      {edit && !!insumos.length && (
-        <FichaModal
-          produto={edit === "new" ? null : edit}
-          insumos={insumos}
+      <div className="recipe-grid">
+        {rows
+          .filter((p) => p.nome.toLowerCase().includes(busca.toLowerCase()))
+          .map((p) => {
+            let custo: string;
+            try {
+              custo = dinheiro(
+                casa
+                  ? custoReceita(p as ReceitaCasa, insumos, db.receitas ?? [])
+                  : calcularCMV(
+                      {
+                        ...p,
+                        itens: p.itens.filter((i) => !i.canal),
+                      } as Produto,
+                      insumos,
+                      db.receitas,
+                    ),
+              );
+            } catch {
+              custo = "Pendente: confirmar ficha, quantidades e preços";
+            }
+            return (
+              <Panel
+                key={p.id}
+                title={p.nome}
+                action={
+                  <button className="button" onClick={() => setEdit(p)}>
+                    Editar
+                  </button>
+                }
+              >
+                <p>
+                  {custo}
+                  {casa
+                    ? " / unidade de uso"
+                    : " · base comum (cortesias por canal na precificação)"}
+                </p>
+                {"precoCardapio" in p && p.precoCardapio !== undefined && (
+                  <p>Preço do PDF · Salão: {dinheiro(p.precoCardapio)}</p>
+                )}
+                <p className="muted">{p.notas}</p>
+                <p>
+                  {p.itens.length} itens ·{" "}
+                  {p.pendente ? "Ficha pendente" : "Composição confirmada"}
+                </p>
+              </Panel>
+            );
+          })}
+      </div>
+      {edit && (
+        <PreparoModal
+          casa={casa}
+          record={edit === "new" ? null : edit}
           close={() => setEdit(null)}
           save={(p) => {
             if (
-              atualizar((draft) => {
-                const i = draft.produtos.findIndex((x) => x.id === p.id);
-                if (i < 0) draft.produtos.push(p);
-                else draft.produtos[i] = p;
-              }, "Ficha salva. A precificação foi recalculada.")
+              atualizar((d) => {
+                if (casa) {
+                  d.receitas ??= [];
+                  const idx = d.receitas.findIndex((r) => r.id === p.id);
+                  if (idx < 0) d.receitas.push(p as ReceitaCasa);
+                  else d.receitas[idx] = p as ReceitaCasa;
+                } else {
+                  const idx = d.produtos.findIndex((r) => r.id === p.id);
+                  if (idx < 0) d.produtos.push(p as Produto);
+                  else d.produtos[idx] = p as Produto;
+                }
+              }, "Ficha salva. Custos propagados.")
+            )
+              setEdit(null);
+          }}
+          remove={() => {
+            if (!confirm("Excluir este preparo?")) return;
+            if (
+              atualizar((d) => {
+                if (casa) {
+                  if (
+                    d.receitas?.some((r) =>
+                      r.itens.some(
+                        (i) => i.receita_id === (edit as ReceitaCasa).id,
+                      ),
+                    ) ||
+                    d.produtos.some((r) =>
+                      r.itens.some(
+                        (i) => i.receita_id === (edit as ReceitaCasa).id,
+                      ),
+                    )
+                  )
+                    throw new Error("Receita em uso em outra ficha.");
+                  d.receitas = d.receitas?.filter(
+                    (r) => r.id !== (edit as ReceitaCasa).id,
+                  );
+                } else {
+                  d.produtos = d.produtos.filter(
+                    (r) => r.id !== (edit as Produto).id,
+                  );
+                  d.precos = d.precos.filter(
+                    (p) => p.produto_id !== (edit as Produto).id,
+                  );
+                }
+              })
             )
               setEdit(null);
           }}
@@ -389,126 +380,201 @@ export function Fichas() {
     </>
   );
 }
-function FichaModal({
-  produto,
-  insumos,
+function PreparoModal({
+  casa,
+  record,
   close,
   save,
+  remove,
 }: {
-  produto: Produto | null;
-  insumos: Insumo[];
+  casa: boolean;
+  record: Produto | ReceitaCasa | null;
   close: () => void;
-  save: (p: Produto) => void;
+  save: (p: Produto | ReceitaCasa) => void;
+  remove: () => void;
 }) {
-  const { restaurante } = useSistema(),
+  const { db, restaurante, mes } = useSistema(),
     [itens, setItens] = useState<ItemFicha[]>(
-      structuredClone(
-        produto?.itens ?? [
-          { insumo_id: insumos[0].id, quantidade: 1, perda: 0 },
-        ],
-      ),
+      structuredClone(record?.itens ?? []),
     ),
-    [rendimento, setRendimento] = useState(produto?.rendimento ?? 1);
-  let cmv: number | null = null;
-  try {
-    cmv = calcularCMV(
-      {
-        id: "",
-        restaurante_id: restaurante.id,
-        nome: "",
-        rendimento,
-        itens,
-        embalagem: 0,
-      },
-      insumos,
+    [busca, setBusca] = useState(""),
+    [error, setError] = useState("");
+  const insumos = insumosMes(db, mes).filter(
+      (i) => i.restaurante_id === restaurante.id,
+    ),
+    receitas = (db.receitas ?? []).filter(
+      (r) => r.restaurante_id === restaurante.id && r.id !== record?.id,
     );
-  } catch {
-    /* A edição pode estar incompleta. */
-  }
-  function saveForm(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const f = new FormData(e.currentTarget);
-    save({
-      id: produto?.id ?? crypto.randomUUID(),
-      restaurante_id: restaurante.id,
-      nome: formString(f, "nome"),
-      rendimento,
-      itens,
-      embalagem: paraCentavos(formString(f, "embalagem")),
-    });
-  }
+  const options = [
+    ...insumos.map((i) => ({
+      id: i.id,
+      nome: i.nome,
+      unidade: unidadeUso(i),
+      receita: false,
+    })),
+    ...receitas.map((r) => ({
+      id: r.id,
+      nome: r.nome,
+      unidade: unidadeUso({ unidade: r.unidade } as Insumo),
+      receita: true,
+    })),
+  ];
   function change(idx: number, patch: Partial<ItemFicha>) {
     setItens((rows) =>
       rows.map((r, i) => (i === idx ? { ...r, ...patch } : r)),
     );
   }
+  function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    try {
+      const f = new FormData(e.currentTarget);
+      if (!formString(f, "nome")) throw new Error("Informe o nome.");
+      if (
+        !itens.length ||
+        itens.some((i) => (!i.insumo_id && !i.receita_id) || i.quantidade <= 0)
+      )
+        throw new Error("Escolha cada item e informe quantidades positivas.");
+      const p = {
+        ...record,
+        id: record?.id ?? crypto.randomUUID(),
+        restaurante_id: restaurante.id,
+        nome: formString(f, "nome"),
+        rendimento: formNumber(f, "rendimento"),
+        itens: itens.map((i) => ({ ...i, confirmar: false })),
+        pendente: false,
+        notas: formString(f, "notas"),
+      };
+      if (casa)
+        save({
+          ...p,
+          unidade: formString(f, "unidade") as Unidade,
+          perda: formNumber(f, "perda"),
+        });
+      else save({ ...p, embalagem: paraCentavos(formString(f, "embalagem")) });
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  }
   return (
     <Modal
-      title={produto ? "Editar ficha técnica" : "Nova ficha técnica"}
+      title={casa ? "Receita da casa" : "Ficha técnica do prato"}
       close={close}
     >
-      <form onSubmit={saveForm}>
-        <Field label="Nome do produto">
-          <input
-            required
-            name="nome"
-            maxLength={100}
-            defaultValue={produto?.nome}
-            autoFocus
-            placeholder="Ex.: Hambúrguer da casa"
-          />
+      <form onSubmit={submit}>
+        {error && (
+          <p role="alert" className="negative">
+            {error}
+          </p>
+        )}
+        <Field label="Nome">
+          <input name="nome" required defaultValue={record?.nome} />
         </Field>
         <div className="form-grid">
-          <Field label="Rendimento (porções)">
-            <input
+          <Field
+            label={casa ? "Rendimento produzido" : "Rendimento em porções"}
+          >
+            <Numeric
               name="rendimento"
-              type="number"
               min="0.000001"
-              step="any"
               required
-              value={rendimento}
-              onChange={(e) => setRendimento(Number(e.target.value))}
+              defaultValue={record?.rendimento ?? 1}
             />
           </Field>
-          <Field label="Embalagem base por porção (R$)">
-            <Money name="embalagem" value={produto?.embalagem} />
-          </Field>
-        </div>
-        <h3 className="form-subtitle">Ingredientes da receita</h3>
-        {itens.map((item, idx) => {
-          const insumo = insumos.find((i) => i.id === item.insumo_id)!;
-          return (
-            <div className="recipe-item" key={idx}>
-              <Field label="Insumo">
+          {casa ? (
+            <>
+              <Field label="Unidade de rendimento">
                 <select
-                  value={item.insumo_id}
-                  onChange={(e) => change(idx, { insumo_id: e.target.value })}
+                  name="unidade"
+                  defaultValue={(record as ReceitaCasa)?.unidade ?? "g"}
                 >
-                  {insumos.map((i) => (
-                    <option value={i.id} key={i.id}>
-                      {i.nome} ({unidadeUso(i)})
-                    </option>
+                  {["g", "kg", "ml", "L", "un"].map((u) => (
+                    <option key={u}>{u}</option>
                   ))}
                 </select>
               </Field>
-              <Field label={`Quantidade (${unidadeUso(insumo)})`}>
-                <input
-                  type="number"
-                  min="0.000001"
-                  step="any"
+              <Field label="Perda do preparo (%)">
+                <Numeric
+                  name="perda"
                   required
+                  min="0"
+                  max="99.9999"
+                  defaultValue={(record as ReceitaCasa)?.perda ?? 0}
+                />
+              </Field>
+            </>
+          ) : (
+            <Field label="Embalagem separada por porção (R$)">
+              <Money
+                name="embalagem"
+                value={(record as Produto)?.embalagem ?? 0}
+              />
+            </Field>
+          )}
+        </div>
+        <Field label="Buscar insumo ou receita">
+          <input
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            placeholder="Digite para filtrar os itens…"
+          />
+        </Field>
+        {itens.map((item, idx) => {
+          const selected = item.receita_id || item.insumo_id;
+          const o = options.find((o) => o.id === selected);
+          return (
+            <div className="recipe-item" key={idx}>
+              <Field label="Insumo ou receita">
+                <select
+                  required
+                  value={selected}
+                  onChange={(e) => {
+                    const o = options.find((o) => o.id === e.target.value)!;
+                    change(idx, {
+                      insumo_id: o.receita ? "" : o.id,
+                      receita_id: o.receita ? o.id : undefined,
+                    });
+                  }}
+                >
+                  <option value="">Selecione um item</option>
+                  {options
+                    .filter(
+                      (o) =>
+                        (o.id === selected ||
+                          o.nome.toLowerCase().includes(busca.toLowerCase())) &&
+                        !itens.some(
+                          (r, i) =>
+                            i !== idx &&
+                            (r.receita_id || r.insumo_id) === o.id &&
+                            (r.canal ?? "") === (item.canal ?? ""),
+                        ),
+                    )
+                    .map((o) => (
+                      <option key={o.id} value={o.id}>
+                        {o.receita ? "Receita: " : ""}
+                        {o.nome} ({o.unidade})
+                      </option>
+                    ))}
+                </select>
+              </Field>
+              <Field
+                label={`Quantidade (${o?.unidade ?? "unidade"})${item.confirmar ? " · confirmar" : ""}`}
+              >
+                <Numeric
+                  required
+                  min="0.000001"
                   value={item.quantidade}
                   onChange={(e) =>
-                    change(idx, { quantidade: Number(e.target.value) })
+                    change(idx, {
+                      quantidade: Number(e.target.value),
+                      confirmar: false,
+                    })
                   }
                 />
               </Field>
               <Field label="Perda adicional (%)">
-                <input
-                  type="number"
+                <Numeric
                   min="0"
-                  max="99.999999"
-                  step="any"
+                  max="99.9999"
                   required
                   value={item.perda}
                   onChange={(e) =>
@@ -516,15 +582,40 @@ function FichaModal({
                   }
                 />
               </Field>
+              {!casa && (
+                <Field label="Aplicação no canal">
+                  <select
+                    value={item.canal ?? ""}
+                    onChange={(e) =>
+                      change(idx, { canal: e.target.value || undefined })
+                    }
+                  >
+                    <option value="">Todos os canais</option>
+                    {Array.from(
+                      new Set(
+                        db.canais
+                          .filter(
+                            (c) =>
+                              c.restaurante_id === restaurante.id &&
+                              c.competencia === mes,
+                          )
+                          .map((c) => c.nome),
+                      ),
+                    ).map((n) => (
+                      <option key={n}>{n}</option>
+                    ))}
+                  </select>
+                </Field>
+              )}
               <button
                 type="button"
-                className="icon-button danger"
-                aria-label={`Remover ingrediente ${insumo.nome}`}
-                onClick={() =>
-                  setItens((rows) => rows.filter((_, i) => i !== idx))
-                }
+                className="button danger"
+                onClick={() => {
+                  if (confirm("Remover este item da ficha?"))
+                    setItens((rows) => rows.filter((_, i) => i !== idx));
+                }}
               >
-                <Trash2 size={18} />
+                Remover
               </button>
             </div>
           );
@@ -535,30 +626,26 @@ function FichaModal({
           onClick={() =>
             setItens((rows) => [
               ...rows,
-              { insumo_id: insumos[0].id, quantidade: 1, perda: 0 },
+              { insumo_id: "", quantidade: 0, perda: 0 },
             ])
           }
         >
-          <Plus size={17} />
-          Adicionar ingrediente
+          Adicionar item
         </button>
-        <p className="field-help">
-          A perda adicional é exclusiva do preparo e se soma ao efeito do
-          rendimento de compra. Não informe a mesma perda duas vezes.
-        </p>
-        <div className="cmv-preview">
-          <NotebookPen size={21} />
-          <span>CMV por porção</span>
-          <strong>
-            {cmv === null ? "Complete os ingredientes" : dinheiro(cmv)}
-          </strong>
-        </div>
+        <Field label="Notas e pendências">
+          <textarea name="notas" defaultValue={record?.notas} />
+        </Field>
         <div className="form-actions">
+          {record && (
+            <button type="button" className="button danger" onClick={remove}>
+              Excluir
+            </button>
+          )}
           <button type="button" className="button" onClick={close}>
             Cancelar
           </button>
-          <button className="button primary" disabled={cmv === null}>
-            Salvar ficha técnica
+          <button className="button primary">
+            Salvar e confirmar composição
           </button>
         </div>
       </form>

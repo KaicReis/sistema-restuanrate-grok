@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import type { Canal, DNA, Insumo, Produto } from "./types";
+import type { Canal, DNA, Insumo, Produto, ReceitaCasa } from "./types";
 Decimal.set({ precision: 32 });
 export interface EntradaDNA {
   faturamentoReferencia: number;
@@ -104,6 +104,8 @@ export function custoUnidadeUso(insumo: Insumo): Decimal {
 export function calcularCMVDecimal(
   produto: Produto,
   insumos: Insumo[],
+  receitas: ReceitaCasa[] = [],
+  caminho: string[] = [],
 ): Decimal {
   if (
     !Number.isFinite(produto.rendimento) ||
@@ -117,7 +119,13 @@ export function calcularCMVDecimal(
       (i) =>
         i.id === item.insumo_id && i.restaurante_id === produto.restaurante_id,
     );
-    if (!insumo)
+    const receita = receitas.find(
+      (r) =>
+        r.id === item.receita_id && r.restaurante_id === produto.restaurante_id,
+    );
+    if (item.confirmar)
+      throw new Error("Confirme a composição e as quantidades.");
+    if (!insumo && !receita)
       throw new Error("Insumo da ficha não encontrado neste restaurante.");
     if (
       !Number.isFinite(item.quantidade) ||
@@ -128,7 +136,14 @@ export function calcularCMVDecimal(
     )
       throw new Error("Quantidade deve ser positiva e perda menor que 100%.");
     total = total.plus(
-      custoUnidadeUso(insumo)
+      (receita
+        ? custoReceita(receita, insumos, receitas, caminho)
+        : (() => {
+            if (insumo!.precoPendente)
+              throw new Error("Preço de insumo pendente.");
+            return custoUnidadeUso(insumo!);
+          })()
+      )
         .times(item.quantidade)
         .div(new Decimal(1).minus(new Decimal(item.perda).div(100))),
     );
@@ -136,8 +151,12 @@ export function calcularCMVDecimal(
   return total.div(produto.rendimento);
 }
 // Conversão apenas para exibição e consumidores que precisam de number.
-export function calcularCMV(produto: Produto, insumos: Insumo[]): number {
-  return calcularCMVDecimal(produto, insumos).toNumber();
+export function calcularCMV(
+  produto: Produto,
+  insumos: Insumo[],
+  receitas: ReceitaCasa[] = [],
+): number {
+  return calcularCMVDecimal(produto, insumos, receitas).toNumber();
 }
 export function fixosOperacionais(dna: DNA) {
   return dna.fixos
@@ -155,6 +174,7 @@ export function entradaPreco(
   canal: Canal,
   produto: Produto,
   insumos: Insumo[],
+  receitas: ReceitaCasa[] = [],
 ): EntradaDNA {
   if (
     dna.restaurante_id !== canal.restaurante_id ||
@@ -170,8 +190,25 @@ export function entradaPreco(
     variaveis: taxaCanal(canal),
     impostos: dna.imposto / 100,
     margem: dna.margem / 100,
-    cmvIngredientes: calcularCMVDecimal(produto, insumos),
-    embalagem: canal.embalagem ?? produto.embalagem,
+    cmvIngredientes: calcularCMVDecimal(
+      {
+        ...produto,
+        itens: produto.itens.filter((i) => !i.canal || i.canal === canal.nome),
+      },
+      insumos,
+      receitas,
+    ),
+    embalagem: produto.itens.some(
+      (item) =>
+        (!item.canal || item.canal === canal.nome) &&
+        insumos.some(
+          (i) =>
+            i.id === item.insumo_id &&
+            (i.categoria === "embalagem" || /embalagem/i.test(i.nome)),
+        ),
+    )
+      ? 0
+      : (canal.embalagem ?? produto.embalagem),
     custoFixoUnidade: canal.custoUnidade,
   };
 }
@@ -215,10 +252,42 @@ export const percentual = (valor: number) =>
     maximumFractionDigits: 2,
   }).format(valor);
 export function paraCentavos(valor: string | number) {
-  const d = new Decimal(valor || 0)
+  const d = new Decimal(
+    typeof valor === "string" ? numeroBR(valor) : valor || 0,
+  )
     .times(100)
     .toDecimalPlaces(0, Decimal.ROUND_HALF_UP);
   if (!d.isFinite() || d.lt(0) || d.gt(Number.MAX_SAFE_INTEGER))
     throw new Error("Valor monetário inválido.");
   return d.toNumber();
+}
+
+export function numeroBR(valor: string): number {
+  const v = valor.trim();
+  if (!v) return 0;
+  if (
+    !/^-?(?:\d{1,3}(?:\.\d{3})+|\d+)(?:,\d+)?$/.test(v) &&
+    !/^-?\d+(?:\.\d+)?$/.test(v)
+  )
+    throw new Error("Use um número válido, como 1.234,56.");
+  return Number(v.includes(",") ? v.replaceAll(".", "").replace(",", ".") : v);
+}
+export function custoReceita(
+  r: ReceitaCasa,
+  insumos: Insumo[],
+  receitas: ReceitaCasa[],
+  caminho: string[] = [],
+): Decimal {
+  if (caminho.includes(r.id))
+    throw new Error("Referência circular em receita da casa.");
+  if (r.pendente || r.perda < 0 || r.perda >= 100 || r.rendimento <= 0)
+    throw new Error("Receita da casa pendente.");
+  return calcularCMVDecimal(
+    { ...r, embalagem: 0, rendimento: 1 },
+    insumos,
+    receitas,
+    [...caminho, r.id],
+  )
+    .div(r.rendimento * (["kg", "L"].includes(r.unidade) ? 1000 : 1))
+    .div(new Decimal(1).minus(new Decimal(r.perda).div(100)));
 }

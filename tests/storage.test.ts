@@ -14,9 +14,9 @@ beforeEach(() => {
   });
 });
 describe("repositório local e backups", () => {
-  it("inicializa as três operações sem histórico financeiro atual", () => {
+  it("inicializa o grupo e as três operações sem histórico financeiro atual", () => {
     const db = repositorio.carregar();
-    expect(db.restaurantes).toHaveLength(3);
+    expect(db.restaurantes).toHaveLength(4);
     expect(db.dnas).toHaveLength(0);
   });
   it("exporta e importa todos os restaurantes em JSON", () => {

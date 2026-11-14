@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import { insumosMes } from "@/lib/v2";
+import { Numeric } from "./numeric";
+import { useState, useRef, useEffect } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -44,7 +46,9 @@ export function Overview() {
   const produtos = db.produtos.filter(
       (p) => p.restaurante_id === restaurante.id,
     ),
-    insumos = db.insumos.filter((i) => i.restaurante_id === restaurante.id);
+    insumos = insumosMes(db, dna.competencia).filter(
+      (i) => i.restaurante_id === restaurante.id,
+    );
   const parts = [
     {
       name: "Fixos operacionais",
@@ -74,6 +78,17 @@ export function Overview() {
     .join(", ");
   return (
     <>
+      <div className="notice warning">
+        Pendências: {insumos.filter((i) => i.precoPendente).length} insumos sem
+        preço · {produtos.filter((p) => p.pendente || !p.itens.length).length}{" "}
+        fichas incompletas ·{" "}
+        {
+          (db.receitas ?? []).filter(
+            (r) => r.restaurante_id === restaurante.id && r.pendente,
+          ).length
+        }{" "}
+        receitas da casa a confirmar.
+      </div>
       <div className="welcome-banner">
         <div>
           <span className="pill light">
@@ -301,11 +316,27 @@ export function DNAEditor() {
   const { dna, atualizar, db, restaurante, mes, selecionar, avisar } =
     useSistema();
   const [fixos, setFixos] = useState(
-      dna.fixos.map((f) => ({ ...f, valor: (f.valor / 100).toFixed(2) })),
+      dna.fixos
+        .filter((f) => f.id !== "rateio-aluguel")
+        .map((f) => ({
+          ...f,
+          valor: (f.valor / 100).toFixed(2).replace(".", ","),
+        })),
     ),
     [duplicar, setDuplicar] = useState(false),
     [destino, setDestino] = useState(""),
     [sample, setSample] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [dirty, setDirty] = useState(false);
+  useEffect(() => {
+    const warn = (e: BeforeUnloadEvent) => {
+      if (dirty) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [dirty]);
   const previewCentavos = (valor: string) => {
     try {
       return paraCentavos(valor);
@@ -319,9 +350,17 @@ export function DNAEditor() {
   function save(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    atualizar((draft) => {
+    const ok = atualizar((draft) => {
       const d = draft.dnas.find((x) => x.id === dna.id)!;
       Object.assign(d, {
+        cmvReal:
+          formString(data, "cmvReal") === ""
+            ? undefined
+            : paraCentavos(formString(data, "cmvReal")),
+        variaveisReais:
+          formString(data, "variaveisReais") === ""
+            ? undefined
+            : paraCentavos(formString(data, "variaveisReais")),
         faturamento: paraCentavos(formString(data, "faturamento")),
         tipoFaturamento: formString(data, "tipo"),
         imposto: formNumber(data, "imposto"),
@@ -329,6 +368,7 @@ export function DNAEditor() {
         fixos: fixos.map((f) => ({ ...f, valor: paraCentavos(f.valor) })),
       });
     });
+    if (ok) setDirty(false);
   }
   function duplicate() {
     if (!destino || destino === mes) {
@@ -352,7 +392,9 @@ export function DNAEditor() {
           id: crypto.randomUUID(),
           competencia: destino,
           historico: false,
-          fixos: dna.fixos.map((f) => ({ ...f, id: crypto.randomUUID() })),
+          fixos: dna.fixos
+            .filter((f) => f.id !== "rateio-aluguel")
+            .map((f) => ({ ...f, id: crypto.randomUUID() })),
         });
         const canais = draft.canais.filter(
           (c) => c.restaurante_id === restaurante.id && c.competencia === mes,
@@ -392,7 +434,15 @@ export function DNAEditor() {
           revise-os antes de usar.
         </div>
       )}
-      <form onSubmit={save}>
+      <form
+        ref={formRef}
+        data-dirty={dirty ? "true" : "false"}
+        onChange={() => setDirty(true)}
+        onBlur={() => {
+          if (formRef.current?.checkValidity()) formRef.current.requestSubmit();
+        }}
+        onSubmit={save}
+      >
         <Panel
           title="A base financeira do mês"
           subtitle="Valores em reais. As taxas são informadas em percentual."
@@ -408,7 +458,7 @@ export function DNAEditor() {
               </select>
             </Field>
             <Field label="Alíquota efetiva de imposto (%)">
-              <input
+              <Numeric
                 name="imposto"
                 type="number"
                 min="0"
@@ -419,7 +469,7 @@ export function DNAEditor() {
               />
             </Field>
             <Field label="Meta de margem líquida (%)">
-              <input
+              <Numeric
                 name="margem"
                 type="number"
                 min="0"
@@ -427,6 +477,30 @@ export function DNAEditor() {
                 step="0.01"
                 required
                 defaultValue={dna.margem}
+              />
+            </Field>
+          </div>
+          <div className="form-grid">
+            <Field label="CMV total do mês (R$), vazio = pendente">
+              <input
+                name="cmvReal"
+                inputMode="decimal"
+                defaultValue={
+                  dna.cmvReal === undefined
+                    ? ""
+                    : (dna.cmvReal / 100).toFixed(2).replace(".", ",")
+                }
+              />
+            </Field>
+            <Field label="Custos variáveis do mês (R$), sem impostos, vazio = pendente">
+              <input
+                name="variaveisReais"
+                inputMode="decimal"
+                defaultValue={
+                  dna.variaveisReais === undefined
+                    ? ""
+                    : (dna.variaveisReais / 100).toFixed(2).replace(".", ",")
+                }
               />
             </Field>
           </div>
@@ -471,7 +545,7 @@ export function DNAEditor() {
                   />
                 </Field>
                 <Field label="Valor (R$)">
-                  <input
+                  <Numeric
                     type="number"
                     min="0"
                     step="0.01"
@@ -513,9 +587,12 @@ export function DNAEditor() {
                   type="button"
                   className="icon-button danger"
                   aria-label={`Remover ${f.descricao || "custo fixo"}`}
-                  onClick={() =>
-                    setFixos((rows) => rows.filter((r) => r.id !== f.id))
-                  }
+                  onClick={() => {
+                    if (confirm("Excluir este custo fixo?")) {
+                      setDirty(true);
+                      setFixos((rows) => rows.filter((r) => r.id !== f.id));
+                    }
+                  }}
                 >
                   <Trash2 size={18} />
                 </button>
@@ -559,7 +636,9 @@ export function DNAEditor() {
         </Panel>
         <div className="form-actions">
           <span className="muted">
-            Salve antes de duplicar ou mudar de tela.
+            {dirty
+              ? "Alterações ainda não salvas. Complete os campos para salvar."
+              : "Salvo no navegador. Autosave ao sair de um campo válido."}
           </span>
           <button className="button primary" type="submit">
             Salvar DNA mensal <ArrowRight size={17} />
