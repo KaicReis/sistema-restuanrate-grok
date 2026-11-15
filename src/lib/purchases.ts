@@ -1,3 +1,4 @@
+import { validarNota } from "./purchase-validation";
 import { z } from "zod";
 import type { Database, Unidade } from "./types";
 import Decimal from "decimal.js";
@@ -72,7 +73,7 @@ export function sugerirInsumo(db: Database, operacao: string, nome: string) {
       )?.id
   );
 }
-export function confirmarCompra(db: Database, input: Compra) {
+export function confirmarCompra(db: Database, input: Compra, conferido = false) {
   const compra = compraSchema.parse(input);
   if (
     !db.restaurantes.some(
@@ -85,13 +86,14 @@ export function confirmarCompra(db: Database, input: Compra) {
   if (compra.itens.every((i) => i.ignorar))
     throw new Error("Selecione pelo menos um item");
   const custos = ratearCompra(compra);
-  if (custos.divergencia) throw new Error(custos.divergencia);
+  if (!conferido && !validarNota({ ...compra, totalProdutos: compra.totalProdutos ?? compra.itens.reduce((s, i) => s + i.total, 0), totalNota: compra.totalNota ?? custos.total }).valido) throw new Error("Confira as divergências aritméticas da nota");
+  if (custos.divergencia && !conferido) throw new Error(custos.divergencia);
   // Validate every row before mutating the database (confirmation is atomic).
   for (const linha of compra.itens) {
     if (linha.ignorar) continue;
     if (linha.conversaoPendente)
       throw new Error("Revise o conteúdo da embalagem: " + linha.nome);
-    if (Math.abs(linha.total - linha.quantidade * linha.valorUnitario) > 0.05)
+    if (!conferido && Math.abs(linha.total - linha.quantidade * linha.valorUnitario) > 0.05)
       throw new Error(
         "Total diverge de quantidade × valor unitário: " + linha.nome,
       );
@@ -335,12 +337,12 @@ export function ratearCompra(compra: Compra) {
     divergencia = "Desconto maior que o total dos produtos";
   if (
     compra.totalProdutos !== undefined &&
-    soma.minus(compra.totalProdutos).toDecimalPlaces(2).abs().gt(0)
+    soma.minus(compra.totalProdutos).abs().gt("0.01")
   )
     divergencia = "Soma dos itens diverge do total de produtos";
   if (
     compra.totalNota !== undefined &&
-    liquido.minus(compra.totalNota).toDecimalPlaces(2).abs().gt(0)
+    liquido.minus(compra.totalNota).abs().gt("0.01")
   )
     divergencia =
       "Soma dos itens − desconto + frete/outras despesas diverge do total da nota";

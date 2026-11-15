@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+const { countRead } = vi.hoisted(() => ({ countRead: vi.fn() }));
 vi.mock("../src/lib/server/auth", () => ({
   currentUser: async () => ({ id: "test" }),
   sameOrigin: () => true,
@@ -6,11 +7,11 @@ vi.mock("../src/lib/server/auth", () => ({
 }));
 vi.mock("../src/lib/server/db", () => ({
   database: () => ({
-    insert: () => ({
+    insert: () => { countRead(); return ({
       values: () => ({
         onConflictDoUpdate: () => ({ returning: async () => [{ count: 1 }] }),
       }),
-    }),
+    }); },
   }),
 }));
 import { POST } from "../src/app/api/purchases/extract/route";
@@ -32,6 +33,7 @@ const request = (
   });
 };
 afterEach(() => {
+  countRead.mockClear();
   vi.unstubAllGlobals();
   vi.unstubAllEnvs();
 });
@@ -46,7 +48,8 @@ describe("API de extração", () => {
             message: {
               content: JSON.stringify({
                 fornecedor: "Distribuidora",
-                itens: [],
+                itens: [{ quantidade: 2, valorUnitario: 19.9, total: 39.8 }],
+                totalProdutos: 39.8, totalNota: 39.8,
               }),
             },
           },
@@ -69,6 +72,32 @@ describe("API de extração", () => {
     expect(body.messages[0].content[0].text).toContain(
       "HEINZ 144/7G CX 2,00 19,9000 39,80",
     );
+  });
+  it("usa visão high e repete uma vez com divergências", async () => {
+    vi.stubEnv("DATABASE_URL", "configured");
+    vi.stubEnv("OPENAI_API_KEY", "test");
+    const nota = { itens: [{ quantidade: 2, valorUnitario: 19.9, total: 39.8 }], totalProdutos: 39.8, totalNota: 39.8 };
+    const fetchMock = vi.fn().mockResolvedValueOnce(Response.json({choices:[{message:{content:JSON.stringify({...nota,itens:[{quantidade:2,valorUnitario:19,total:39.8}]})}}]}))
+      .mockResolvedValueOnce(Response.json({choices:[{message:{content:JSON.stringify(nota)}}]}));
+    vi.stubGlobal("fetch", fetchMock);
+    const response = await POST(request("image", "nota.jpg", "image/jpeg"));
+    expect((await response.json()).validacao.valido).toBe(true);
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const first = JSON.parse(fetchMock.mock.calls[0][1].body);
+    const second = JSON.parse(fetchMock.mock.calls[1][1].body);
+    expect(first.model).toBe("gpt-4.1-mini");
+    expect(first.messages[0].content[1].image_url.detail).toBe("high");
+    expect(second.model).toBe("gpt-4.1");
+    expect(second.messages[0].content[2].text).toContain("Linha 1");
+  });
+  it("recusa arquivo grande ou tipo inválido antes da OpenAI", async () => {
+    vi.stubEnv("DATABASE_URL", "configured");
+    const fetchMock = vi.fn();
+    vi.stubGlobal("fetch", fetchMock);
+    expect((await POST(request(new Uint8Array(3*1024*1024+1),"foto.jpg","image/jpeg"))).status).toBe(422);
+    expect((await POST(request("exe","arquivo.exe","application/octet-stream"))).status).toBe(422);
+    expect(fetchMock).not.toHaveBeenCalled();
+    expect(countRead).not.toHaveBeenCalled();
   });
   it("lê XML mesmo sem chave OpenAI e sem requisição externa", async () => {
     vi.stubEnv("DATABASE_URL", "configured");

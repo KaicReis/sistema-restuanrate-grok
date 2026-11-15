@@ -1,3 +1,4 @@
+import { validarNota } from "@/lib/purchase-validation";
 import { database } from "@/lib/server/db";
 import { attempts } from "@/lib/server/schema";
 import { sql } from "drizzle-orm";
@@ -11,7 +12,7 @@ import {
 } from "@/lib/server/fiscal";
 import pdf from "pdf-parse/lib/pdf-parse.js";
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 120;
 export async function POST(request: Request) {
   if (!sameOrigin(request)) return new Response(null, { status: 403 });
   // Sem banco, a funcionalidade local continua disponível, mas a API paga exige login.
@@ -22,36 +23,19 @@ export async function POST(request: Request) {
       { status: 401 },
     );
   try {
-    const [limit] = await database()
-      .insert(attempts)
-      .values({
-        key: tokenHash("extract:" + user.id),
-        count: 1,
-        expires: new Date(Date.now() + 3600000),
-      })
-      .onConflictDoUpdate({
-        target: attempts.key,
-        set: {
-          count: sql`CASE WHEN ${attempts.expires} < now() THEN 1 ELSE ${attempts.count}+1 END`,
-          expires: sql`CASE WHEN ${attempts.expires} < now() THEN now()+interval '1 hour' ELSE ${attempts.expires} END`,
-        },
-      })
-      .returning();
-    if (limit.count > 30)
-      return NextResponse.json(
-        { error: "Limite de 30 leituras por hora atingido. Tente mais tarde." },
-        { status: 429 },
-      );
     if (Number(request.headers.get("content-length")) > 4 * 1024 * 1024)
       throw new Error("Arquivo deve ter até 3 MB");
     const form = await request.formData(),
       file = form.get("photo"),
       qr = form.get("qr");
+    if (file instanceof File) {
+      if (file.size > 3 * 1024 * 1024) throw new Error("Arquivo deve ter até 3 MB. Prepare a foto antes de enviar.");
+      if (!["image/jpeg", "image/png", "image/webp", "application/pdf", "application/xml", "text/xml"].includes(file.type) && !/\.(xml|pdf)$/i.test(file.name))
+        throw new Error("Formato não suportado. Use JPG, PNG, WebP, PDF ou XML até 3 MB.");
+    } else if (typeof qr !== "string") throw new Error("Envie uma foto ou URL do QR Code.");
     let content: Record<string, unknown>[];
     const instruction = fiscalInstruction;
     if (file instanceof File) {
-      if (file.size > 3 * 1024 * 1024)
-        throw new Error("Arquivo deve ter até 3 MB");
       const buffer = Buffer.from(await file.arrayBuffer());
       if (
         /\.xml$/i.test(file.name) ||
@@ -81,6 +65,7 @@ export async function POST(request: Request) {
           {
             type: "image_url",
             image_url: {
+              detail: "high",
               url: `data:${file.type};base64,${buffer.toString("base64")}`,
             },
           },
@@ -142,41 +127,75 @@ export async function POST(request: Request) {
       throw new Error(
         "Configure OPENAI_API_KEY na Vercel para fotos e PDFs. XML dispensa IA.",
       );
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content }],
-        response_format: {
-          type: "json_schema",
-          json_schema: {
-            name: "nota_fiscal",
-            strict: true,
-            schema: fiscalJsonSchema,
-          },
+    const [limit] = await database()
+      .insert(attempts)
+      .values({
+        key: tokenHash("extract:" + user.id),
+        count: 1,
+        expires: new Date(Date.now() + 3600000),
+      })
+      .onConflictDoUpdate({
+        target: attempts.key,
+        set: {
+          count: sql`CASE WHEN ${attempts.expires} < now() THEN 1 ELSE ${attempts.count}+1 END`,
+          expires: sql`CASE WHEN ${attempts.expires} < now() THEN now()+interval '1 hour' ELSE ${attempts.expires} END`,
         },
-        max_tokens: 16000,
-        temperature: 0,
-      }),
-      signal: AbortSignal.timeout(45000),
-    });
-    if (!response.ok)
-      throw new Error(
-        "Não foi possível ler a nota na OpenAI. Verifique a chave, créditos e tente novamente.",
+      })
+      .returning();
+    if (limit.count > 30)
+      return NextResponse.json(
+        { error: "Limite de 30 leituras por hora atingido. Tente mais tarde." },
+        { status: 429 },
       );
-    const result = await response.json();
-    const choice = result.choices?.[0];
-    if (
-      !choice?.message?.content ||
-      choice.message.refusal ||
-      choice.finish_reason === "length"
-    )
-      throw new Error("Leitura incompleta. Envie outra foto ou o XML da NF-e.");
-    const extracted = JSON.parse(choice.message.content);
+    const extract = async (model: string, feedback?: string) => {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model,
+          messages: [{ role: "user", content: feedback ? [...content, { type: "text", text: feedback }] : content }],
+          response_format: {
+            type: "json_schema",
+            json_schema: {
+              name: "nota_fiscal",
+              strict: true,
+              schema: fiscalJsonSchema,
+            },
+          },
+          max_tokens: 16000,
+          temperature: 0,
+        }),
+        signal: AbortSignal.timeout(45000),
+      });
+      if (!response.ok)
+        throw new Error(
+          "Não foi possível ler a nota na OpenAI. Verifique a chave, créditos e tente novamente.",
+        );
+      const result = await response.json();
+      const choice = result.choices?.[0];
+      if (
+        !choice?.message?.content ||
+        choice.message.refusal ||
+        choice.finish_reason === "length"
+      )
+        throw new Error("Leitura incompleta. Envie outra foto ou o XML da NF-e.");
+      return JSON.parse(choice.message.content);
+    };
+    let extracted = await extract(process.env.OPENAI_VISION_MODEL || "gpt-4.1-mini");
+    let validacao = validarNota(extracted);
+    if (!validacao.valido) {
+      try {
+        const fallback = await extract(process.env.OPENAI_VISION_FALLBACK_MODEL || "gpt-4.1",
+          "Releia o documento original. A leitura anterior apresentou divergências: " +
+          [...validacao.linhas.map(l => l.mensagem), ...validacao.totais].join("; ") +
+          ". Extraia novamente todos os campos, sem inventar ou ajustar valores para forçar as contas.");
+        const segunda = validarNota(fallback);
+        if (segunda.valido) { extracted = fallback; validacao = segunda; }
+      } catch { /* Keep the first editable result if the single retry fails. */ }
+    }
     // Campos incertos permanecem editáveis na revisão, nunca são confirmados automaticamente.
     const checked = compraSchema
       .partial({ fornecedor: true, data: true })
@@ -191,7 +210,7 @@ export async function POST(request: Request) {
           }),
         ),
       });
-    return NextResponse.json({ nota: extracted, pendente: !checked.success });
+    return NextResponse.json({ nota: extracted, validacao, pendente: !checked.success || !validacao.valido });
   } catch (e) {
     return NextResponse.json(
       {

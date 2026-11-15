@@ -10,20 +10,32 @@ import {
   type Compra,
 } from "@/lib/purchases";
 import { numeroBR, formatarBR } from "@/lib/purchase-numbers";
+import { validarNota } from "@/lib/purchase-validation";
+import { prepararFoto } from "@/lib/prepare-photo";
 import { Panel } from "./ui";
 export function Compras() {
   const { db, restaurante, atualizar, avisar } = useSistema(),
     input = useRef<HTMLInputElement>(null),
     [nota, setNota] = useState<Compra | null>(null),
+    [preparando, setPreparando] = useState(false),
+    [conferido, setConferido] = useState<string | null>(null),
     [busy, setBusy] = useState(false),
     [qr, setQr] = useState(""),
     [error, setError] = useState("");
+  const validacao = nota ? validarNota(nota) : null;
+  const assinatura = JSON.stringify(nota);
+  const podeConfirmar = validacao?.valido || conferido === assinatura;
   async function extract(file?: File, qrValue?: string) {
     setBusy(true);
     setError("");
+    setConferido(null);
     try {
       const form = new FormData();
-      if (file) form.set("photo", file);
+      if (file) {
+        setPreparando(true);
+        try { form.set("photo", await prepararFoto(file)); }
+        finally { setPreparando(false); }
+      }
       else form.set("qr", qrValue ?? qr);
       const response = await fetch("/api/purchases/extract", {
         method: "POST",
@@ -109,13 +121,13 @@ export function Compras() {
         disabled={busy}
         onClick={() => input.current?.click()}
       >
-        {busy ? "Lendo nota…" : "Lançar compra"}
+        {preparando ? "Preparando foto..." : busy ? "Lendo nota…" : "Lançar compra"}
       </button>
       <input
         className="sr-only"
         ref={input}
         type="file"
-        accept="image/jpeg,image/png,image/webp,application/pdf,application/xml,text/xml,.xml,.pdf"
+        accept="image/*,.heic,.heif,application/pdf,application/xml,text/xml,.xml,.pdf"
         onChange={(e) => void extract(e.target.files?.[0])}
       />
       <p>
@@ -153,9 +165,10 @@ export function Compras() {
           onSubmit={(e) => {
             e.preventDefault();
             try {
+              if (!podeConfirmar) throw new Error("Corrija as divergências ou marque conferi.");
               if (
                 atualizar(
-                  (d) => confirmarCompra(d, nota),
+                  (d) => confirmarCompra(d, nota, conferido === assinatura),
                   "Compra salva. Custos das receitas e pratos atualizados.",
                 )
               ) {
@@ -215,6 +228,8 @@ export function Compras() {
             ))}
           </div>
           <Conferencia nota={nota} />
+          {!!validacao?.totais.length && <div role="alert" style={{ color: "#b91c1c" }}>{validacao.totais.map(t => <p key={t}>{t}</p>)}</div>}
+          {!validacao?.valido && <label style={{ color: "#b91c1c" }}><input type="checkbox" checked={conferido === assinatura} onChange={e => setConferido(e.target.checked ? assinatura : null)} /> Conferi as linhas e os totais divergentes na nota original</label>}
           {nota.chave && (
             <p>
               Chave NF-e: {nota.chave} · Emitente: {nota.emitente}
@@ -244,7 +259,8 @@ export function Compras() {
               /* Invalid draft is shown in the editable field. */
             }
             return (
-              <fieldset key={index}>
+              <fieldset key={index} style={validacao?.linhas.some(l => l.index === index) ? { borderColor: "#b91c1c", color: "#b91c1c" } : undefined}>
+                {validacao?.linhas.filter(l => l.index === index).map(l => <p role="alert" key={l.index}>{l.mensagem}</p>)}
                 <legend>Item {index + 1}</legend>
                 <div className="form-grid">
                   <label className="field">
@@ -442,7 +458,7 @@ export function Compras() {
             custos. O vínculo e a conversão serão lembrados por fornecedor e
             produto. Compras antigas preservam preços de meses posteriores.
           </p>
-          <button className="button primary">Confirmar compra</button>
+          <button className="button primary" disabled={!podeConfirmar}>Confirmar compra</button>
           <button
             className="button"
             type="button"
