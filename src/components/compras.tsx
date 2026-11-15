@@ -4,7 +4,8 @@ import { useSistema } from "./context";
 import {
   confirmarCompra,
   prepararLinha,
-  ratearCompra,
+  resumoCompra,
+  custoUnitario,
   converterConteudo,
   totalPorCusto,
   type Compra,
@@ -165,7 +166,7 @@ export function Compras() {
           onSubmit={(e) => {
             e.preventDefault();
             try {
-              if (!podeConfirmar) throw new Error("Corrija as divergências ou marque conferi.");
+              if (!podeConfirmar) throw new Error("Corrija as linhas divergentes ou marque conferi.");
               if (
                 atualizar(
                   (d) => confirmarCompra(d, nota, conferido === assinatura),
@@ -227,9 +228,9 @@ export function Compras() {
               </label>
             ))}
           </div>
-          <Conferencia nota={nota} />
-          {!!validacao?.totais.length && <div role="alert" style={{ color: "#b91c1c" }}>{validacao.totais.map(t => <p key={t}>{t}</p>)}</div>}
-          {!validacao?.valido && <label style={{ color: "#b91c1c" }}><input type="checkbox" checked={conferido === assinatura} onChange={e => setConferido(e.target.checked ? assinatura : null)} /> Conferi as linhas e os totais divergentes na nota original</label>}
+          <p className="notice">Valor unitário ÷ conteúdo por embalagem define o custo do insumo. Desconto, frete e outras despesas são apenas informativos.</p>
+          {!!validacao?.totais.length && <div role="status" className="notice">{validacao.totais.map(t => <p key={t}>Aviso informativo: {t}</p>)}</div>}
+          {!validacao?.valido && <label style={{ color: "#b91c1c" }}><input type="checkbox" checked={conferido === assinatura} onChange={e => setConferido(e.target.checked ? assinatura : null)} /> Conferi as linhas divergentes na nota original</label>}
           {nota.chave && (
             <p>
               Chave NF-e: {nota.chave} · Emitente: {nota.emitente}
@@ -249,19 +250,11 @@ export function Compras() {
                   i === index ? { ...l, ...values } : l,
                 ),
               });
-            let custo = NaN;
-            try {
-              custo =
-                ratearCompra(nota).centavos[index] /
-                100 /
-                (line.quantidade * (line.conteudo ?? 1));
-            } catch {
-              /* Invalid draft is shown in the editable field. */
-            }
+            const custo = custoUnitario(line);
             return (
               <fieldset key={index} style={validacao?.linhas.some(l => l.index === index) ? { borderColor: "#b91c1c", color: "#b91c1c" } : undefined}>
-                {validacao?.linhas.filter(l => l.index === index).map(l => <p role="alert" key={l.index}>{l.mensagem}</p>)}
                 <legend>Item {index + 1}</legend>
+                {validacao?.linhas.filter(l => l.index === index).map(l => <p role="alert" key={l.index}>{l.mensagem}</p>)}
                 <div className="form-grid">
                   <label className="field">
                     Descrição
@@ -380,22 +373,20 @@ export function Compras() {
                     />
                   </label>
                   <label className="field">
-                    Custo por {line.unidade} com rateio (ajusta total bruto)
+                    Custo por {line.unidade} pelo valor unitário
                     <NumeroCompra
                       value={custo}
                       onChange={(value) => {
-                        const total = totalPorCusto(nota, index, value);
+                        const valorUnitario = Number((value * (line.conteudo ?? 1)).toFixed(4));
                         patch({
-                          total,
-                          valorUnitario: Number(
-                            (total / line.quantidade).toFixed(4),
-                          ),
+                          valorUnitario,
+                          total: totalPorCusto(nota, index, valorUnitario / (line.conteudo ?? 1)),
                         });
                       }}
                     />
                   </label>
                   <label className="field">
-                    Desconto do item (usado se o desconto da nota estiver vazio)
+                    Desconto do item (informativo)
                     <NumeroCompra
                       optional
                       value={line.descontoItem}
@@ -424,7 +415,7 @@ export function Compras() {
                   {formatarBR(line.quantidade)} {line.unidadeComercial} ×{" "}
                   {formatarBR(line.conteudo ?? 1)} {line.unidade} por embalagem
                   = {formatarBR(line.quantidade * (line.conteudo ?? 1))}{" "}
-                  {line.unidade}. Custo com rateio: R$ {formatarBR(custo)} /{" "}
+                  {line.unidade}. Custo pelo valor unitário: R$ {formatarBR(custo)} /{" "}
                   {line.unidade}.
                 </p>
                 {line.conversaoPendente && (
@@ -454,7 +445,7 @@ export function Compras() {
           })}
           <p>
             O último lançamento confirmado na competência define o preço do mês.
-            O conteúdo por embalagem e o rateio serão usados para recalcular os
+            O valor unitário e o conteúdo por embalagem serão usados para recalcular os
             custos. O vínculo e a conversão serão lembrados por fornecedor e
             produto. Compras antigas preservam preços de meses posteriores.
           </p>
@@ -475,7 +466,7 @@ export function Compras() {
         .map((c) => (
           <details key={c.id}>
             <summary>
-              {c.data} · {c.fornecedor} · R$ {ratearCompra(c).total.toFixed(2)}
+              {c.data} · {c.fornecedor} · R$ {resumoCompra(c).total.toFixed(2)}
             </summary>
             {c.itens.map((i, n) => (
               <p key={n}>
@@ -552,20 +543,4 @@ function NumeroCompra({
       }}
     />
   );
-}
-function Conferencia({ nota }: { nota: Compra }) {
-  try {
-    const r = ratearCompra(nota);
-    return (
-      <p
-        role={r.divergencia ? "alert" : "status"}
-        className={r.divergencia ? "notice warning" : "notice"}
-      >
-        {r.divergencia ||
-          `Soma dos itens − desconto + frete/outras despesas = R$ ${formatarBR(r.total)}`}
-      </p>
-    );
-  } catch {
-    return <p role="alert">Revise os números da nota.</p>;
-  }
 }

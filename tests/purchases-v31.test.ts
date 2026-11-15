@@ -5,7 +5,8 @@ import {
   confirmarCompra,
   extrairEmbalagem,
   prepararLinha,
-  ratearCompra,
+  resumoCompra,
+  custoUnitario,
   converterConteudo,
   totalPorCusto,
   type Compra,
@@ -93,7 +94,7 @@ function nota() {
     ),
   });
 }
-describe("compras v3.1 — DANFE real", () => {
+describe("compras v3.2 — DANFE real", () => {
   it.each([
     ["19,9000", 19.9],
     ["316,0000", 316],
@@ -129,20 +130,18 @@ describe("compras v3.1 — DANFE real", () => {
       unidade: "L",
     });
   });
-  it("fecha total, rateia centavos e salva quantidade convertida com custo líquido", () => {
+  it("salva custo somente pelo valor unitário e conteúdo da embalagem", () => {
     const db = migrar(criarBase()),
       n = nota();
-    const r = ratearCompra(n);
-    expect(r.divergencia).toBe("");
-    expect(r.centavos.reduce((s, v) => s + v, 0)).toBe(111252);
+    expect(resumoCompra(n).total).toBe(1112.52);
     confirmarCompra(db, n);
-    itens.forEach(([nome, , q, , , c, u], index) => {
+    itens.forEach(([nome, , q, unitario, , c, u]) => {
       const i = db.insumos.find((i) => i.nome === nome)!;
       expect(i.quantidade).toBeCloseTo(numeroBR(q) * c, 8);
       expect(i.unidade).toBe(u);
-      expect(i.preco).toBe(r.centavos[index]);
+      expect(i.preco).toBeCloseTo(numeroBR(q) * numeroBR(unitario) * 100, 8);
       expect(i.preco / 100 / i.quantidade).toBeCloseTo(
-        r.centavos[index] / 100 / (numeroBR(q) * c),
+        numeroBR(unitario) / c,
         8,
       );
     });
@@ -184,34 +183,51 @@ describe("compras v3.1 — DANFE real", () => {
     expect(converterConteudo(3, "L", "ml")).toBe(3000);
     expect(() => converterConteudo(1, "kg", "un")).toThrow();
   });
-  it("inclui frete/despesas sem aplicar desconto duas vezes", () => {
-    const n = nota();
-    n.frete = 10;
-    n.outrasDespesas = 5;
-    n.totalNota! += 15;
-    n.itens[0].descontoItem = 56.46;
-    expect(ratearCompra(n).centavos.reduce((s, v) => s + v, 0)).toBe(112752);
-    delete n.desconto;
-    expect(ratearCompra(n).total).toBe(1127.52);
+  it("desconto, frete, despesas e totais divergentes não afetam preços ou confirmação", () => {
+    for (const extras of [
+      { desconto: 56.46, frete: 10, outrasDespesas: 5, totalNota: 1127.52 },
+      { desconto: 100, frete: 200, outrasDespesas: 30, totalNota: 1, totalProdutos: 2 },
+    ]) {
+      const db = migrar(criarBase()), n = { ...nota(), ...extras };
+      n.itens[0].descontoItem = 20;
+      confirmarCompra(db, n);
+      itens.forEach(([nome, , , unitario, , conteudo]) => {
+        const i = db.insumos.find(i => i.nome === nome)!;
+        expect(i.preco / 100 / i.quantidade).toBeCloseTo(numeroBR(unitario) / conteudo, 8);
+      });
+    }
   });
-  it("permite editar custo unitário mantendo rateio proporcional", () => {
+  it("editar custo depende só do conteúdo da linha", () => {
     const n = nota();
-    const total = totalPorCusto(n, 0, 25);
-    n.itens[0].total = total;
-    expect(ratearCompra(n).centavos[0] / 100 / (2 * 1.008)).toBeCloseTo(25, 2);
-    const single = { ...n, itens: [n.itens[0]], desconto: 5 };
-    expect(totalPorCusto(single, 0, 25)).toBe(55.4);
+    expect(totalPorCusto(n, 0, 25)).toBe(50.4);
+    expect(totalPorCusto({...n, desconto: 500, frete: 1000}, 0, 25)).toBe(50.4);
+    expect(custoUnitario(n.itens[0])).toBeCloseTo(19.9 / 1.008, 8);
   });
-  it("não redistribui custo das linhas ignoradas para os insumos selecionados", () => {
-    const n = nota(),
-      antes = ratearCompra(n);
+  it("ignorar uma linha não altera custos das demais", () => {
+    const db = migrar(criarBase()), n = nota();
     n.itens[0].ignorar = true;
-    expect(ratearCompra(n).centavos).toEqual(antes.centavos);
+    confirmarCompra(db, n);
+    expect(db.insumos.some(i => i.nome === n.itens[0].nome)).toBe(false);
+    const i = db.insumos.find(i => i.nome === n.itens[1].nome)!;
+    expect(i.preco / 100 / i.quantidade).toBeCloseTo(316 / 15, 8);
+  });
+  it("conferi permite total de linha divergente sem usá-lo no custo", () => {
+    const db = migrar(criarBase()), n = nota();
+    n.itens[0].total = 100;
+    confirmarCompra(db, n, true);
+    const i = db.insumos.find(i => i.nome === n.itens[0].nome)!;
+    expect(i.preco / 100 / i.quantidade).toBeCloseTo(19.9 / 1.008, 8);
+  });
+  it("preserva unitário com quatro decimais sem arredondar custo para centavos", () => {
+    const db = migrar(criarBase()), n = nota();
+    n.itens[0].valorUnitario = 19.9001;
+    confirmarCompra(db, n);
+    const i = db.insumos.find(i => i.nome === n.itens[0].nome)!;
+    expect(i.preco / 100 / i.quantidade).toBeCloseTo(19.9001 / 1.008, 8);
+    expect(() => validarBackup(db)).not.toThrow();
   });
   it("recusa divergência e conversão não revisada sem alterar dados", () => {
     for (const mutate of [
-      (n: Compra) => (n.totalNota = 100),
-      (n: Compra) => (n.totalProdutos = 200),
       (n: Compra) => (n.itens[1].conversaoPendente = true),
       (n: Compra) => n.itens[1].total++,
     ]) {
@@ -248,7 +264,7 @@ describe("NF-e XML e contrato da IA", () => {
         prepararLinha(db, "bar", n, { ...i, unidade: "un" }),
       ),
     });
-    expect(ratearCompra(compra).divergencia).toBe("");
+    expect(resumoCompra(compra).total).toBe(1112.52);
     confirmarCompra(db, compra);
     expect(() => validarBackup(db)).not.toThrow();
   });

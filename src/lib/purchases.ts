@@ -85,18 +85,13 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
     throw new Error("Compra já confirmada");
   if (compra.itens.every((i) => i.ignorar))
     throw new Error("Selecione pelo menos um item");
-  const custos = ratearCompra(compra);
-  if (!conferido && !validarNota({ ...compra, totalProdutos: compra.totalProdutos ?? compra.itens.reduce((s, i) => s + i.total, 0), totalNota: compra.totalNota ?? custos.total }).valido) throw new Error("Confira as divergências aritméticas da nota");
-  if (custos.divergencia && !conferido) throw new Error(custos.divergencia);
+  if (!conferido && !validarNota(compra).valido)
+    throw new Error("Confira as divergências aritméticas das linhas da nota");
   // Validate every row before mutating the database (confirmation is atomic).
   for (const linha of compra.itens) {
     if (linha.ignorar) continue;
     if (linha.conversaoPendente)
       throw new Error("Revise o conteúdo da embalagem: " + linha.nome);
-    if (!conferido && Math.abs(linha.total - linha.quantidade * linha.valorUnitario) > 0.05)
-      throw new Error(
-        "Total diverge de quantidade × valor unitário: " + linha.nome,
-      );
     if (
       linha.insumo_id &&
       !db.insumos.some(
@@ -108,8 +103,9 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
       throw new Error("Insumo de outra operação ou inexistente");
   }
   const mes = compra.data.slice(0, 7);
-  for (const [index, linha] of compra.itens.entries()) {
+  for (const linha of compra.itens) {
     if (linha.ignorar) continue;
+    const custo = snapshotCusto(linha);
     let insumo = db.insumos.find(
       (i) =>
         i.id === linha.insumo_id && i.restaurante_id === compra.restaurante_id,
@@ -122,18 +118,18 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
         restaurante_id: compra.restaurante_id,
         nome: linha.nome,
         unidade: linha.unidade as Unidade,
-        quantidade: linha.quantidade * (linha.conteudo ?? 1),
-        preco: custos.centavos[index],
+        quantidade: custo.quantidade,
+        preco: custo.preco,
         rendimento: 100,
         historicoPrecos: {},
       };
       db.insumos.push(insumo);
       linha.insumo_id = insumo.id;
     }
-    // Snapshot da embalagem comprada, com quantidade e unidade revisadas: mantém conversão do custo por unidade.
+    // O preço vem exclusivamente de vUnCom; totais e despesas são informativos.
     const h = {
-      preco: custos.centavos[index],
-      quantidade: linha.quantidade * (linha.conteudo ?? 1),
+      preco: custo.preco,
+      quantidade: custo.quantidade,
       unidade: linha.unidade,
       rendimento: insumo.rendimento,
       precoPendente: false,
@@ -318,78 +314,31 @@ export function prepararLinha(
   }
   return { ...linha, ...embalagem, insumo_id: id };
 }
-export function ratearCompra(compra: Compra) {
-  const soma = compra.itens.reduce((s, i) => s.plus(i.total), new Decimal(0));
-  const desconto = new Decimal(
-    compra.desconto ??
-      compra.itens.reduce((s, i) => s + (i.descontoItem ?? 0), 0),
-  );
-  const acrescimos = new Decimal(compra.frete ?? 0).plus(
-    compra.outrasDespesas ?? 0,
-  );
-  const liquido = soma.minus(desconto).plus(acrescimos);
-  if (![soma, desconto, acrescimos, liquido].every((n) => n.isFinite()))
-    throw new Error("Revise os números da nota");
-  let divergencia = "";
-  if (soma.isZero() && !liquido.isZero())
-    divergencia = "Não é possível ratear despesas sem valor de produtos";
-  if (desconto.gt(soma))
-    divergencia = "Desconto maior que o total dos produtos";
-  if (
-    compra.totalProdutos !== undefined &&
-    soma.minus(compra.totalProdutos).abs().gt("0.01")
-  )
-    divergencia = "Soma dos itens diverge do total de produtos";
-  if (
-    compra.totalNota !== undefined &&
-    liquido.minus(compra.totalNota).abs().gt("0.01")
-  )
-    divergencia =
-      "Soma dos itens − desconto + frete/outras despesas diverge do total da nota";
-  const alvo = liquido.times(100).toDecimalPlaces(0).toNumber();
-  // Cumulative rounding conserves cents, including when some rows are ignored.
-  let acumulado = new Decimal(0),
-    anterior = 0;
-  const centavos = compra.itens.map((i) => {
-    acumulado = acumulado.plus(
-      soma.isZero() ? 0 : new Decimal(i.total).div(soma).times(alvo),
-    );
-    const arredondado = acumulado.toDecimalPlaces(0).toNumber();
-    const valor = arredondado - anterior;
-    anterior = arredondado;
-    return valor;
-  });
-  return { centavos, total: liquido.toNumber(), divergencia };
+/** Normalizes fractional cents without rounding the commercial unit price. */
+function snapshotCusto(linha: Compra["itens"][number]) {
+  const centavos = new Decimal(linha.valorUnitario).times(linha.quantidade).times(100);
+  const escala = new Decimal(10).pow(centavos.decimalPlaces());
+  return {
+    preco: centavos.times(escala).toNumber(),
+    quantidade: new Decimal(linha.quantidade).times(linha.conteudo ?? 1).times(escala).toNumber(),
+  };
 }
 
-/** Editing the resulting unit cost changes the gross row, retaining proportional allocation. */
+/** Fiscal amounts are informational and never determine ingredient prices. */
+export function resumoCompra(compra: Compra) {
+  const soma = compra.itens.reduce((s, i) => s.plus(i.total), new Decimal(0));
+  const desconto = compra.desconto ?? compra.itens.reduce((s, i) => s + (i.descontoItem ?? 0), 0);
+  const calculado = soma.minus(desconto).plus(compra.frete ?? 0).plus(compra.outrasDespesas ?? 0);
+  return { total: compra.totalNota ?? calculado.toNumber(), calculado: calculado.toNumber() };
+}
+
+export function custoUnitario(linha: Compra["itens"][number]) {
+  return new Decimal(linha.valorUnitario).div(linha.conteudo ?? 1).toNumber();
+}
+
+/** Editing the unit cost changes only this row's commercial price and gross total. */
 export function totalPorCusto(compra: Compra, index: number, custo: number) {
+  if (!Number.isFinite(custo) || custo < 0) throw new Error("Custo inválido");
   const linha = compra.itens[index];
-  const liquido = custo * linha.quantidade * (linha.conteudo ?? 1);
-  const outros = compra.itens.reduce(
-    (s, i, n) => s + (n === index ? 0 : i.total),
-    0,
-  );
-  const ajuste =
-    (compra.frete ?? 0) +
-    (compra.outrasDespesas ?? 0) -
-    (compra.desconto ??
-      compra.itens.reduce((s, i) => s + (i.descontoItem ?? 0), 0));
-  if (!Number.isFinite(liquido) || liquido < 0)
-    throw new Error("Custo inválido");
-  let bruto: number;
-  if (outros === 0) bruto = liquido - ajuste;
-  else {
-    const b = outros + ajuste - liquido;
-    const raiz = Math.sqrt(b * b + 4 * liquido * outros);
-    bruto =
-      b >= 0
-        ? liquido === 0
-          ? 0
-          : (2 * liquido * outros) / (raiz + b)
-        : (raiz - b) / 2;
-  }
-  if (!Number.isFinite(bruto) || bruto < 0)
-    throw new Error("Custo incompatível com o desconto e as despesas");
-  return Number(bruto.toFixed(2));
+  return new Decimal(custo).times(linha.conteudo ?? 1).times(linha.quantidade).toDecimalPlaces(2).toNumber();
 }

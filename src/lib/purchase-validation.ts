@@ -18,5 +18,5 @@ export function validarNota(nota: Nota) {
   const liquido = new Decimal(number(nota.totalProdutos) ? nota.totalProdutos! : NaN)
     .minus(nota.desconto ?? 0).plus(nota.frete ?? 0).plus(nota.outrasDespesas ?? 0);
   if (diverge(liquido, nota.totalNota)) totais.push(`Produtos - desconto + frete + outras = ${liquido} vs totalNota lido ${nota.totalNota}`);
-  return { valido: !linhas.length && !totais.length, linhas, totais };
+  return { valido: !linhas.length, linhas, totais };
 }

@@ -129,12 +129,19 @@ A confirmação grava no insumo o fator por emitente/fornecedor + código (ou de
 quando não há código), dentro do mesmo backup/snapshot dos demais dados. Não há
 nova migração SQL. A conversão confirmada será reutilizada nas próximas notas.
 
-Desconto, frete e outras despesas são rateados pelo valor bruto de cada linha,
-com arredondamento que preserva centavos. O desconto total da nota prevalece sobre
-a soma de descontos dos itens, evitando desconto duplicado. Linhas ignoradas entram
-na conferência e no rateio fiscal, mas não atualizam insumos. Divergências impedem
-confirmar até corrigir os campos. O preço salvo é o custo líquido da quantidade
-convertida, em centavos, mantendo o histórico mensal.
+O custo do insumo usa somente o valor unitário comercial dividido pelo conteúdo
+por embalagem. Desconto, frete, outras despesas e totais são apenas informativos;
+não há rateio no custo. Linhas ignoradas entram na conferência, mas não atualizam
+insumos. Divergências por linha (quantidade × unitário vs total, tolerância R$ 0,01)
+exigem correção ou marcação “conferi”. Divergências de totais geram apenas avisos.
+O histórico mensal preserva a conversão do valor unitário para a unidade do insumo.
+
+Fotos são preparadas no navegador (orientação EXIF, até 2048 px, JPEG 0,9 até 0,7,
+menos de 3 MB); HEIC depende do suporte do navegador. A API valida tamanho/tipo
+antes de contar a leitura ou chamar a IA. O padrão é `gpt-4.1-mini` com imagem em
+`detail: high` (`OPENAI_VISION_MODEL` opcional). Somente divergências por linha
+provocam uma única releitura com `gpt-4.1` (`OPENAI_VISION_FALLBACK_MODEL` opcional),
+para foto, PDF e QR. XML dispensa IA.
 
 Os testes incluem os sete produtos da DANFE informada (R$ 1.168,98 em produtos,
 R$ 56,46 de desconto e R$ 1.112,52 líquidos), XML com decimais fiscais e PDFs

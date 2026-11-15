@@ -90,6 +90,24 @@ describe("API de extração", () => {
     expect(second.model).toBe("gpt-4.1");
     expect(second.messages[0].content[2].text).toContain("Linha 1");
   });
+  it.each(["image/jpeg", "application/pdf", "qr"])("totais divergentes em %s não disparam fallback", async (type) => {
+    vi.stubEnv("DATABASE_URL", "configured");
+    vi.stubEnv("OPENAI_API_KEY", "test");
+    const nota = { itens: [{quantidade:2,valorUnitario:19.9,total:39.8}], totalProdutos:100, totalNota:1 };
+    const answer = () => Response.json({choices:[{message:{content:JSON.stringify(nota)}}]});
+    const fetchMock = vi.fn(async (url: string) => String(url).includes("api.openai.com") ? answer() : new Response("documento fiscal"));
+    vi.stubGlobal("fetch", fetchMock);
+    const form = new FormData();
+    form.set("qr", "https://nfce.sefaz.ba.gov.br/consulta");
+    const input = type === "qr" ? new Request("http://localhost/api/purchases/extract", { method:"POST", body:form })
+      : type === "application/pdf" ? request(pdf("danfe-texto"),"nota.pdf",type) : request("image","nota.jpg",type);
+    const response = await POST(input);
+    const result = await response.json();
+    expect(response.status).toBe(200);
+    expect(result.validacao.valido).toBe(true);
+    expect(result.validacao.totais.length).toBeGreaterThan(0);
+    expect(fetchMock.mock.calls.filter(([url]) => String(url).includes("api.openai.com"))).toHaveLength(1);
+  });
   it("recusa arquivo grande ou tipo inválido antes da OpenAI", async () => {
     vi.stubEnv("DATABASE_URL", "configured");
     const fetchMock = vi.fn();

@@ -186,11 +186,11 @@ export async function POST(request: Request) {
     };
     let extracted = await extract(process.env.OPENAI_VISION_MODEL || "gpt-4.1-mini");
     let validacao = validarNota(extracted);
-    if (!validacao.valido) {
+    if (validacao.linhas.length) {
       try {
         const fallback = await extract(process.env.OPENAI_VISION_FALLBACK_MODEL || "gpt-4.1",
           "Releia o documento original. A leitura anterior apresentou divergências: " +
-          [...validacao.linhas.map(l => l.mensagem), ...validacao.totais].join("; ") +
+          validacao.linhas.map(l => l.mensagem).join("; ") +
           ". Extraia novamente todos os campos, sem inventar ou ajustar valores para forçar as contas.");
         const segunda = validarNota(fallback);
         if (segunda.valido) { extracted = fallback; validacao = segunda; }

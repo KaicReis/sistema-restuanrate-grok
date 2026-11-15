@@ -11,6 +11,7 @@ describe("conferência aritmética DANFE real", () => {
   it("tolera um centavo inclusive na fronteira decimal", () => expect(validarNota({...nota,itens: itens.map((i,index) => index ? i : {...i,total:39.81})}).valido).toBe(true));
   it("detecta os dois totais e aplica desconto, frete e outras", () => {
     expect(validarNota({...nota,totalProdutos:1000}).totais).toHaveLength(2);
+    expect(validarNota({...nota,totalProdutos:1000,totalNota:1}).valido).toBe(true);
     expect(validarNota({...nota,desconto:10,frete:5,outrasDespesas:2,totalNota:1165.98}).valido).toBe(true);
   });
   it("mantém campos ilegíveis pendentes", () => expect(validarNota({...nota,itens:[{quantidade:null,total:2,valorUnitario:2}]}).valido).toBe(false));
