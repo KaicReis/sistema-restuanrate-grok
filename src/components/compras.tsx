@@ -1,7 +1,15 @@
 "use client";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSistema } from "./context";
-import { confirmarCompra, sugerirInsumo, type Compra } from "@/lib/purchases";
+import {
+  confirmarCompra,
+  prepararLinha,
+  ratearCompra,
+  converterConteudo,
+  totalPorCusto,
+  type Compra,
+} from "@/lib/purchases";
+import { numeroBR, formatarBR } from "@/lib/purchase-numbers";
 import { Panel } from "./ui";
 export function Compras() {
   const { db, restaurante, atualizar, avisar } = useSistema(),
@@ -31,17 +39,33 @@ export function Compras() {
         restaurante_id: restaurante.id,
         fornecedor: n.fornecedor ?? "",
         data: n.data ?? "",
-        itens: n.itens.map((i: Record<string, unknown>) => ({
-          nome: typeof i.nome === "string" ? i.nome : "",
-          quantidade: typeof i.quantidade === "number" ? i.quantidade : 0,
-          unidade: ["kg", "g", "L", "ml", "un"].includes(String(i.unidade))
-            ? i.unidade
-            : "un",
-          valorUnitario:
-            typeof i.valorUnitario === "number" ? i.valorUnitario : 0,
-          total: typeof i.total === "number" ? i.total : 0,
-          insumo_id: sugerirInsumo(db, restaurante.id, String(i.nome ?? "")),
-        })),
+        emitente: n.emitente || undefined,
+        chave: n.chave || undefined,
+        originais: n.originais,
+        ...Object.fromEntries(
+          [
+            "desconto",
+            "frete",
+            "outrasDespesas",
+            "totalProdutos",
+            "totalNota",
+          ].map((k) => [k, n[k] == null ? undefined : numeroBR(n[k])]),
+        ),
+        itens: n.itens.map((i: Record<string, unknown>) =>
+          prepararLinha(db, restaurante.id, n, {
+            nome: String(i.nome ?? ""),
+            codigo: i.codigo ? String(i.codigo) : undefined,
+            unidadeComercial: String(i.unidadeComercial ?? i.unidade ?? ""),
+            quantidade: i.quantidade == null ? NaN : numeroBR(i.quantidade),
+            unidade: "un",
+            valorUnitario:
+              i.valorUnitario == null ? NaN : numeroBR(i.valorUnitario),
+            total: i.total == null ? NaN : numeroBR(i.total),
+            descontoItem:
+              i.descontoItem == null ? undefined : numeroBR(i.descontoItem),
+            originais: i.originais as Record<string, string | null> | undefined,
+          }),
+        ),
       });
     } catch (e) {
       setError((e as Error).message);
@@ -91,13 +115,12 @@ export function Compras() {
         className="sr-only"
         ref={input}
         type="file"
-        accept="image/jpeg,image/png,image/webp"
-        capture="environment"
+        accept="image/jpeg,image/png,image/webp,application/pdf,application/xml,text/xml,.xml,.pdf"
         onChange={(e) => void extract(e.target.files?.[0])}
       />
       <p>
-        Fotografe o cupom/nota (JPG, PNG ou WebP até 3 MB). Revise todos os
-        campos antes de confirmar.
+        Envie foto, PDF da DANFE com texto ou XML da NF-e (até 3 MB). Revise
+        todos os campos antes de confirmar.
       </p>
       <label className="field">
         Ler QR Code da NFC-e
@@ -162,6 +185,47 @@ export function Compras() {
               onChange={(e) => setNota({ ...nota, data: e.target.value })}
             />
           </label>
+          <div className="form-grid">
+            {(
+              [
+                "totalProdutos",
+                "desconto",
+                "frete",
+                "outrasDespesas",
+                "totalNota",
+              ] as const
+            ).map((key) => (
+              <label className="field" key={key}>
+                {
+                  {
+                    totalProdutos: "Total dos produtos",
+                    desconto: "Desconto da nota",
+                    frete: "Frete",
+                    outrasDespesas: "Outras despesas",
+                    totalNota: "Total da nota",
+                  }[key]
+                }{" "}
+                (R$)
+                <NumeroCompra
+                  optional
+                  value={nota[key]}
+                  onChange={(value) => setNota({ ...nota, [key]: value })}
+                />
+              </label>
+            ))}
+          </div>
+          <Conferencia nota={nota} />
+          {nota.chave && (
+            <p>
+              Chave NF-e: {nota.chave} · Emitente: {nota.emitente}
+            </p>
+          )}
+          {nota.originais && (
+            <details>
+              <summary>Dados originais da nota</summary>
+              <pre>{JSON.stringify(nota.originais, null, 2)}</pre>
+            </details>
+          )}
           {nota.itens.map((line, index) => {
             const patch = (values: Partial<typeof line>) =>
               setNota({
@@ -170,6 +234,15 @@ export function Compras() {
                   i === index ? { ...l, ...values } : l,
                 ),
               });
+            let custo = NaN;
+            try {
+              custo =
+                ratearCompra(nota).centavos[index] /
+                100 /
+                (line.quantidade * (line.conteudo ?? 1));
+            } catch {
+              /* Invalid draft is shown in the editable field. */
+            }
             return (
               <fieldset key={index}>
                 <legend>Item {index + 1}</legend>
@@ -190,27 +263,34 @@ export function Compras() {
                           : key === "total"
                             ? "Total (R$)"
                             : "Valor unitário (R$)"}
-                        <input
-                          type="number"
-                          min={key === "quantidade" ? 0.000001 : 0}
-                          step="any"
-                          required
+                        <NumeroCompra
                           value={line[key]}
-                          onChange={(e) =>
-                            patch({ [key]: Number(e.target.value) })
-                          }
+                          positive={key === "quantidade"}
+                          onChange={(value) => patch({ [key]: value })}
                         />
                       </label>
                     ),
                   )}
                   <label className="field">
-                    Unidade
+                    Unidade do insumo
                     <select
                       value={line.unidade}
                       onChange={(e) =>
-                        patch({
-                          unidade: e.target.value as typeof line.unidade,
-                        })
+                        (() => {
+                          const unidade = e.target.value as typeof line.unidade;
+                          try {
+                            patch({
+                              unidade,
+                              conteudo: converterConteudo(
+                                line.conteudo ?? 1,
+                                line.unidade,
+                                unidade,
+                              ),
+                            });
+                          } catch {
+                            patch({ unidade, conversaoPendente: true });
+                          }
+                        })()
                       }
                     >
                       {["kg", "g", "L", "ml", "un"].map((u) => (
@@ -223,13 +303,31 @@ export function Compras() {
                     <select
                       value={line.ignorar ? "ignore" : (line.insumo_id ?? "")}
                       onChange={(e) =>
-                        patch({
-                          ignorar: e.target.value === "ignore",
-                          insumo_id:
-                            e.target.value === "ignore" || !e.target.value
-                              ? undefined
-                              : e.target.value,
-                        })
+                        (() => {
+                          const insumo = db.insumos.find(
+                            (i) => i.id === e.target.value,
+                          );
+                          let conteudo = line.conteudo ?? 1;
+                          let pendente = line.conversaoPendente;
+                          if (insumo) {
+                            try {
+                              conteudo = converterConteudo(
+                                conteudo,
+                                line.unidade,
+                                insumo.unidade,
+                              );
+                            } catch {
+                              pendente = true;
+                            }
+                          }
+                          patch({
+                            ignorar: e.target.value === "ignore",
+                            insumo_id: insumo?.id,
+                            unidade: insumo?.unidade ?? line.unidade,
+                            conteudo,
+                            conversaoPendente: pendente,
+                          });
+                        })()
                       }
                     >
                       <option value="">Criar insumo novo</option>
@@ -243,14 +341,106 @@ export function Compras() {
                         ))}
                     </select>
                   </label>
+                  <label className="field">
+                    Unidade comercial (CX, PC, FD, UN, KG…)
+                    <input
+                      value={line.unidadeComercial ?? ""}
+                      onChange={(e) =>
+                        patch({ unidadeComercial: e.target.value })
+                      }
+                    />
+                  </label>
+                  <label className="field">
+                    Quantidade total na unidade do insumo (ajusta conteúdo)
+                    <NumeroCompra
+                      positive
+                      value={line.quantidade * (line.conteudo ?? 1)}
+                      onChange={(value) =>
+                        patch({
+                          conteudo: value / line.quantidade,
+                          conversaoPendente: false,
+                        })
+                      }
+                    />
+                  </label>
+                  <label className="field">
+                    Custo por {line.unidade} com rateio (ajusta total bruto)
+                    <NumeroCompra
+                      value={custo}
+                      onChange={(value) => {
+                        const total = totalPorCusto(nota, index, value);
+                        patch({
+                          total,
+                          valorUnitario: Number(
+                            (total / line.quantidade).toFixed(4),
+                          ),
+                        });
+                      }}
+                    />
+                  </label>
+                  <label className="field">
+                    Desconto do item (usado se o desconto da nota estiver vazio)
+                    <NumeroCompra
+                      optional
+                      value={line.descontoItem}
+                      onChange={(descontoItem) => patch({ descontoItem })}
+                    />
+                  </label>
+                  <label className="field">
+                    Código do fornecedor
+                    <input
+                      value={line.codigo ?? ""}
+                      onChange={(e) => patch({ codigo: e.target.value })}
+                    />
+                  </label>
+                  <label className="field">
+                    Conteúdo por embalagem na unidade do insumo
+                    <NumeroCompra
+                      positive
+                      value={line.conteudo ?? 1}
+                      onChange={(conteudo) =>
+                        patch({ conteudo, conversaoPendente: false })
+                      }
+                    />
+                  </label>
                 </div>
+                <p>
+                  {formatarBR(line.quantidade)} {line.unidadeComercial} ×{" "}
+                  {formatarBR(line.conteudo ?? 1)} {line.unidade} por embalagem
+                  = {formatarBR(line.quantidade * (line.conteudo ?? 1))}{" "}
+                  {line.unidade}. Custo com rateio: R$ {formatarBR(custo)} /{" "}
+                  {line.unidade}.
+                </p>
+                {line.conversaoPendente && (
+                  <label className="field">
+                    <span role="alert">
+                      Revise o conteúdo por embalagem e a unidade do insumo.
+                    </span>
+                    <span>
+                      <input
+                        type="checkbox"
+                        onChange={(e) =>
+                          patch({ conversaoPendente: !e.target.checked })
+                        }
+                      />{" "}
+                      Confirmo o conteúdo e a unidade revisados
+                    </span>
+                  </label>
+                )}
+                {line.originais && (
+                  <details>
+                    <summary>Texto original da nota</summary>
+                    <pre>{JSON.stringify(line.originais, null, 2)}</pre>
+                  </details>
+                )}
               </fieldset>
             );
           })}
           <p>
             O último lançamento confirmado na competência define o preço do mês.
-            A quantidade e a unidade da embalagem serão usadas para recalcular
-            os custos. Compras antigas preservam preços de meses posteriores.
+            O conteúdo por embalagem e o rateio serão usados para recalcular os
+            custos. O vínculo e a conversão serão lembrados por fornecedor e
+            produto. Compras antigas preservam preços de meses posteriores.
           </p>
           <button className="button primary">Confirmar compra</button>
           <button
@@ -269,11 +459,7 @@ export function Compras() {
         .map((c) => (
           <details key={c.id}>
             <summary>
-              {c.data} · {c.fornecedor} · R${" "}
-              {c.itens
-                .filter((i) => !i.ignorar)
-                .reduce((s, i) => s + i.total, 0)
-                .toFixed(2)}
+              {c.data} · {c.fornecedor} · R$ {ratearCompra(c).total.toFixed(2)}
             </summary>
             {c.itens.map((i, n) => (
               <p key={n}>
@@ -285,4 +471,85 @@ export function Compras() {
         ))}
     </Panel>
   );
+}
+
+function NumeroCompra({
+  value,
+  onChange,
+  positive = false,
+  optional = false,
+}: {
+  value?: number;
+  onChange: (value: number) => void;
+  positive?: boolean;
+  optional?: boolean;
+}) {
+  const [texto, setTexto] = useState(
+    value === undefined ? "" : formatarBR(value),
+  );
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (document.activeElement !== ref.current) {
+      setTexto(value === undefined ? "" : formatarBR(value));
+      if (
+        (value === undefined && optional) ||
+        (value !== undefined &&
+          Number.isFinite(value) &&
+          value >= 0 &&
+          (!positive || value > 0))
+      )
+        ref.current?.setCustomValidity("");
+    }
+  }, [value]);
+  return (
+    <input
+      ref={ref}
+      type="text"
+      inputMode="decimal"
+      required={!optional}
+      value={texto}
+      onChange={(e) => {
+        setTexto(e.target.value);
+        try {
+          if (optional && !e.target.value.trim()) {
+            e.target.setCustomValidity("");
+            onChange(undefined as unknown as number);
+            return;
+          }
+          const n = numeroBR(e.target.value);
+          if (n < 0 || (positive && n <= 0))
+            throw new Error(
+              positive
+                ? "Informe valor maior que zero"
+                : "Informe valor não negativo",
+            );
+          e.target.setCustomValidity("");
+          onChange(n);
+        } catch (error) {
+          e.target.setCustomValidity((error as Error).message);
+          try {
+            onChange(NaN);
+          } catch {
+            /* Keep the previous cost when the derived total is invalid. */
+          }
+        }
+      }}
+    />
+  );
+}
+function Conferencia({ nota }: { nota: Compra }) {
+  try {
+    const r = ratearCompra(nota);
+    return (
+      <p
+        role={r.divergencia ? "alert" : "status"}
+        className={r.divergencia ? "notice warning" : "notice"}
+      >
+        {r.divergencia ||
+          `Soma dos itens − desconto + frete/outras despesas = R$ ${formatarBR(r.total)}`}
+      </p>
+    );
+  } catch {
+    return <p role="alert">Revise os números da nota.</p>;
+  }
 }

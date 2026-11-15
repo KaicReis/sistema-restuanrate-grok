@@ -238,6 +238,21 @@ export function validarBackup(value: unknown): Database {
       )
         throw new Error("Ingrediente duplicado no mesmo canal.");
   }
+  for (const i of db.insumos) {
+    if (
+      i.conversoes !== undefined &&
+      (!Array.isArray(i.conversoes) ||
+        i.conversoes.some(
+          (c) =>
+            !object(c) ||
+            !text(c.chave) ||
+            !num(c.conteudo) ||
+            c.conteudo <= 0 ||
+            !["kg", "g", "L", "ml", "un"].includes(c.unidade),
+        ))
+    )
+      throw new Error("Conversão de fornecedor inválida");
+  }
   v3Schema.parse(db);
   for (const rows of [db.capitais ?? [], db.compras ?? []])
     for (const row of rows)

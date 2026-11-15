@@ -111,3 +111,32 @@ Também é possível fotografar o QR Code (navegadores com BarcodeDetector) ou c
 ## Validação v3
 
 `npm test` cobre fórmulas de capital, pendências, ciclo negativo, importação, confirmação de compras, preços históricos, isolamento entre operações, hash de senha e API de sincronização com migração aplicada em Postgres embarcado (PGlite), incluindo conflito de revisão e snapshots transacionais. `npm run build` verifica o bundle de produção e tipos. A leitura real pela OpenAI e o banco de produção dependem das credenciais configuradas pelo dono.
+
+### Compras por nota — v3.1
+
+A revisão aceita números pt-BR, inclusive `19,9000`, `2,00` e `1.168,98`.
+Envie foto (JPG/PNG/WebP), PDF da DANFE com texto ou XML da NF-e, até 3 MB.
+O PDF é lido no servidor sem OCR; PDFs digitalizados sem texto devem ser enviados
+como foto ou substituídos pelo XML. A leitura de XML não usa OpenAI. Foto, PDF e
+consulta por QR continuam exigindo `OPENAI_API_KEY`; todos exigem sessão autenticada.
+A IA usa `json_schema`, com números JSON normalizados e texto original para conferência.
+
+A unidade comercial (CX/PC/FD/UN/KG etc.) é preservada separadamente da unidade
+do insumo. Revise o conteúdo por embalagem, o vínculo e a unidade do insumo: a tela
+mostra quantidade comprada × conteúdo e custo por kg/g/L/ml/un. Conteúdos não
+identificados exigem revisão explícita. Alterar entre kg/g ou L/ml converte o fator.
+A confirmação grava no insumo o fator por emitente/fornecedor + código (ou descrição
+quando não há código), dentro do mesmo backup/snapshot dos demais dados. Não há
+nova migração SQL. A conversão confirmada será reutilizada nas próximas notas.
+
+Desconto, frete e outras despesas são rateados pelo valor bruto de cada linha,
+com arredondamento que preserva centavos. O desconto total da nota prevalece sobre
+a soma de descontos dos itens, evitando desconto duplicado. Linhas ignoradas entram
+na conferência e no rateio fiscal, mas não atualizam insumos. Divergências impedem
+confirmar até corrigir os campos. O preço salvo é o custo líquido da quantidade
+convertida, em centavos, mantendo o histórico mensal.
+
+Os testes incluem os sete produtos da DANFE informada (R$ 1.168,98 em produtos,
+R$ 56,46 de desconto e R$ 1.112,52 líquidos), XML com decimais fiscais e PDFs
+sintéticos com e sem texto. `npm run db:migrate` e `npm run user:create` usam
+`async main()` para funcionar com a saída CJS do tsx.
