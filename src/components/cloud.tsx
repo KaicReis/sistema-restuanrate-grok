@@ -1,5 +1,7 @@
 "use client";
 import {
+  createContext,
+  useContext,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -10,6 +12,38 @@ import type { Database } from "@/lib/types";
 import { repositorio, validarBackup } from "@/lib/storage";
 import { mesclarDados } from "@/lib/import-data";
 import { migrar } from "@/lib/storage/migrate";
+const CloudContext = createContext({
+  mode: "local",
+  notice: "",
+  saving: false,
+  error: false,
+  retry: () => {},
+  logout: () => {},
+});
+export const useCloud = () => useContext(CloudContext);
+export function CloudIndicator() {
+  const cloud = useCloud();
+  return (
+    <div
+      title={cloud.error ? cloud.notice : undefined}
+      className={`cloud-indicator ${cloud.error ? "negative" : ""}`}
+      role="status"
+    >
+      {cloud.error
+        ? "Erro ao salvar"
+        : cloud.saving
+          ? "Salvando…"
+          : cloud.mode === "cloud"
+            ? "Salvo na nuvem"
+            : "Salvo neste navegador"}
+      {cloud.error && (
+        <button className="button" onClick={cloud.retry}>
+          Tentar de novo
+        </button>
+      )}
+    </div>
+  );
+}
 export function Cloud({ children }: { children: ReactNode }) {
   const [state, setState] = useState<
       "loading" | "login" | "import" | "ready" | "error"
@@ -17,7 +51,11 @@ export function Cloud({ children }: { children: ReactNode }) {
     [mode, setMode] = useState(""),
     [notice, setNotice] = useState(""),
     [email, setEmail] = useState(""),
-    [password, setPassword] = useState("");
+    [password, setPassword] = useState(""),
+    [attempted, setAttempted] = useState(false),
+    [entering, setEntering] = useState(false),
+    [showPassword, setShowPassword] = useState(false),
+    [syncError, setSyncError] = useState(false);
   const revision = useRef(0),
     pending = useRef(0),
     stopped = useRef(false),
@@ -69,7 +107,7 @@ export function Cloud({ children }: { children: ReactNode }) {
         );
       repositorio.salvar(validarBackup(cloud.data));
       localStorage.setItem("vila:linked", "true");
-      setNotice("Sincronizado com a nuvem.");
+      setNotice("Salvo na nuvem");
       setState("ready");
     } catch (e) {
       setNotice((e as Error).message);
@@ -78,7 +116,7 @@ export function Cloud({ children }: { children: ReactNode }) {
   }
   useEffect(() => {
     void initialize();
-  }, []); // eslint-disable-line
+  }, []);
   async function firstImport(file?: File) {
     try {
       if (file && file.size > 10 * 1024 * 1024)
@@ -123,7 +161,8 @@ export function Cloud({ children }: { children: ReactNode }) {
       const data = structuredClone((event as CustomEvent<Database>).detail);
       pending.current++;
       localStorage.setItem("vila:pending", "true");
-      setNotice("Salvando na nuvem…");
+      setSyncError(false);
+      setNotice("Salvando…");
       chain.current = chain.current
         .then(async () => {
           if (stopped.current) return;
@@ -135,10 +174,10 @@ export function Cloud({ children }: { children: ReactNode }) {
           const result = await res.json();
           if (!res.ok) throw new Error(result.error || "Sessão expirada.");
           revision.current = result.revision;
-          setNotice("Sincronizado com a nuvem.");
         })
         .catch((e) => {
           stopped.current = true;
+          setSyncError(true);
           setNotice(
             (e as Error).message +
               " Exporte o backup local antes de recarregar.",
@@ -146,8 +185,10 @@ export function Cloud({ children }: { children: ReactNode }) {
         })
         .finally(() => {
           pending.current--;
-          if (!pending.current && !stopped.current)
+          if (!pending.current && !stopped.current) {
             localStorage.removeItem("vila:pending");
+            setNotice("Salvo na nuvem");
+          }
         });
     };
     window.addEventListener("vila-save", save);
@@ -189,38 +230,44 @@ export function Cloud({ children }: { children: ReactNode }) {
   }, [state, mode]);
   if (state === "ready")
     return (
-      <>
-        <div className="cloud-status" role="status">
-          {notice}{" "}
-          {mode === "cloud" && (
-            <button
-              className="button"
-              onClick={async () => {
-                if (pending.current || stopped.current) {
-                  setNotice(
-                    "Exporte seu backup e aguarde a sincronização antes de sair.",
-                  );
-                  return;
-                }
-                await fetch("/api/auth", { method: "DELETE" });
-                window.location.reload();
-              }}
-            >
-              Sair
-            </button>
-          )}
-        </div>
+      <CloudContext.Provider
+        value={{
+          mode,
+          notice,
+          saving: notice === "Salvando…",
+          error: syncError,
+          retry: () => {
+            stopped.current = false;
+            setSyncError(false);
+            window.dispatchEvent(
+              new CustomEvent("vila-save", { detail: repositorio.carregar() }),
+            );
+          },
+          logout: async () => {
+            if (pending.current || stopped.current) return;
+            await fetch("/api/auth", { method: "DELETE" });
+            window.location.reload();
+          },
+        }}
+      >
         {children}
-      </>
+      </CloudContext.Provider>
     );
   return (
     <main className="loading">
-      <h1>DNA restaurante · v3</h1>
-      <p role="status">{notice || "Conectando…"}</p>
+      <h1>A Vila</h1>
+      {(notice || state === "loading") && (
+        <p role="status">{notice || "Conectando…"}</p>
+      )}
       {state === "login" && (
         <form
+          className={`login-form ${attempted ? "attempted" : ""}`}
+          onInvalid={() => setAttempted(true)}
           onSubmit={async (e) => {
             e.preventDefault();
+            setAttempted(true);
+            setEntering(true);
+            setNotice("");
             try {
               const res = await fetch("/api/auth", {
                 method: "POST",
@@ -232,7 +279,11 @@ export function Cloud({ children }: { children: ReactNode }) {
               setPassword("");
               await initialize();
             } catch (e) {
-              setNotice((e as Error).message);
+              setNotice(
+                "Não foi possível entrar. Confira seu e-mail e senha e tente novamente.",
+              );
+            } finally {
+              setEntering(false);
             }
           }}
         >
@@ -249,14 +300,23 @@ export function Cloud({ children }: { children: ReactNode }) {
           <label className="field">
             Senha
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </label>
-          <button className="button primary">Entrar</button>
+          <button
+            type="button"
+            className="button"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? "Ocultar senha" : "Mostrar senha"}
+          </button>
+          <button className="button primary" disabled={entering}>
+            {entering ? "Entrando…" : "Entrar"}
+          </button>
         </form>
       )}
       {state === "import" && (

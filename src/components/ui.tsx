@@ -32,11 +32,11 @@ export function Money({
     <Numeric
       aria-label={name}
       name={name}
-      type="number"
       min="0"
       max="99999999999"
       step="0.01"
-      defaultValue={(value / 100).toFixed(2)}
+      defaultValue={value ? value / 100 : ""}
+      placeholder="0,00"
       required={required}
       inputMode="decimal"
     />
@@ -137,3 +137,40 @@ export const formString = (f: FormData, name: string) =>
   String(f.get(name) ?? "").trim();
 export const formNumber = (f: FormData, name: string) =>
   numeroBR(formString(f, name));
+
+export function confirmarExclusao(nome: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    const previous = document.activeElement as HTMLElement | null;
+    const dialog = document.createElement("dialog");
+    dialog.className = "modal";
+    const title = document.createElement("h2");
+    title.textContent = `Excluir “${nome}”?`;
+    const copy = document.createElement("p");
+    copy.textContent = "Confirme a exclusão deste item.";
+    const actions = document.createElement("div");
+    actions.className = "form-actions";
+    const cancel = document.createElement("button");
+    cancel.className = "button";
+    cancel.textContent = "Cancelar";
+    const accept = document.createElement("button");
+    accept.className = "button primary";
+    accept.textContent = "Excluir";
+    const finish = (value: boolean) => {
+      dialog.close();
+      dialog.remove();
+      previous?.focus();
+      resolve(value);
+    };
+    cancel.onclick = () => finish(false);
+    accept.onclick = () => finish(true);
+    dialog.oncancel = (event) => {
+      event.preventDefault();
+      finish(false);
+    };
+    actions.append(cancel, accept);
+    dialog.append(title, copy, actions);
+    document.body.append(dialog);
+    dialog.showModal();
+    cancel.focus();
+  });
+}

@@ -54,7 +54,7 @@ export function Numeric({
         e.target.setCustomValidity(
           !raw && props.required
             ? "Preencha este campo."
-            : !Number.isFinite(n)
+            : raw && !Number.isFinite(n)
               ? "Use um número válido com vírgula."
               : min !== undefined && n < Number(min)
                 ? `Mínimo: ${format(String(min))}.`
@@ -62,10 +62,10 @@ export function Numeric({
                   ? `Máximo: ${format(String(max))}.`
                   : "",
         );
-        if (onChange && Number.isFinite(n))
+        if (onChange && (Number.isFinite(n) || raw === ""))
           onChange({
             ...e,
-            target: { ...e.target, value: String(n) },
+            target: { ...e.target, value: raw === "" ? "" : String(n) },
           } as ChangeEvent<HTMLInputElement>);
       }}
     />

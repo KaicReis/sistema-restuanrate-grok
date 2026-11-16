@@ -1,4 +1,6 @@
 "use client";
+import { useState, useRef, useEffect } from "react";
+import { Numeric } from "./numeric";
 import { useSistema } from "./context";
 import { calcularCapital, type Capital } from "@/lib/capital";
 import { ratear, operacoes } from "@/lib/v2";
@@ -19,6 +21,41 @@ export function CapitalGiro({
       (c) => c.restaurante_id === r.id && c.competencia === mes,
     ),
   }));
+  const [draft, setDraft] = useState<Capital>(
+    () =>
+      rows[0]?.c ?? {
+        restaurante_id: restaurante.id,
+        competencia: mes,
+        pagamentos: ["Dinheiro/PIX", "Débito", "Crédito", "iFood/delivery"].map(
+          (nome) => ({ nome }),
+        ),
+      },
+  );
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const latest = useRef(draft);
+  const dirty = useRef(false);
+  function persist(next: Capital) {
+    atualizar((d) => {
+      d.capitais ??= [];
+      const i = d.capitais.findIndex(
+        (x) => x.restaurante_id === restaurante.id && x.competencia === mes,
+      );
+      if (i < 0) d.capitais.push(next);
+      else d.capitais[i] = next;
+    });
+    dirty.current = false;
+  }
+  function flush() {
+    if (timer.current) clearTimeout(timer.current);
+    if (dirty.current) persist(latest.current);
+  }
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+      if (dirty.current) persist(latest.current);
+    },
+    [],
+  );
   if (consolidado) {
     const results = rows.map(({ r, c }) => ({
       r,
@@ -47,24 +84,21 @@ export function CapitalGiro({
       </Panel>
     );
   }
-  const c: Capital = rows[0].c ?? {
-    restaurante_id: restaurante.id,
-    competencia: mes,
-    pagamentos: ["Dinheiro/PIX", "Débito", "Crédito", "iFood/delivery"].map(
-      (nome) => ({ nome }),
-    ),
-  };
+  const c = draft;
   const result = calcularCapital(c);
   function save(next: Capital) {
-    atualizar((d) => {
-      d.capitais ??= [];
-      const i = d.capitais.findIndex(
-        (x) => x.restaurante_id === restaurante.id && x.competencia === mes,
-      );
-      if (i < 0) d.capitais.push(next);
-      else d.capitais[i] = next;
-    });
+    setDraft(next);
+    latest.current = next;
+    dirty.current = true;
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => persist(next), 600);
   }
+  const decimal = (v: number) =>
+    v.toLocaleString("pt-BR", {
+      minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
+    });
+  const mix = c.pagamentos.reduce((sum, p) => sum + (p.percentual ?? 0), 0);
   const fields = [
     ["faturamento", "Faturamento médio mensal (R$)", 100],
     ["compras", "Compras mensais de insumos (R$)", 100],
@@ -77,6 +111,16 @@ export function CapitalGiro({
   ] as const;
   return (
     <Panel title="Capital de giro">
+      <div
+        className={`capital-result ${result.necessario === null ? "notice warning" : "stat"}`}
+        role="status"
+      >
+        {result.necessario === null ? (
+          <>Pendente: {result.pendentes.join("; ")}</>
+        ) : (
+          <h2>O capital de giro necessário é {brl(result.necessario)}</h2>
+        )}
+      </div>
       <p>
         Mês gerencial de 30 dias. Custo diário = (compras + despesas fixas +
         aluguel) / 30. Ciclo = PMR + PME − PMP. Ciclo negativo não exige
@@ -86,8 +130,8 @@ export function CapitalGiro({
         {fields.map(([key, label, factor]) => (
           <label className="field" key={key}>
             <span>{label}</span>
-            <input
-              type="number"
+            <Numeric
+              onBlur={flush}
               min="0"
               step="0.01"
               value={c[key] === undefined ? "" : c[key]! / factor}
@@ -114,13 +158,13 @@ export function CapitalGiro({
       </button>
       <h3>Mix de recebimentos</h3>
       {c.pagamentos.map((p, i) => (
-        <div className="form-grid" key={p.nome}>
+        <div className="payment-grid" key={p.nome}>
           <strong>{p.nome}</strong>
           {(["percentual", "dias"] as const).map((key) => (
             <label className="field" key={key}>
               <span>{key === "dias" ? "Prazo (dias)" : "Mix (%)"}</span>
-              <input
-                type="number"
+              <Numeric
+                onBlur={flush}
                 min="0"
                 max={key === "percentual" ? 100 : undefined}
                 step="0.01"
@@ -136,20 +180,20 @@ export function CapitalGiro({
           ))}
         </div>
       ))}
-      {result.necessario === null ? (
-        <div className="notice warning">
-          Pendente: {result.pendentes.join("; ")}
-        </div>
-      ) : (
-        <>
-          <h2>Seu capital de giro necessário é {brl(result.necessario)}</h2>
-          <p>
-            PMR: {result.pmr!.toFixed(1)} dias · PME: {result.pme!.toFixed(1)}{" "}
-            dias · PMP: {result.pmp!.toFixed(1)} dias · Ciclo:{" "}
-            {result.ciclo!.toFixed(1)} dias · Custo diário:{" "}
-            {brl(result.diario!)}
-          </p>
-        </>
+      <p className={Math.abs(mix - 100) > 0.001 ? "negative" : "positive"}>
+        Total do mix: {decimal(mix)}%
+        {Math.abs(mix - 100) > 0.001 && " · O mix deve somar 100%."}
+      </p>
+      <p>
+        PMR: prazo médio de recebimento · PME: prazo médio de estoque · PMP:
+        prazo médio de pagamento. Ciclo financeiro = PMR + PME − PMP.
+      </p>
+      {result.necessario !== null && (
+        <p>
+          PMR: {decimal(result.pmr!)} dias · PME: {decimal(result.pme!)} dias ·
+          PMP: {decimal(result.pmp!)} dias · Ciclo: {decimal(result.ciclo!)}{" "}
+          dias · Custo diário: {brl(result.diario!)}
+        </p>
       )}
     </Panel>
   );

@@ -18,7 +18,8 @@ export interface AppContext {
   mes: string;
   dna: DNA;
   atualizar: (change: (draft: Database) => void, mensagem?: string) => boolean;
-  ir: (page: Page) => void;
+  filtro: string;
+  ir: (page: Page, filtro?: string) => void;
   avisar: (text: string) => void;
   selecionar: (id: string, mes?: string) => void;
 }

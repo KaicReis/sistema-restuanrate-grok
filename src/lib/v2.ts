@@ -1,7 +1,5 @@
 import type { Database, DNA, Insumo, Rateio } from "./types";
 import {
-  calcularCMV,
-  calcularMargens,
   calcularPrecoDNA,
   entradaPreco,
   fixosOperacionais,

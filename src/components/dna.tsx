@@ -1,4 +1,7 @@
 "use client";
+import { confirmarExclusao } from "./ui";
+import { preparoPendente } from "./readiness";
+import { useCloud } from "./cloud";
 import { insumosMes } from "@/lib/v2";
 import { Numeric } from "./numeric";
 import { useState, useRef, useEffect } from "react";
@@ -79,46 +82,78 @@ export function Overview() {
   return (
     <>
       <div className="notice warning">
-        Pendências: {insumos.filter((i) => i.precoPendente).length} insumos sem
-        preço · {produtos.filter((p) => p.pendente || !p.itens.length).length}{" "}
-        fichas incompletas ·{" "}
-        {
-          (db.receitas ?? []).filter(
-            (r) => r.restaurante_id === restaurante.id && r.pendente,
-          ).length
-        }{" "}
-        receitas da casa a confirmar.
+        Pendências:{" "}
+        <button
+          className="text-button"
+          onClick={() => ir("insumos", "pendentes")}
+        >
+          {insumos.filter((i) => i.precoPendente).length} insumos sem preço
+        </button>{" "}
+        ·{" "}
+        <button
+          className="text-button"
+          onClick={() => ir("fichas", "pendentes")}
+        >
+          {
+            produtos.filter((p) => preparoPendente(db, dna.competencia, p))
+              .length
+          }{" "}
+          fichas incompletas
+        </button>{" "}
+        ·{" "}
+        <button
+          className="text-button"
+          onClick={() => ir("receitas", "pendentes")}
+        >
+          {
+            (db.receitas ?? []).filter(
+              (r) =>
+                r.restaurante_id === restaurante.id &&
+                preparoPendente(db, dna.competencia, r, true),
+            ).length
+          }{" "}
+          receitas a confirmar
+        </button>
       </div>
-      <div className="welcome-banner">
-        <div>
-          <span className="pill light">
-            <span className="status-dot" /> SEU NEGÓCIO EM PERSPECTIVA
-          </span>
-          <h2>
-            Um restaurante saudável
-            <br />
-            começa com um bom <em>DNA.</em>
-          </h2>
-          <p>
-            Conheça seus custos, proteja sua margem e precifique com confiança.
-          </p>
-          <button className="button cream" onClick={() => ir("dna")}>
-            {dna.faturamento ? "Revisar DNA do mês" : "Configurar meu DNA"}
-            <ArrowUpRight size={18} />
+      {!dna.faturamento && !dna.fixos.length ? (
+        <div className="welcome-banner">
+          <div>
+            <span className="pill light">
+              <span className="status-dot" /> SEU NEGÓCIO EM PERSPECTIVA
+            </span>
+            <h2>
+              Um restaurante saudável
+              <br />
+              começa com um bom <em>DNA.</em>
+            </h2>
+            <p>
+              Conheça seus custos, proteja sua margem e precifique com
+              confiança.
+            </p>
+            <button className="button cream" onClick={() => ir("dna")}>
+              {dna.faturamento ? "Revisar DNA do mês" : "Configurar meu DNA"}
+              <ArrowUpRight size={18} />
+            </button>
+          </div>
+          <div className="banner-art" aria-hidden="true">
+            <div className="orbit orbit-one" />
+            <div className="orbit orbit-two" />
+            <div className="orbit orbit-three" />
+            <div className="art-center">
+              dna<span>.</span>
+            </div>
+            <span className="art-label label-one">CUSTO</span>
+            <span className="art-label label-two">MARGEM</span>
+            <span className="art-label label-three">EQUILÍBRIO</span>
+          </div>
+        </div>
+      ) : (
+        <div className="notice">
+          <button className="text-button" onClick={() => ir("dna")}>
+            Revisar DNA do mês ↗
           </button>
         </div>
-        <div className="banner-art" aria-hidden="true">
-          <div className="orbit orbit-one" />
-          <div className="orbit orbit-two" />
-          <div className="orbit orbit-three" />
-          <div className="art-center">
-            dna<span>.</span>
-          </div>
-          <span className="art-label label-one">CUSTO</span>
-          <span className="art-label label-two">MARGEM</span>
-          <span className="art-label label-three">EQUILÍBRIO</span>
-        </div>
-      </div>
+      )}
       {dna.historico && (
         <div className="notice warning">
           Histórico abr/2025, não atual. Valores de referência fornecidos para
@@ -313,6 +348,7 @@ function Stat({
   );
 }
 export function DNAEditor() {
+  const cloud = useCloud();
   const { dna, atualizar, db, restaurante, mes, selecionar, avisar } =
     useSistema();
   const [fixos, setFixos] = useState(
@@ -587,8 +623,8 @@ export function DNAEditor() {
                   type="button"
                   className="icon-button danger"
                   aria-label={`Remover ${f.descricao || "custo fixo"}`}
-                  onClick={() => {
-                    if (confirm("Excluir este custo fixo?")) {
+                  onClick={async () => {
+                    if (await confirmarExclusao(f.descricao || "Custo fixo")) {
                       setDirty(true);
                       setFixos((rows) => rows.filter((r) => r.id !== f.id));
                     }
@@ -638,7 +674,7 @@ export function DNAEditor() {
           <span className="muted">
             {dirty
               ? "Alterações ainda não salvas. Complete os campos para salvar."
-              : "Salvo no navegador. Autosave ao sair de um campo válido."}
+              : `${cloud.mode === "cloud" ? "Salvo na nuvem" : "Salvo neste navegador"}. Autosave ao sair de um campo válido.`}
           </span>
           <button className="button primary" type="submit">
             Salvar DNA mensal <ArrowRight size={17} />
@@ -746,7 +782,7 @@ function OverviewIndicators() {
           return (
             <div
               key={c.id}
-              className={`mini-card ${!r.viavel ? "invalid" : ""}`}
+              className={`mini-card ${dna.faturamento && !r.viavel ? "invalid" : ""}`}
             >
               <h3>{c.nome}</h3>
               {r.viavel ? (
@@ -769,7 +805,7 @@ function OverviewIndicators() {
                   </p>
                 </>
               ) : (
-                <p>{r.motivo}</p>
+                <p>{dna.faturamento ? r.motivo : "Informe o faturamento"}</p>
               )}
             </div>
           );

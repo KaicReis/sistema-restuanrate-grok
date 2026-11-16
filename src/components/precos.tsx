@@ -1,4 +1,5 @@
 "use client";
+import { preparoPendente } from "./readiness";
 import { insumosMes } from "@/lib/v2";
 import { Numeric } from "./numeric";
 import { useState } from "react";
@@ -22,27 +23,55 @@ import { useSistema } from "./context";
 import { Empty, Field } from "./ui";
 export function Precos() {
   const { db, restaurante, mes, ir } = useSistema(),
-    [canalId, setCanal] = useState("todos"),
-    [search, setSearch] = useState("");
+    [canalId, setCanal] = useState(
+      () =>
+        db.canais.find(
+          (c) =>
+            c.restaurante_id === restaurante.id &&
+            c.competencia === mes &&
+            c.nome === "Salão",
+        )?.id ?? "todos",
+    ),
+    [search, setSearch] = useState(""),
+    [status, setStatus] = useState("todos");
   const produtos = db.produtos.filter(
       (p) => p.restaurante_id === restaurante.id,
     ),
     canais = db.canais.filter(
       (c) => c.restaurante_id === restaurante.id && c.competencia === mes,
     ),
-    filtered = produtos.filter((p) =>
-      p.nome
-        .toLocaleLowerCase("pt-BR")
-        .includes(search.toLocaleLowerCase("pt-BR")),
+    filtered = produtos.filter(
+      (p) =>
+        p.nome
+          .toLocaleLowerCase("pt-BR")
+          .includes(search.toLocaleLowerCase("pt-BR")) &&
+        (status === "todos" ||
+          preparoPendente(db, mes, p) === (status === "pendentes")),
     );
   return (
     <>
+      <div className="filter-chips">
+        {["todos", "pendentes", "prontos"].map((f) => (
+          <button
+            key={f}
+            className="button"
+            aria-pressed={status === f}
+            onClick={() => setStatus(f)}
+          >
+            {f === "todos"
+              ? "Todos"
+              : f === "pendentes"
+                ? "Pendentes"
+                : "Prontos"}
+          </button>
+        ))}
+      </div>
       <div className="section-toolbar">
         <label className="search">
           <Search size={18} />
           <input
             aria-label="Buscar produto para precificação"
-            placeholder="Buscar produto…"
+            placeholder="Buscar ficha…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -96,18 +125,30 @@ export function Precos() {
                 <div>
                   <h2>{p.nome}</h2>
                   <p>
-                    {p.rendimento} porção(ões) por receita · custos da
-                    competência selecionada
+                    {p.rendimento} {p.rendimento === 1 ? "porção" : "porções"}{" "}
+                    por receita · custos da competência selecionada
                   </p>
                 </div>
               </div>
-              <div className="pricing-grid">
-                {canais
-                  .filter((c) => canalId === "todos" || c.id === canalId)
-                  .map((c) => (
-                    <PrecoCard key={c.id} produto={p} canal={c} />
-                  ))}
-              </div>
+              {preparoPendente(db, mes, p) ? (
+                <div className="notice warning">
+                  Ficha incompleta: confira composição, quantidades e preços.{" "}
+                  <button
+                    className="text-button"
+                    onClick={() => ir("fichas", "pendentes")}
+                  >
+                    Completar ficha
+                  </button>
+                </div>
+              ) : (
+                <div className="pricing-grid">
+                  {canais
+                    .filter((c) => canalId === "todos" || c.id === canalId)
+                    .map((c) => (
+                      <PrecoCard key={c.id} produto={p} canal={c} />
+                    ))}
+                </div>
+              )}
             </section>
           ))}
           {!filtered.length && (
@@ -202,51 +243,22 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
                 : "Informe o preço praticado"}
         </span>
       </div>
-      {result.viavel ? (
-        <>
-          <small className="price-label">PREÇO MÍNIMO SUGERIDO</small>
-          <strong className="suggested-price">
-            {dinheiro(result.precoMinimo)}
-          </strong>
-          <div className="price-breakdown">
-            <span>
-              Markup{" "}
-              <b>
-                {result.markup.toLocaleString("pt-BR", {
-                  maximumFractionDigits: 3,
-                })}
-                ×
-              </b>
-            </span>
-            <span>
-              CMV máx. <b>{percentual(result.cmvMaximoPercentual)}</b>
-            </span>
-          </div>
-        </>
-      ) : (
-        <div className="price-error" role="alert">
-          <AlertTriangle size={20} />
-          <strong>{result.motivo}</strong>
-          <p>
-            Aumente o faturamento ou reduza despesas e taxas. Reduzir CMV ajuda
-            a baixar o preço quando houver espaço no DNA, mas não corrige um
-            denominador ≤ 0.
-          </p>
-        </div>
-      )}
-      <div className="detail-list compact">
-        <div>
-          <span>Ingredientes / porção</span>
-          <strong>{dinheiro(entrada.cmvIngredientes)}</strong>
-        </div>
-        <div>
-          <span>Embalagem aplicada</span>
-          <strong>{dinheiro(entrada.embalagem ?? 0)}</strong>
-        </div>
-        <div>
-          <span>Custo por unidade</span>
-          <strong>{dinheiro(entrada.custoFixoUnidade ?? 0)}</strong>
-        </div>
+      <div className="compact-cost">
+        <span>Custo / porção</span>
+        <strong>
+          {dinheiro(
+            Number(entrada.cmvIngredientes) +
+              (entrada.embalagem ?? 0) +
+              (entrada.custoFixoUnidade ?? 0),
+          )}
+        </strong>
+      </div>
+      <div className="compact-minimum">
+        <span>Preço mínimo</span>
+        <strong>
+          {result.viavel ? dinheiro(result.precoMinimo) : "Inviável"}
+        </strong>
+        {!result.viavel && <p className="negative">{result.motivo}</p>}
       </div>
       <form onSubmit={save} className="price-form">
         <Field label="Preço praticado (R$)">
@@ -271,45 +283,15 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
           <Check size={20} />
         </button>
       </form>
-      {result.viavel && (
-        <button
-          className="button"
-          onClick={() =>
-            setValor((result.precoMinimo / 100).toFixed(2).replace(".", ","))
+      <div className="compact-margin">
+        <span>Margem · meta 30%</span>
+        <strong
+          className={
+            margens ? (margens.margem < 0.3 ? "negative" : "positive") : "muted"
           }
         >
-          Usar preço sugerido
-        </button>
-      )}
-      <div className="margin-metrics">
-        <div>
-          <span>Diferença para o mínimo</span>
-          <strong className={abaixo ? "negative" : ""}>
-            {registro && result.viavel
-              ? `${registro.valor >= result.precoMinimo ? "+" : "−"} ${dinheiro(Math.abs(registro.valor - result.precoMinimo))}`
-              : "—"}
-          </strong>
-        </div>
-        <div>
-          <span>Margem projetada</span>
-          <strong
-            className={
-              margens && margens.margem < dna.margem / 100 ? "negative" : ""
-            }
-          >
-            {margens ? percentual(margens.margem) : "—"}
-          </strong>
-        </div>
-        <div>
-          <span>Contribuição (R$)</span>
-          <strong>{margens ? dinheiro(margens.contribuicao) : "—"}</strong>
-        </div>
-        <div>
-          <span>Contribuição (%)</span>
-          <strong>
-            {margens ? percentual(margens.contribuicaoPercentual) : "—"}
-          </strong>
-        </div>
+          {margens ? percentual(margens.margem) : "Informe o preço"}
+        </strong>
       </div>
       {abaixo && (
         <p className="negative price-warning">

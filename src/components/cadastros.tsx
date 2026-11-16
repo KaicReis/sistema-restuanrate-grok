@@ -1,4 +1,5 @@
 "use client";
+import { confirmarExclusao } from "./ui";
 import { Numeric } from "./numeric";
 import { useState } from "react";
 import { Building2, Pencil, Plus, Store, Trash2 } from "lucide-react";
@@ -316,8 +317,8 @@ function CanalModal({
               type="button"
               className="icon-button danger"
               aria-label={`Remover taxa ${t.descricao}`}
-              onClick={() => {
-                if (confirm("Excluir esta taxa?"))
+              onClick={async () => {
+                if (await confirmarExclusao(t.descricao || "Taxa"))
                   setTaxas((rows) => rows.filter((r) => r.id !== t.id));
               }}
             >

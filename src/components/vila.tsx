@@ -1,12 +1,19 @@
 "use client";
 import { useState } from "react";
-import { consolidar, operacoes, ratear } from "@/lib/v2";
+import { preparoPendente } from "./readiness";
+import {
+  consolidar,
+  operacoes,
+  ratear,
+  insumosMes,
+  dnaComRateio,
+} from "@/lib/v2";
 import { dinheiro, percentual, paraCentavos } from "@/lib/dna";
 import { useSistema } from "./context";
 import { Field, Modal, Money, Panel, formNumber, formString } from "./ui";
 import { Numeric } from "./numeric";
 export function Vila() {
-  const { db, mes, atualizar, selecionar } = useSistema(),
+  const { db, mes, atualizar, selecionar, ir } = useSistema(),
     [config, setConfig] = useState(false),
     [regra, setRegra] = useState<"fixo" | "faturamento">(
       db.alugueis?.find((a) => a.competencia === mes)?.regra ?? "faturamento",
@@ -17,6 +24,26 @@ export function Vila() {
     meses = Array.from(new Set(db.dnas.map((d) => d.competencia)))
       .sort()
       .slice(-12);
+  const operacaoPendente = c.rows.find((r) => {
+    const dna = dnaComRateio(db, r.id, mes);
+    return (
+      !dna.faturamento ||
+      dna.cmvReal === undefined ||
+      dna.variaveisReais === undefined
+    );
+  });
+  const dnaPendente = operacaoPendente
+    ? dnaComRateio(db, operacaoPendente.id, mes)
+    : null;
+  const camposPendentes = dnaPendente
+    ? [
+        !dnaPendente.faturamento && "faturamento",
+        dnaPendente.cmvReal === undefined && "CMV mensal",
+        dnaPendente.variaveisReais === undefined && "custos variáveis",
+      ]
+        .filter(Boolean)
+        .join(", ")
+    : "receita suficiente para cobrir os custos";
   const metrics = [
     ["Faturamento de referência", dinheiro(c.receita)],
     [
@@ -36,14 +63,10 @@ export function Vila() {
   ];
   return (
     <>
-      <div className="welcome-banner">
+      <div className="welcome-banner compact-banner">
         <div>
           <span className="pill light">A VILA · VISÃO DO GRUPO</span>
-          <h2>
-            Três operações.
-            <br />
-            Um panorama completo.
-          </h2>
+          <h2>Três operações. Um panorama completo.</h2>
           <p>
             Bora Burguer’s, Nativo’s Sushi e Bar ·{" "}
             {mes.split("-").reverse().join("/")}
@@ -57,7 +80,31 @@ export function Vila() {
         {metrics.map(([label, value]) => (
           <div className="stat" key={label}>
             <span>{label}</span>
-            <strong>{value}</strong>
+            <strong
+              className={
+                label.startsWith("Margem") && c.margem !== null
+                  ? c.margem < 0.3
+                    ? "negative"
+                    : "positive"
+                  : ""
+              }
+            >
+              {value}
+            </strong>
+            {value === "Pendente" && (
+              <button
+                className="text-button"
+                onClick={() => {
+                  const r = operacaoPendente ?? c.rows[0];
+                  if (r) {
+                    selecionar(r.id);
+                    ir("dna");
+                  }
+                }}
+              >
+                {operacaoPendente?.nome}: informe {camposPendentes} no DNA ↗
+              </button>
+            )}
             <small>Competência selecionada</small>
           </div>
         ))}
@@ -72,6 +119,12 @@ export function Vila() {
         title="Faturamento por operação"
         subtitle="Comparativo e participação no grupo"
       >
+        {!c.receita && (
+          <p className="empty-chart">
+            Informe o faturamento no DNA das operações para visualizar o
+            gráfico.
+          </p>
+        )}
         {c.rows.map((r, idx) => (
           <div className="comparison" key={r.id}>
             <button className="text-button" onClick={() => selecionar(r.id)}>
@@ -86,7 +139,15 @@ export function Vila() {
               />
             </div>
             <strong>{dinheiro(r.receita)}</strong>
-            <small>
+            <small
+              className={
+                r.margem === null
+                  ? ""
+                  : r.margem < 0.3
+                    ? "negative"
+                    : "positive"
+              }
+            >
               {r.tipo} ·{" "}
               {r.margem === null
                 ? "Margem pendente"
@@ -101,30 +162,41 @@ export function Vila() {
         title="Evolução mês a mês"
         subtitle="Faturamento consolidado e margem gerencial"
       >
-        <div className="month-chart">
-          {meses.map((m) => {
-            const v = consolidar(db, m),
-              max = Math.max(...meses.map((m) => consolidar(db, m).receita), 1);
-            return (
-              <div key={m} className="month-bar">
-                <strong>{dinheiro(v.receita)}</strong>
-                <div className="column-track">
-                  <div style={{ height: `${(v.receita / max) * 100}%` }} />
+        {!meses.some((m) => consolidar(db, m).receita > 0) ? (
+          <p className="empty-chart">
+            Sem faturamento informado para comparar os meses.
+          </p>
+        ) : (
+          <div className="month-chart">
+            {meses.map((m) => {
+              const v = consolidar(db, m),
+                max = Math.max(
+                  ...meses.map((m) => consolidar(db, m).receita),
+                  1,
+                );
+              return (
+                <div key={m} className="month-bar">
+                  <strong>{dinheiro(v.receita)}</strong>
+                  <div className="column-track">
+                    <div style={{ height: `${(v.receita / max) * 100}%` }} />
+                  </div>
+                  <span>
+                    {new Intl.DateTimeFormat("pt-BR", {
+                      month: "short",
+                      year: "2-digit",
+                      timeZone: "UTC",
+                    }).format(new Date(m + "-01T12:00:00Z"))}
+                  </span>
+                  <small>
+                    {v.margem === null
+                      ? "Margem pendente"
+                      : percentual(v.margem)}
+                  </small>
                 </div>
-                <span>
-                  {new Intl.DateTimeFormat("pt-BR", {
-                    month: "short",
-                    year: "2-digit",
-                    timeZone: "UTC",
-                  }).format(new Date(m + "-01T12:00:00Z"))}
-                </span>
-                <small>
-                  {v.margem === null ? "Margem pendente" : percentual(v.margem)}
-                </small>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </Panel>
       <Panel title="Alertas e pendências">
         {c.alertas.map((a, i) => (
@@ -135,20 +207,60 @@ export function Vila() {
         {!c.alertas.length && (
           <p>Nenhum alerta calculável nesta competência.</p>
         )}
-        <p>
-          {
-            db.insumos.filter(
-              (i) =>
-                i.precoPendente &&
-                operacoes(db).some((r) => r.id === i.restaurante_id),
-            ).length
-          }{" "}
-          preços de insumos pendentes ·{" "}
-          {db.produtos.filter((p) => p.pendente || !p.itens.length).length}{" "}
-          fichas pendentes ·{" "}
-          {db.receitas?.filter((r) => r.pendente).length ?? 0} receitas
-          pendentes.
-        </p>
+        {operacoes(db).map((r) => {
+          const dna = dnaComRateio(db, r.id, mes);
+          const faltas = [
+            !dna.faturamento && "faturamento",
+            dna.cmvReal === undefined && "CMV mensal",
+            dna.variaveisReais === undefined && "custos variáveis",
+          ].filter(Boolean);
+          return (
+            <div className="operation-pending" key={r.id}>
+              <strong>{r.nome}</strong>
+              {faltas.length > 0 && (
+                <p>
+                  Falta informar: {faltas.join(", ")}.{" "}
+                  <button
+                    className="text-button"
+                    onClick={() => {
+                      selecionar(r.id);
+                      ir("dna");
+                    }}
+                  >
+                    Completar DNA ↗
+                  </button>
+                </p>
+              )}
+              {(["insumos", "fichas", "receitas"] as const).map((page) => {
+                const count =
+                  page === "insumos"
+                    ? insumosMes(db, mes).filter(
+                        (i) => i.restaurante_id === r.id && i.precoPendente,
+                      ).length
+                    : (page === "fichas"
+                        ? db.produtos
+                        : (db.receitas ?? [])
+                      ).filter(
+                        (p) =>
+                          p.restaurante_id === r.id &&
+                          preparoPendente(db, mes, p, page === "receitas"),
+                      ).length;
+                return (
+                  <button
+                    className="button"
+                    key={page}
+                    onClick={() => {
+                      selecionar(r.id);
+                      ir(page, "pendentes");
+                    }}
+                  >
+                    {count} {page} pendentes ↗
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })}
         {Boolean(db.legadoV1) && (
           <p className="muted">
             Migração v1 preservada no backup. Cadastros antigos da A Vila foram

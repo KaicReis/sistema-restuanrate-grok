@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { criarBase, novoDNA, novosCanais } from "../src/lib/storage/seed";
 import { migrar } from "../src/lib/storage/migrate";
 import { validarBackup, repositorio } from "../src/lib/storage";

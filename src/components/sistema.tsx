@@ -1,4 +1,5 @@
 "use client";
+import { CloudIndicator, useCloud } from "./cloud";
 import { CapitalGiro } from "./capital";
 import { Compras } from "./compras";
 import { mesclarDados } from "@/lib/import-data";
@@ -16,9 +17,14 @@ import {
   Menu,
   NotebookPen,
   Store,
-  TrendingUp,
   X,
-  ShieldCheck,
+  Wallet,
+  ShoppingCart,
+  CookingPot,
+  Tags,
+  Archive,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import type { Database } from "@/lib/types";
 import { migrar } from "@/lib/storage/migrate";
@@ -33,15 +39,15 @@ import { Insumos, Fichas, Receitas } from "./producao";
 import { Precos } from "./precos";
 import { Modal } from "./ui";
 const pages = [
-  { id: "capital", label: "Capital de giro", icon: TrendingUp },
-  { id: "compras", label: "Compras", icon: Store },
+  { id: "capital", label: "Capital de giro", icon: Wallet },
+  { id: "compras", label: "Compras", icon: ShoppingCart },
   { id: "visao", label: "Visão geral", icon: LayoutDashboard },
   { id: "dna", label: "DNA mensal", icon: Dna },
   { id: "canais", label: "Canais de venda", icon: Store },
   { id: "insumos", label: "Insumos", icon: FlaskConical },
-  { id: "receitas", label: "Receitas da casa", icon: FlaskConical },
+  { id: "receitas", label: "Receitas da casa", icon: CookingPot },
   { id: "fichas", label: "Fichas técnicas", icon: NotebookPen },
-  { id: "precos", label: "Precificação", icon: TrendingUp },
+  { id: "precos", label: "Precificação", icon: Tags },
   { id: "restaurantes", label: "Restaurantes", icon: Building2 },
 ] as const;
 const descriptions: Record<Page, string> = {
@@ -90,6 +96,9 @@ function preparar(db: Database, id: string, mes: string) {
   return db;
 }
 export default function Sistema() {
+  const cloud = useCloud();
+  const [filtro, setFiltro] = useState("todos");
+  const [backupMenu, setBackupMenu] = useState(false);
   const [db, setDb] = useState<Database | null>(null),
     [id, setId] = useState(""),
     [mes, setMes] = useState(competenciaAtual),
@@ -106,8 +115,9 @@ export default function Sistema() {
     try {
       const data = repositorio.carregar(),
         first = data.restaurantes[0].id;
+      const before = JSON.stringify(data);
       preparar(data, first, competenciaAtual());
-      repositorio.salvar(data);
+      if (JSON.stringify(data) !== before) repositorio.salvar(data);
       atual.current = data;
       setDb(data);
       setId(first);
@@ -122,16 +132,23 @@ export default function Sistema() {
   }, [message]);
   function atualizar(
     change: (draft: Database) => void,
-    mensagem = "Alterações salvas neste navegador.",
+    mensagem = cloud.mode === "cloud"
+      ? "Salvo na nuvem"
+      : "Salvo neste navegador",
   ) {
     if (!atual.current) return false;
     try {
       const draft = structuredClone(atual.current);
       change(draft);
+      if (JSON.stringify(draft) === JSON.stringify(atual.current)) return true;
       repositorio.salvar(draft);
       atual.current = draft;
       setDb(draft);
-      setMessage(mensagem);
+      if (
+        mensagem &&
+        !["Salvo na nuvem", "Salvo neste navegador"].includes(mensagem)
+      )
+        setMessage(mensagem);
       return true;
     } catch (e) {
       setMessage((e as Error).message);
@@ -145,15 +162,17 @@ export default function Sistema() {
       !confirm("Há alterações não salvas no DNA. Sair assim mesmo?")
     )
       return;
+    const prepared = preparar(structuredClone(atual.current), next, month);
     if (
-      atualizar((draft) => {
-        preparar(draft, next, month);
-      }, "Competência selecionada.")
-    ) {
-      setId(next);
-      setMes(month);
-      if (next === "a-vila" || id === "a-vila") setPage("visao");
-    }
+      JSON.stringify(prepared) !== JSON.stringify(atual.current) &&
+      !atualizar((draft) => {
+        Object.assign(draft, prepared);
+      }, "")
+    )
+      return;
+    setId(next);
+    setMes(month);
+    if (next === "a-vila" || id === "a-vila") setPage("visao");
   }
   function exportar() {
     try {
@@ -248,12 +267,13 @@ export default function Sistema() {
   const restaurante =
       db.restaurantes.find((r) => r.id === id) ?? db.restaurantes[0],
     dna = dnaComRateio(db, restaurante.id, mes);
-  const ir = (p: Page) => {
+  const ir = (p: Page, filter = "todos") => {
     if (
       document.querySelector('form[data-dirty="true"]') &&
       !confirm("Há alterações não salvas no DNA. Sair assim mesmo?")
     )
       return;
+    setFiltro(filter);
     setPage(p);
     setMenu(false);
   };
@@ -266,6 +286,7 @@ export default function Sistema() {
         dna,
         atualizar,
         ir,
+        filtro,
         avisar: setMessage,
         selecionar,
       }}
@@ -325,46 +346,63 @@ export default function Sistema() {
             </label>
             <ChevronDown size={15} />
           </div>
-          <div className="nav-caption">GESTÃO DO RESTAURANTE</div>
           <nav aria-label="Menu principal">
-            {pages
+            {[
+              ["Dia a dia", ["visao", "compras", "capital"]],
+              [
+                "Cardápio e custos",
+                ["insumos", "receitas", "fichas", "precos"],
+              ],
+              ["Configuração", ["dna", "canais", "restaurantes"]],
+            ]
               .filter(
-                (p) =>
+                ([, ids]) =>
                   restaurante.id !== "a-vila" ||
-                  p.id === "visao" ||
-                  p.id === "capital",
+                  (ids as string[]).some((pid) =>
+                    ["visao", "capital", "restaurantes"].includes(pid),
+                  ),
               )
-              .map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => ir(p.id)}
-                  className={`nav-item ${page === p.id ? "active" : ""}`}
-                >
-                  <p.icon size={19} />
-                  <span>{p.label}</span>
-                  {page === p.id && <span className="nav-dot" />}
-                </button>
+              .map(([label, ids]) => (
+                <div key={String(label)}>
+                  <div className="nav-caption">{label}</div>
+                  {(ids as string[])
+                    .map((pid) => pages.find((p) => p.id === pid)!)
+                    .filter(
+                      (p) =>
+                        restaurante.id !== "a-vila" ||
+                        ["visao", "capital", "restaurantes"].includes(p.id),
+                    )
+                    .map((p) => (
+                      <button
+                        key={p.id}
+                        onClick={() => ir(p.id)}
+                        className={`nav-item ${page === p.id ? "active" : ""}`}
+                      >
+                        <p.icon size={19} />
+                        <span>{p.label}</span>
+                      </button>
+                    ))}
+                </div>
               ))}
+            <button
+              className="nav-item"
+              onClick={() => {
+                setBackupMenu(true);
+                setMenu(false);
+              }}
+            >
+              <Archive size={19} />
+              Backup
+            </button>
           </nav>
           <div className="sidebar-bottom">
-            <div className="local-note">
-              <ShieldCheck size={20} />
-              <div>
-                <strong>Seus dados, com você</strong>
-                <small>
-                  Cópia local e nuvem quando configurada.
-                  <br />
-                  Exporte backups regularmente.
-                </small>
-              </div>
-            </div>
             <button className="nav-item" onClick={() => setHelp(true)}>
               <CircleHelp size={18} />
               Entenda o DNA
               <ArrowUpRight size={16} />
             </button>
             <div className="sidebar-foot">
-              FEITO PARA QUEM EMPREENDE <span>v3.0</span>
+              FEITO PARA QUEM EMPREENDE <span>v3.3</span>
             </div>
           </div>
         </aside>
@@ -378,23 +416,37 @@ export default function Sistema() {
               >
                 <Menu />
               </button>
-              <span>Meu restaurante</span>
+              <span className="active-operation">{restaurante.nome}</span>
               <span className="crumb-slash">/</span>
               <strong>{pages.find((p) => p.id === page)?.label}</strong>
             </div>
             <div className="top-actions">
-              <button className="button ghost" onClick={exportar}>
-                <ArrowDownToLine size={16} />
-                <span>Exportar backup</span>
-              </button>
+              <CloudIndicator />
               <button
-                className="button ghost"
-                onClick={() => input.current?.click()}
+                className="profile"
+                aria-label="Abrir configurações e backup"
+                onClick={() => setBackupMenu(true)}
               >
-                <ArrowUpFromLine size={16} />
-                <span>Importar</span>
+                {restaurante.nome.charAt(0)}
               </button>
-              <span className="profile">{restaurante.nome.charAt(0)}</span>
+            </div>
+            <div className="operation-chips" aria-label="Operação ativa">
+              {[...db.restaurantes]
+                .sort(
+                  (a, b) =>
+                    ["a-vila", "bora", "nativos", "bar"].indexOf(a.id) -
+                    ["a-vila", "bora", "nativos", "bar"].indexOf(b.id),
+                )
+                .map((r, i) => (
+                  <button
+                    key={r.id}
+                    aria-pressed={r.id === id}
+                    className={`operation-chip operation-${i % 4}`}
+                    onClick={() => selecionar(r.id)}
+                  >
+                    {r.nome}
+                  </button>
+                ))}
             </div>
           </header>
           <main id="conteudo">
@@ -410,6 +462,18 @@ export default function Sistema() {
               <label className="month-select">
                 <span>COMPETÊNCIA</span>
                 <div className="month-controls">
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label="Mês anterior"
+                    onClick={() => {
+                      const date = new Date(`${mes}-01T12:00:00Z`);
+                      date.setUTCMonth(date.getUTCMonth() - 1);
+                      selecionar(id, date.toISOString().slice(0, 7));
+                    }}
+                  >
+                    <ChevronLeft />
+                  </button>
                   <select
                     aria-label="Mês da competência"
                     value={mes.slice(5)}
@@ -437,18 +501,30 @@ export default function Sistema() {
                         selecionar(id, `${e.target.value}-${mes.slice(5)}`);
                     }}
                   />
+                  <button
+                    type="button"
+                    className="icon-button"
+                    aria-label="Próximo mês"
+                    onClick={() => {
+                      const date = new Date(`${mes}-01T12:00:00Z`);
+                      date.setUTCMonth(date.getUTCMonth() + 1);
+                      selecionar(id, date.toISOString().slice(0, 7));
+                    }}
+                  >
+                    <ChevronRight />
+                  </button>
                 </div>
               </label>
             </div>
             <div
-              key={`${id}:${mes}:${page}:${revisao}`}
+              key={`${id}:${mes}:${page}:${filtro}:${revisao}`}
               className="page-content"
             >
               {page === "capital" ? (
                 <CapitalGiro consolidado={restaurante.id === "a-vila"} />
               ) : page === "compras" ? (
                 <Compras />
-              ) : restaurante.id === "a-vila" ? (
+              ) : restaurante.id === "a-vila" && page === "visao" ? (
                 <>
                   <Vila />
                   <CapitalGiro consolidado />
@@ -471,20 +547,32 @@ export default function Sistema() {
                 <Restaurantes />
               )}
             </div>
-            <p className="notice">
-              Exporte backups regularmente. Acompanhe o estado de sincronização
-              no aviso acima.
-            </p>
-            <footer className="main-footer">
-              <span>
-                <span className="status-dot" /> Cópia local · sincronização
-                quando o banco está configurado
-              </span>
-              <span>Clareza nos custos. Saúde no negócio.</span>
-            </footer>
           </main>
         </div>
       </div>
+      {backupMenu && (
+        <Modal title="Configuração › Backup" close={() => setBackupMenu(false)}>
+          <div className="backup-actions">
+            <button className="button" onClick={exportar}>
+              <ArrowDownToLine size={18} />
+              Exportar backup
+            </button>
+            <button className="button" onClick={() => input.current?.click()}>
+              <ArrowUpFromLine size={18} />
+              Importar backup
+            </button>
+            {cloud.mode === "cloud" && (
+              <button
+                className="button"
+                disabled={cloud.saving || cloud.error}
+                onClick={cloud.logout}
+              >
+                Sair
+              </button>
+            )}
+          </div>
+        </Modal>
+      )}
       {upload}
       {message && (
         <div className="toast" role="status">

@@ -1,6 +1,6 @@
 {
   "name": "dna-restaurante",
-  "version": "3.1.0",
+  "version": "3.3.0",
   "private": true,
   "scripts": {
     "dev": "next dev --hostname 0.0.0.0",
@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
-    "user:create": "tsx scripts/create-user.ts"
+    "user:create": "tsx scripts/create-user.ts",
+    "lint": "eslint . && tsc --noEmit"
   },
   "dependencies": {
     "decimal.js": "^10.6.0",
@@ -26,15 +27,18 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.16",
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/postcss": "^4.1.0",
     "@types/node": "^22.15.0",
     "@types/pdf-parse": "^1.1.5",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "drizzle-kit": "^0.31.11",
+    "eslint": "^10.15.0",
     "tailwindcss": "^4.1.0",
     "tsx": "^4.23.15",
     "typescript": "^5.8.3",
+    "typescript-eslint": "^8.73.0",
     "vitest": "^3.2.0"
   }
 }

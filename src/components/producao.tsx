@@ -1,4 +1,5 @@
 "use client";
+import { confirmarExclusao } from "./ui";
 import { useState } from "react";
 import type {
   Insumo,
@@ -25,11 +26,13 @@ import {
   formNumber,
   formString,
 } from "./ui";
+import { preparoPendente } from "./readiness";
 import { Numeric } from "./numeric";
 export function Insumos() {
-  const { db, restaurante, mes, atualizar, avisar } = useSistema();
+  const { db, restaurante, mes, atualizar, avisar, filtro } = useSistema();
   const [edit, setEdit] = useState<Insumo | "new" | null>(null),
     [busca, setBusca] = useState(""),
+    [status, setStatus] = useState(filtro),
     [error, setError] = useState("");
   const rows = insumosMes(db, mes).filter(
       (i) => i.restaurante_id === restaurante.id,
@@ -78,6 +81,18 @@ export function Insumos() {
   }
   return (
     <>
+      <div className="filter-chips">
+        {["pendentes", "todos"].map((f) => (
+          <button
+            key={f}
+            className="button"
+            aria-pressed={status === f}
+            onClick={() => setStatus(f)}
+          >
+            {f === "pendentes" ? "Pendentes" : "Todos"}
+          </button>
+        ))}
+      </div>
       <div className="section-toolbar">
         <input
           aria-label="Buscar insumo"
@@ -104,16 +119,65 @@ export function Insumos() {
         subtitle={`${rows.filter((i) => i.precoPendente).length} preços pendentes`}
       >
         {rows
-          .filter((i) =>
-            i.nome.toLocaleLowerCase().includes(busca.toLocaleLowerCase()),
+          .filter(
+            (i) =>
+              i.nome.toLocaleLowerCase().includes(busca.toLocaleLowerCase()) &&
+              (status !== "pendentes" || i.precoPendente),
           )
           .map((i) => (
-            <div className="ingredient-row" key={i.id}>
+            <div
+              className="ingredient-row clickable-row"
+              role="button"
+              tabIndex={0}
+              aria-label={`Editar ${i.nome}`}
+              onClick={() => {
+                setError("");
+                setEdit(i);
+              }}
+              onKeyDown={(e) => {
+                if (
+                  e.target === e.currentTarget &&
+                  (e.key === "Enter" || e.key === " ")
+                ) {
+                  e.preventDefault();
+                  setEdit(i);
+                }
+              }}
+              key={i.id}
+            >
               <div className="ingredient-name">
                 <strong>{i.nome}</strong>
                 <small>
                   {i.quantidade.toLocaleString("pt-BR")} {i.unidade} ·{" "}
                   {i.rendimento.toLocaleString("pt-BR")}% aproveitável
+                  {(() => {
+                    const compra = [...(db.compras ?? [])]
+                      .filter(
+                        (c) =>
+                          c.restaurante_id === restaurante.id &&
+                          c.itens.some(
+                            (l) => l.insumo_id === i.id && !l.ignorar,
+                          ),
+                      )
+                      .sort((a, b) => b.data.localeCompare(a.data))[0];
+                    const line = compra?.itens.find(
+                      (l) => l.insumo_id === i.id && !l.ignorar,
+                    );
+                    return (
+                      line && (
+                        <span className="last-purchase">
+                          Último preço:{" "}
+                          {dinheiro(
+                            Math.round(
+                              (line.valorUnitario / (line.conteudo ?? 1)) * 100,
+                            ),
+                          )}
+                          /{line.unidade} · Compra:{" "}
+                          {compra.data.split("-").reverse().join("/")}
+                        </span>
+                      )
+                    );
+                  })()}
                 </small>
               </div>
               <strong className={i.precoPendente ? "negative" : ""}>
@@ -208,8 +272,9 @@ export function Insumos() {
               <button
                 type="button"
                 className="button danger"
-                onClick={() => {
-                  if (!record || !confirm("Excluir este insumo?")) return;
+                onClick={async () => {
+                  if (!record || !(await confirmarExclusao(record.nome)))
+                    return;
                   if (
                     db.produtos.some((p) =>
                       p.itens.some((x) => x.insumo_id === record.id),
@@ -246,7 +311,8 @@ export function Receitas() {
   return <Preparos casa />;
 }
 function Preparos({ casa }: { casa: boolean }) {
-  const { db, restaurante, mes, atualizar } = useSistema();
+  const { db, restaurante, mes, atualizar, filtro } = useSistema();
+  const [status, setStatus] = useState(filtro);
   const [edit, setEdit] = useState<Produto | ReceitaCasa | "new" | null>(null),
     [busca, setBusca] = useState("");
   const rows = (casa ? (db.receitas ?? []) : db.produtos).filter(
@@ -255,10 +321,26 @@ function Preparos({ casa }: { casa: boolean }) {
     insumos = insumosMes(db, mes);
   return (
     <>
+      <div className="filter-chips">
+        {["todos", "pendentes", "prontos"].map((f) => (
+          <button
+            key={f}
+            className="button"
+            aria-pressed={status === f}
+            onClick={() => setStatus(f)}
+          >
+            {f === "todos"
+              ? "Todos"
+              : f === "pendentes"
+                ? "Pendentes"
+                : "Prontos"}
+          </button>
+        ))}
+      </div>
       <div className="section-toolbar">
         <input
           aria-label="Buscar preparo"
-          placeholder="Buscar…"
+          placeholder="Buscar ficha…"
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
         />
@@ -273,7 +355,12 @@ function Preparos({ casa }: { casa: boolean }) {
       </div>
       <div className="recipe-grid">
         {rows
-          .filter((p) => p.nome.toLowerCase().includes(busca.toLowerCase()))
+          .filter(
+            (p) =>
+              p.nome.toLowerCase().includes(busca.toLowerCase()) &&
+              (status === "todos" ||
+                preparoPendente(db, mes, p, casa) === (status === "pendentes")),
+          )
           .map((p) => {
             let custo: string;
             try {
@@ -311,10 +398,21 @@ function Preparos({ casa }: { casa: boolean }) {
                 {"precoCardapio" in p && p.precoCardapio !== undefined && (
                   <p>Preço do PDF · Salão: {dinheiro(p.precoCardapio)}</p>
                 )}
-                <p className="muted">{p.notas}</p>
+                {p.notas && (
+                  <details className="preparo-note">
+                    <summary>Ver nota</summary>
+                    <p className="muted">{p.notas}</p>
+                  </details>
+                )}
                 <p>
                   {p.itens.length} itens ·{" "}
-                  {p.pendente ? "Ficha pendente" : "Composição confirmada"}
+                  {preparoPendente(db, mes, p, casa) ? (
+                    <button className="text-button" onClick={() => setEdit(p)}>
+                      Completar ficha
+                    </button>
+                  ) : (
+                    "Composição confirmada"
+                  )}
                 </p>
               </Panel>
             );
@@ -342,8 +440,8 @@ function Preparos({ casa }: { casa: boolean }) {
             )
               setEdit(null);
           }}
-          remove={() => {
-            if (!confirm("Excluir este preparo?")) return;
+          remove={async () => {
+            if (!(await confirmarExclusao((edit as Produto).nome))) return;
             if (
               atualizar((d) => {
                 if (casa) {
@@ -610,8 +708,8 @@ function PreparoModal({
               <button
                 type="button"
                 className="button danger"
-                onClick={() => {
-                  if (confirm("Remover este item da ficha?"))
+                onClick={async () => {
+                  if (await confirmarExclusao(o?.nome ?? "Item da ficha"))
                     setItens((rows) => rows.filter((_, i) => i !== idx));
                 }}
               >
