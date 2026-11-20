@@ -3,6 +3,9 @@ import { createContext, useContext } from "react";
 import type { Database, DNA, Restaurante } from "@/lib/types";
 export type Page =
   | "capital"
+  | "dre"
+  | "equilibrio"
+  | "fluxo-caixa"
   | "compras"
   | "visao"
   | "dna"

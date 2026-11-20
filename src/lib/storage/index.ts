@@ -254,7 +254,13 @@ export function validarBackup(value: unknown): Database {
       throw new Error("Conversão de fornecedor inválida");
   }
   v3Schema.parse(db);
-  for (const rows of [db.capitais ?? [], db.compras ?? []])
+  for (const rows of [
+    db.capitais ?? [],
+    db.compras ?? [],
+    db.saldosCaixa ?? [],
+    db.movimentosCaixa ?? [],
+    db.fechamentosFinanceiros ?? [],
+  ])
     for (const row of rows)
       if (
         !db.restaurantes.some(
@@ -273,6 +279,17 @@ export function validarBackup(value: unknown): Database {
     ).size !== (db.capitais ?? []).length
   )
     throw new Error("Capital duplicado");
+  if (
+    new Set((db.movimentosCaixa ?? []).map((m) => m.id)).size !==
+    (db.movimentosCaixa ?? []).length
+  )
+    throw new Error("Movimentação de caixa duplicada.");
+  for (const registros of [db.saldosCaixa ?? [], db.fechamentosFinanceiros ?? []])
+    if (
+      new Set(registros.map((r) => r.restaurante_id + ":" + r.competencia)).size !==
+      registros.length
+    )
+      throw new Error("Registro financeiro mensal duplicado.");
   return db;
 }
 export interface Repositorio {

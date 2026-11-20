@@ -57,10 +57,10 @@ export function Vila() {
     ],
     ["Custos fixos com rateio", dinheiro(c.fixos)],
     [
-      "Ponto de equilíbrio",
+      "Ponto de equilíbrio · referência do DNA",
       c.equilibrio === null ? "Pendente" : dinheiro(c.equilibrio),
     ],
-    ["Resultado gerencial", c.lucro === null ? "Pendente" : dinheiro(c.lucro)],
+    ["Resultado de referência · DNA", c.lucro === null ? "Pendente" : dinheiro(c.lucro)],
   ];
   return (
     <div className="consolidado-workspace">
@@ -90,7 +90,11 @@ export function Vila() {
             >
               {value}
             </strong>
-            {value === "Pendente" && (
+            {label.startsWith("Ponto de equilíbrio") ? (
+              <button type="button" className="text-button" onClick={() => ir("equilibrio")}>
+                Abrir ponto de equilíbrio
+              </button>
+            ) : value === "Pendente" && (
               <button
                 className="text-button"
                 onClick={() => {

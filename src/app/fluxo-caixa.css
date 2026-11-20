@@ -1,0 +1,221 @@
+.fluxo-caixa {
+  display: grid;
+  gap: 18px;
+}
+.fluxo-caixa .panel {
+  margin: 0;
+}
+.caixa-indicadores,
+.caixa-proximos dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: 12px;
+  margin: 0;
+}
+.caixa-indicador {
+  min-width: 0;
+  border: 1px solid #dce5da;
+  border-radius: 12px;
+  padding: 14px;
+  background: #f3f6ef;
+}
+.caixa-indicador dt,
+.caixa-proximos dt {
+  font-size: 0.875rem;
+  color: #54695e;
+}
+.caixa-indicador dd {
+  margin: 5px 0 0;
+  color: #154334;
+  font-size: clamp(1.2rem, 2.5vw, 1.7rem);
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.caixa-indicador dd.negative {
+  color: #99332a;
+}
+.caixa-destaque {
+  background: #e6efe4;
+  border-color: #c7d9c8;
+}
+.caixa-totais {
+  display: grid;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 0.875rem;
+}
+.caixa-totais strong {
+  display: inline-block;
+  margin-right: 6px;
+}
+.caixa-totais + .caixa-aviso,
+.caixa-aviso + .caixa-aviso {
+  margin: 13px 0 0;
+}
+.caixa-saldos,
+.caixa-lancamentos {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.caixa-saldos li,
+.caixa-lancamentos li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 9px 15px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  padding: 10px 0;
+}
+.caixa-saldos li:last-child,
+.caixa-lancamentos li:last-child {
+  border-bottom: 0;
+}
+.caixa-saldos li > span,
+.caixa-proximos > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.caixa-saldos svg {
+  flex-shrink: 0;
+  color: #397055;
+}
+.caixa-saldos li > strong,
+.caixa-lancamentos li > strong {
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.caixa-instrucao {
+  margin: 0 0 9px;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+.caixa-filtro {
+  max-width: 270px;
+  margin-bottom: 9px;
+}
+.caixa-lancamentos li {
+  grid-template-columns: 36px minmax(0, 1fr) auto minmax(95px, auto) auto;
+}
+.caixa-icone {
+  display: block;
+  width: 36px;
+  height: 36px;
+  padding: 7px;
+  color: #17553e;
+  background: #edf4eb;
+  border-radius: 9px;
+}
+.caixa-icone.saida {
+  color: #804819;
+  background: #f7eee3;
+}
+.caixa-lancamento-nome {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  overflow-wrap: anywhere;
+}
+.caixa-lancamento-nome > span {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+.caixa-situacao {
+  justify-self: start;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #315847;
+  background: #eaf1e9;
+}
+.caixa-situacao.previsto {
+  color: #3f5862;
+  background: #eaf0f2;
+}
+.caixa-situacao.vencido {
+  color: #75491e;
+  background: #fff0d7;
+}
+.caixa-valor {
+  text-align: right;
+}
+.caixa-proximos {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.caixa-proximos > div {
+  color: var(--green-dark);
+  font-weight: 700;
+}
+.caixa-proximos dl {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 105px), 1fr));
+  gap: 7px;
+}
+.caixa-proximos dl > div {
+  border-radius: 8px;
+  padding: 10px;
+  background: #f2f4ed;
+}
+.caixa-proximos dd {
+  margin: 3px 0 0;
+  font-weight: 700;
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.caixa-calendario summary {
+  cursor: pointer;
+  color: var(--green-dark);
+  font-weight: 700;
+  padding-block: 10px;
+}
+.caixa-tabela {
+  overflow: auto;
+}
+.caixa-tabela table {
+  width: 100%;
+  min-width: 290px;
+  border-collapse: collapse;
+}
+.caixa-tabela th,
+.caixa-tabela td {
+  padding: 9px;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.caixa-tabela th:first-child {
+  text-align: left;
+}
+.caixa-tabela thead th {
+  background: #eef2e9;
+}
+@media (max-width: 690px) {
+  .caixa-saldos li {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .caixa-saldos li > button {
+    justify-self: start;
+  }
+  .caixa-lancamentos li {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+  }
+  .caixa-situacao {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .caixa-lancamentos li > button {
+    grid-column: 3;
+    grid-row: 2;
+  }
+  .caixa-valor {
+    grid-column: 3;
+    grid-row: 1;
+  }
+}

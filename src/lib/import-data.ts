@@ -13,11 +13,17 @@ export function mesclarDados(atual: Database, recebido: Database): Database {
     "alugueis",
     "capitais",
     "compras",
+    "saldosCaixa",
+    "movimentosCaixa",
+    "fechamentosFinanceiros",
   ] as const) {
     const identity = (r: Record<string, unknown>) =>
       key === "alugueis"
         ? String(r.competencia)
-        : key === "capitais" || key === "dnas"
+        : key === "capitais" ||
+            key === "dnas" ||
+            key === "saldosCaixa" ||
+            key === "fechamentosFinanceiros"
           ? `${r.restaurante_id}:${r.competencia}`
           : String(r.id);
     const map = new Map<string, unknown>();

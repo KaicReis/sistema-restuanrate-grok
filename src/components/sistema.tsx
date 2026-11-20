@@ -1,6 +1,8 @@
 "use client";
 import { CloudIndicator, useCloud } from "./cloud";
 import { CapitalGiro } from "./capital";
+import { Dre, PontoEquilibrio } from "./financeiro";
+import { FluxoCaixa } from "./fluxo-caixa";
 import { Compras } from "./compras";
 import { mesclarDados } from "@/lib/import-data";
 import { useEffect, useRef, useState } from "react";
@@ -19,6 +21,9 @@ import {
   Store,
   X,
   Wallet,
+  ArrowRightLeft,
+  ChartNoAxesCombined,
+  Target,
   ShoppingCart,
   Settings2,
   CookingPot,
@@ -40,6 +45,9 @@ import { Insumos, Fichas, Receitas } from "./producao";
 import { Precos } from "./precos";
 import { Modal } from "./ui";
 const pages = [
+  { id: "dre", label: "DRE gerencial", icon: ChartNoAxesCombined },
+  { id: "equilibrio", label: "Ponto de equilíbrio", icon: Target },
+  { id: "fluxo-caixa", label: "Fluxo de caixa", icon: ArrowRightLeft },
   { id: "capital", label: "Capital de giro", icon: Wallet },
   { id: "compras", label: "Compras", icon: ShoppingCart },
   { id: "visao", label: "Visão geral", icon: LayoutDashboard },
@@ -52,6 +60,9 @@ const pages = [
   { id: "restaurantes", label: "Restaurantes", icon: Building2 },
 ] as const;
 const descriptions: Record<Page, string> = {
+  dre: "Confira receitas, custos e resultado por competência.",
+  equilibrio: "Calcule quanto precisa faturar para cobrir os custos.",
+  "fluxo-caixa": "Acompanhe entradas, saídas e o saldo previsto.",
   capital: "Acompanhe caixa, despesas e necessidade de capital.",
   compras: "Lance notas, revise os itens e acompanhe as compras.",
   visao: "Acompanhe os números e as pendências da operação.",
@@ -63,6 +74,8 @@ const descriptions: Record<Page, string> = {
   precos: "Compare preços praticados e preços sugeridos por canal.",
   restaurantes: "Gerencie as operações cadastradas na Vila.",
 };
+const financeiro = ["dre", "equilibrio", "fluxo-caixa", "capital"] as const;
+const paginasConsolidado: readonly string[] = ["visao", ...financeiro, "restaurantes"];
 const ordemOperacoes = ["a-vila", "bora", "nativos", "bar"];
 function preparar(db: Database, id: string, mes: string) {
   if (!db.dnas.some((d) => d.restaurante_id === id && d.competencia === mes))
@@ -190,7 +203,13 @@ export default function Sistema() {
       return;
     setId(next);
     setMes(month);
-    if (next === "a-vila" || id === "a-vila") setPage("visao");
+    if (
+      next !== id &&
+      (next === "a-vila" || id === "a-vila") &&
+      !paginasConsolidado.includes(page)
+    ) {
+      setPage("visao");
+    }
   }
   function exportar() {
     try {
@@ -380,7 +399,8 @@ export default function Sistema() {
           </div>
           <nav aria-label="Menu principal">
             {[
-              ["Operação", ["visao", "compras", "capital"]],
+              ["Operação", ["visao", "compras"]],
+              ["Financeiro", financeiro],
               [
                 "Cardápio e custos",
                 ["insumos", "receitas", "fichas", "precos"],
@@ -391,7 +411,7 @@ export default function Sistema() {
                 ([, ids]) =>
                   restaurante.id !== "a-vila" ||
                   (ids as string[]).some((pid) =>
-                    ["visao", "capital", "restaurantes"].includes(pid),
+                    paginasConsolidado.includes(pid),
                   ),
               )
               .map(([label, ids]) => (
@@ -402,7 +422,7 @@ export default function Sistema() {
                     .filter(
                       (p) =>
                         restaurante.id !== "a-vila" ||
-                        ["visao", "capital", "restaurantes"].includes(p.id),
+                        paginasConsolidado.includes(p.id),
                     )
                     .map((p) => (
                       <button
@@ -556,7 +576,13 @@ export default function Sistema() {
               key={`${id}:${mes}:${page}:${filtro}:${revisao}`}
               className="page-content"
             >
-              {page === "capital" ? (
+              {page === "dre" ? (
+                <Dre />
+              ) : page === "equilibrio" ? (
+                <PontoEquilibrio />
+              ) : page === "fluxo-caixa" ? (
+                <FluxoCaixa />
+              ) : page === "capital" ? (
                 <CapitalGiro consolidado={restaurante.id === "a-vila"} />
               ) : page === "compras" ? (
                 <Compras />
