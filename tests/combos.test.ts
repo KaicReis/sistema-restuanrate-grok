@@ -38,6 +38,18 @@ it("calcula quantidades, embalagem única e preço avulso do combo", () => {
   expect(cotacao.avulsos).toBe(3000);
   expect(cotacao.minimo.viavel).toBe(true);
   expect(cotarCombo(db, { ...combo, embalagem: 60 }, canal).custo.toNumber()).toBe(1285);
+  db.insumos.push(
+    { id: "caixa", nome: "Caixa", categoria: "embalagem", restaurante_id, unidade: "un", quantidade: 50, preco: 13990, rendimento: 100 },
+    { id: "papel", nome: "Papel acoplado", categoria: "embalagem", restaurante_id, unidade: "un", quantidade: 500, preco: 7960, rendimento: 100 },
+  );
+  const embalado = {
+    ...combo,
+    embalagens: [{ insumo_id: "caixa", quantidade: 1 }, { insumo_id: "papel", quantidade: 2 }],
+  };
+  expect(validarBackup({ ...db, combos: [embalado] }).combos).toEqual([embalado]);
+  expect(cotarCombo(db, embalado, canal).custo.toNumber()).toBe(1536.64);
+  expect(() => validarBackup({ ...db, combos: [{ ...embalado, embalagem: 60 }] })).toThrow(/Combo inválido/);
+  expect(() => validarBackup({ ...db, combos: [{ ...combo, embalagens: [{ insumo_id: "base", quantidade: 1 }] }] })).toThrow(/Combo inválido/);
   db.produtos[1].pendente = true;
   expect(() => cotarCombo(db, combo, canal)).toThrow(/batata/);
   db.produtos[1].restaurante_id = "outra";

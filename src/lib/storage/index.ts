@@ -3,6 +3,7 @@ import type { Database } from "../types";
 import { migrar } from "./migrate";
 import { validarRateio } from "../v2";
 import { criarBase } from "./seed";
+import { insumoDeEmbalagem, unidadesFicha } from "../dna";
 const KEY = "dna-restaurante:v2";
 const object = (v: unknown): v is Record<string, unknown> =>
   !!v && typeof v === "object" && !Array.isArray(v);
@@ -268,13 +269,22 @@ export function validarBackup(value: unknown): Database {
       !db.restaurantes.some((r) => r.id === c.restaurante_id) ||
       (c.preco !== undefined && !money(c.preco)) ||
       (c.embalagem !== undefined && !money(c.embalagem)) ||
+      (c.embalagens !== undefined && (
+        c.embalagem !== undefined ||
+        !Array.isArray(c.embalagens) || c.embalagens.length < 1 || c.embalagens.length > 50 ||
+        c.embalagens.some((item) => !object(item) || !money(item.quantidade) ||
+          item.quantidade < 1 || item.quantidade > 100 ||
+          !db.insumos.some((i) => i.id === item.insumo_id && i.restaurante_id === c.restaurante_id &&
+            insumoDeEmbalagem(i) && unidadesFicha(i).includes("un"))) ||
+        new Set(c.embalagens.map((item) => item.insumo_id)).size !== c.embalagens.length
+      )) ||
       !Array.isArray(c.itens) || c.itens.length < 1 || c.itens.length > 50 ||
       c.itens.some((i) => !object(i) || !money(i.quantidade) || i.quantidade < 1 || i.quantidade > 100 ||
         !db.produtos.some((p) => p.id === i.produto_id && p.restaurante_id === c.restaurante_id)) ||
       c.itens.reduce((total, item) => total + item.quantidade, 0) < 2 ||
       new Set(c.itens.map((i) => i.produto_id)).size !== c.itens.length
     ) || new Set(db.combos.map((c) => c.id)).size !== db.combos.length
-  )) throw new Error("Combo inválido ou com produto de outra operação.");
+  )) throw new Error("Combo inválido. Revise os produtos, embalagens e quantidades da operação.");
   v3Schema.parse(db);
   for (const rows of [
     db.capitais ?? [],

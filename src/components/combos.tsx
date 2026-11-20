@@ -2,7 +2,9 @@
 
 import { useState, type FormEvent } from "react";
 import { cotarCombo, type Combo } from "@/lib/combos";
-import { dinheiro, paraCentavos, percentual } from "@/lib/dna";
+import { dinheiro, insumoDeEmbalagem, paraCentavos, percentual, unidadesFicha } from "@/lib/dna";
+import { insumoArquivado } from "@/lib/insumos";
+import { insumosMes } from "@/lib/v2";
 import { useSistema } from "./context";
 import { Numeric } from "./numeric";
 import { AddButton, Empty, Field, Modal, Panel, confirmarExclusao, formString } from "./ui";
@@ -42,6 +44,9 @@ export function Combos() {
                 </div>
               </div>
               <p>{combo.itens.map((item) => `${item.quantidade}× ${produtos.find((p) => p.id === item.produto_id)?.nome ?? "Produto indisponível"}`).join(" · ")}</p>
+              {combo.embalagens?.length ? (
+                <p className="muted">{combo.embalagens.map((item) => `${item.quantidade}× ${db.insumos.find((i) => i.id === item.insumo_id)?.nome ?? "Embalagem indisponível"}`).join(" · ")}</p>
+              ) : null}
               <dl className="preparo-metrics">
                 <div><dt>Custo direto</dt><dd>{cotacao ? dinheiro(cotacao.custo) : "Pendente"}</dd></div>
                 <div><dt>Preço mínimo</dt><dd>{cotacao?.minimo.viavel ? dinheiro(cotacao.minimo.precoMinimo) : "—"}</dd></div>
@@ -88,11 +93,16 @@ function ComboEditor({ combo, produtos, canais, gravar, fechar, excluir }: {
   fechar: () => void;
   excluir: () => void;
 }) {
-  const { restaurante } = useSistema();
+  const { db, mes, restaurante } = useSistema();
   const [itens, setItens] = useState(combo?.itens ?? [
     { produto_id: "", quantidade: 1 },
     { produto_id: "", quantidade: 1 },
   ]);
+  const [embalagens, setEmbalagens] = useState(combo?.embalagens ?? []);
+  const opcoesEmbalagem = insumosMes(db, mes)
+    .filter((i) => i.restaurante_id === restaurante.id && insumoDeEmbalagem(i) && unidadesFicha(i).includes("un") &&
+      (!insumoArquivado(i) || embalagens.some((item) => item.insumo_id === i.id)))
+    .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
   const [erro, setErro] = useState("");
   const alterar = (idx: number, patch: Partial<Combo["itens"][number]>) =>
     setItens((atuais) => atuais.map((item, i) => i === idx ? { ...item, ...patch } : item));
@@ -109,10 +119,15 @@ function ComboEditor({ combo, produtos, canais, gravar, fechar, excluir }: {
       if (itens.reduce((total, item) => total + item.quantidade, 0) < 2 || itens.some((i) => !i.produto_id || !Number.isInteger(i.quantidade) || i.quantidade < 1 || i.quantidade > 100) ||
           new Set(itens.map((i) => i.produto_id)).size !== itens.length)
         throw new Error("Escolha os produtos e informe pelo menos duas unidades no total.");
+      if (embalagens.some((item) => !opcoesEmbalagem.some((i) => i.id === item.insumo_id) ||
+          !Number.isInteger(item.quantidade) || item.quantidade < 1 || item.quantidade > 100) ||
+          new Set(embalagens.map((item) => item.insumo_id)).size !== embalagens.length)
+        throw new Error("Escolha cada embalagem do combo e informe a quantidade em unidades.");
       gravar({
         id: combo?.id ?? crypto.randomUUID(), restaurante_id: restaurante.id, nome, canal, itens,
         ...(preco ? { preco: paraCentavos(preco) } : {}),
         ...(embalagem ? { embalagem: paraCentavos(embalagem) } : {}),
+        ...(embalagens.length ? { embalagens } : {}),
       });
     } catch (e) {
       setErro((e as Error).message);
@@ -132,8 +147,8 @@ function ComboEditor({ combo, produtos, canais, gravar, fechar, excluir }: {
             </select>
           </Field>
           <Field label="Preço de venda (R$)"><Numeric moeda name="preco" min={0} defaultValue={combo?.preco === undefined ? "" : combo.preco / 100} /></Field>
-          <Field label="Embalagem total (R$)" hint="Em branco, soma as embalagens dos itens. Preencha para usar um valor único no combo.">
-            <Numeric moeda name="embalagem" min={0} defaultValue={combo?.embalagem === undefined ? "" : combo.embalagem / 100} />
+          <Field label="Embalagem manual (R$)" hint="Use para informar o custo total em reais.">
+            <Numeric moeda name="embalagem" disabled={embalagens.length > 0} min={0} defaultValue={combo?.embalagem === undefined ? "" : combo.embalagem / 100} />
           </Field>
         </div>
         <Panel title="Produtos do combo">
@@ -152,6 +167,31 @@ function ComboEditor({ combo, produtos, canais, gravar, fechar, excluir }: {
             </div>
           ))}
           <button type="button" className="button" disabled={itens.length >= 50} onClick={() => setItens([...itens, { produto_id: "", quantidade: 1 }])}>Adicionar produto</button>
+        </Panel>
+        <Panel title="Embalagens do combo">
+          <p className="muted">As embalagens escolhidas aqui substituem as embalagens dos produtos. Sem seleção ou valor manual, o total vem das fichas e do canal.</p>
+          {embalagens.map((item, idx) => (
+            <div className="combo-item-row" key={idx}>
+              <Field label="Embalagem">
+                <select required value={item.insumo_id} onChange={(e) => setEmbalagens(embalagens.map((atual, i) =>
+                  i === idx ? { ...atual, insumo_id: e.target.value } : atual,
+                ))}>
+                  <option value="">Selecione uma embalagem</option>
+                  {opcoesEmbalagem.filter((opcao) => opcao.id === item.insumo_id || !embalagens.some((outra) => outra.insumo_id === opcao.id))
+                    .map((opcao) => <option key={opcao.id} value={opcao.id}>{opcao.nome}</option>)}
+                </select>
+              </Field>
+              <Field label="Quantidade (un)">
+                <input required type="number" min={1} max={100} value={item.quantidade || ""} onChange={(e) => setEmbalagens(embalagens.map((atual, i) =>
+                  i === idx ? { ...atual, quantidade: Number(e.target.value) } : atual,
+                ))} />
+              </Field>
+              <button type="button" className="button" aria-label={`Remover embalagem ${idx + 1}`} onClick={() => setEmbalagens(embalagens.filter((_, i) => i !== idx))}>Remover</button>
+            </div>
+          ))}
+          {opcoesEmbalagem.length > 0 ? (
+            <button type="button" className="button" disabled={embalagens.length >= Math.min(50, opcoesEmbalagem.length)} onClick={() => setEmbalagens([...embalagens, { insumo_id: "", quantidade: 1 }])}>Adicionar embalagem</button>
+          ) : <p className="muted">Cadastre as embalagens por unidade na tela Insumos.</p>}
         </Panel>
         {erro && <p className="notice warning" role="alert">{erro}</p>}
         <div className="form-actions">

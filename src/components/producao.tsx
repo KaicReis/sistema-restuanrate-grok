@@ -1,5 +1,5 @@
 "use client";
-import { insumoArquivado } from "@/lib/insumos";
+import { embalagensBoraPendentes, insumoArquivado } from "@/lib/insumos";
 import { confirmarExclusao } from "./ui";
 import { useState } from "react";
 import Image from "next/image";
@@ -22,7 +22,9 @@ import type {
 import {
   calcularCMV,
   custoReceita,
+  custoUnidadeUso,
   dinheiro,
+  insumoDeEmbalagem,
   paraCentavos,
   preservarUnidadesDeFicha,
   unidadeUso,
@@ -47,11 +49,29 @@ export function Insumos() {
   const [edit, setEdit] = useState<Insumo | "new" | null>(null),
     [busca, setBusca] = useState(""),
     [status, setStatus] = useState(filtro),
+    [cadastrarEmbalagens, setCadastrarEmbalagens] = useState(false),
     [error, setError] = useState("");
   const rows = insumosMes(db, mes).filter(
       (i) => i.restaurante_id === restaurante.id,
     ),
     record = edit && edit !== "new" ? edit : null;
+  const embalagensPendentes = restaurante.id === "bora" ? embalagensBoraPendentes(db.insumos) : [];
+  const emCombo = db.combos?.some((combo) => combo.embalagens?.some((item) => item.insumo_id === record?.id));
+  function gravarEmbalagens() {
+    if (atualizar((draft) => {
+      for (const modelo of embalagensBoraPendentes(draft.insumos)) {
+        const compra = { unidade: "un" as const, quantidade: modelo.quantidade, preco: modelo.preco, rendimento: 100 };
+        draft.insumos.push({
+          ...modelo, ...compra, restaurante_id: restaurante.id, categoria: "embalagem",
+          historicoPrecos: { [mes]: compra },
+        });
+      }
+    }, "Embalagens cadastradas nos insumos do Bora.")) {
+      setCadastrarEmbalagens(false);
+      setStatus("todos");
+      setBusca("");
+    }
+  }
   function save(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
@@ -113,6 +133,7 @@ export function Insumos() {
             id: record?.id ?? crypto.randomUUID(),
             restaurante_id: restaurante.id,
             nome: formString(f, "nome"),
+            categoria: formString(f, "categoria") || undefined,
             historicoPrecos,
           };
           if (original) d.insumos[d.insumos.indexOf(original)] = i;
@@ -145,6 +166,9 @@ export function Insumos() {
           value={busca}
           onChange={(e) => setBusca(e.target.value)}
         />
+        {embalagensPendentes.length > 0 && (
+          <button type="button" className="button" onClick={() => setCadastrarEmbalagens(true)}>Cadastrar embalagens do Bora</button>
+        )}
         <AddButton
           onClick={() => {
             setError("");
@@ -198,6 +222,8 @@ export function Insumos() {
                   {i.rendimento.toLocaleString("pt-BR")}% aproveitável
                   {i.unidadesNaCompra !== undefined &&
                     ` · ${i.unidadesNaCompra.toLocaleString("pt-BR")} un na compra`}
+                  {insumoDeEmbalagem(i) && !i.precoPendente && unidadesFicha(i).includes("un") &&
+                    ` · ${dinheiro(custoUnidadeUso(i, "un"))}/un`}
                   {(() => {
                     const compra = [...(db.compras ?? [])]
                       .filter(
@@ -243,6 +269,19 @@ export function Insumos() {
             </div>
           ))}
       </Panel>
+      {cadastrarEmbalagens && embalagensPendentes.length > 0 && (
+        <Modal title="Cadastrar embalagens do Bora" close={() => setCadastrarEmbalagens(false)}>
+          <Panel title={`Preços de compra · ${mes.split("-").reverse().join("/")}`}>
+            {embalagensPendentes.map((item) => (
+              <p key={item.id}>{item.nome} · {item.quantidade} un · {dinheiro(item.preco)} por pacote</p>
+            ))}
+          </Panel>
+          <div className="form-actions">
+            <button type="button" className="button" onClick={() => setCadastrarEmbalagens(false)}>Cancelar</button>
+            <button type="button" className="button primary" onClick={gravarEmbalagens}>Salvar embalagens</button>
+          </div>
+        </Modal>
+      )}
       {edit && (
         <Modal
           title={record ? "Editar insumo" : "Novo insumo"}
@@ -265,6 +304,15 @@ export function Insumos() {
               <input name="nome" required defaultValue={record?.nome} />
             </Field>
             <div className="form-grid">
+              <Field label="Categoria">
+                <select name="categoria" defaultValue={record && insumoDeEmbalagem(record) ? "embalagem" : record?.categoria ?? ""}>
+                  <option value="">Insumo geral</option>
+                  <option value="embalagem">Embalagem</option>
+                  {record?.categoria && record.categoria !== "embalagem" && (
+                    <option value={record.categoria}>{record.categoria}</option>
+                  )}
+                </select>
+              </Field>
               <Field label="Unidade de compra">
                 <select name="unidade" defaultValue={record?.unidade ?? "kg"}>
                   {["kg", "g", "L", "ml", "un"].map((u) => (
@@ -272,7 +320,7 @@ export function Insumos() {
                   ))}
                 </select>
               </Field>
-              <Field label="Quantidade da compra">
+              <Field label="Quantidade da compra" hint="Para um pacote com 50 peças, escolha un e informe 50.">
                 <Numeric
                   name="quantidade"
                   min="0.000001"
@@ -334,10 +382,10 @@ export function Insumos() {
               {record && (
                 <button type="button" className="button" onClick={() => {
                   const arquivado = !insumoArquivado(record);
-                  if (arquivado && [...db.produtos, ...(db.receitas ?? [])].some(
+                  if (arquivado && (emCombo || [...db.produtos, ...(db.receitas ?? [])].some(
                     (p) => p.itens.some((i) => i.insumo_id === record.id),
-                  )) {
-                    avisar("Insumo em uso. Revise as fichas antes de arquivar.");
+                  ))) {
+                    avisar("Insumo em uso. Revise as fichas e os combos antes de arquivar.");
                     return;
                   }
                   if (atualizar((d) => {
@@ -355,14 +403,14 @@ export function Insumos() {
                   if (!record || !(await confirmarExclusao(record.nome)))
                     return;
                   if (
-                    db.produtos.some((p) =>
+                    emCombo || db.produtos.some((p) =>
                       p.itens.some((x) => x.insumo_id === record.id),
                     ) ||
                     db.receitas?.some((p) =>
                       p.itens.some((x) => x.insumo_id === record.id),
                     )
                   ) {
-                    avisar("Insumo em uso. Remova das fichas primeiro.");
+                    avisar("Insumo em uso. Remova das fichas e dos combos primeiro.");
                     return;
                   }
                   if (
