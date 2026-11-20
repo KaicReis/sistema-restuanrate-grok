@@ -12,9 +12,9 @@ export function insumosMes(db: Database, mes: string): Insumo[] {
       .sort();
     const snapshot = i.historicoPrecos?.[keys[keys.length - 1] ?? ""];
     return snapshot
-      ? { ...i, ...snapshot }
+      ? { ...i, ...snapshot, unidadesNaCompra: snapshot.unidadesNaCompra }
       : i.historicoPrecos && Object.keys(i.historicoPrecos).length
-        ? { ...i, preco: 0, precoPendente: true }
+        ? { ...i, preco: 0, precoPendente: true, unidadesNaCompra: undefined }
         : i;
   });
 }

@@ -11,6 +11,9 @@ const text = (v: unknown) =>
 const num = (v: unknown, max = Number.MAX_SAFE_INTEGER) =>
   typeof v === "number" && Number.isFinite(v) && v >= 0 && v <= max;
 const money = (v: unknown) => num(v) && Number.isSafeInteger(v);
+const unidades = ["kg", "g", "L", "ml", "un"];
+const unidadesNaCompraValidas = (v: unknown) =>
+  v === undefined || (typeof v === "number" && Number.isSafeInteger(v) && v > 0);
 const month = (v: unknown) =>
   typeof v === "string" && /^\d{4}-(0[1-9]|1[0-2])$/.test(v);
 export function validarBackup(value: unknown): Database {
@@ -94,7 +97,8 @@ export function validarBackup(value: unknown): Database {
     db.insumos.some(
       (i) =>
         !text(i.nome) ||
-        !["kg", "g", "L", "ml", "un"].includes(i.unidade) ||
+        !unidades.includes(i.unidade) ||
+        !unidadesNaCompraValidas(i.unidadesNaCompra) ||
         !num(i.quantidade) ||
         i.quantidade <= 0 ||
         !money(i.preco) ||
@@ -115,6 +119,7 @@ export function validarBackup(value: unknown): Database {
         p.itens.some(
           (i) =>
             !object(i) ||
+            (i.unidade !== undefined && !unidades.includes(i.unidade)) ||
             !num(i.quantidade) ||
             (i.quantidade <= 0 && !i.confirmar) ||
             !num(i.perda) ||
@@ -171,7 +176,7 @@ export function validarBackup(value: unknown): Database {
         (!r.pendente && r.rendimento <= 0) ||
         !num(r.perda) ||
         r.perda >= 100 ||
-        !["g", "kg", "L", "ml", "un"].includes(r.unidade) ||
+        !unidades.includes(r.unidade) ||
         !Array.isArray(r.itens) ||
         (!r.pendente && !r.itens.length)
       )
@@ -182,12 +187,13 @@ export function validarBackup(value: unknown): Database {
         if (refs.has(key)) throw new Error("Ingrediente duplicado.");
         refs.add(key);
         if (
+          (i.unidade !== undefined && !unidades.includes(i.unidade)) ||
           !num(i.quantidade) ||
           (!i.confirmar && i.quantidade <= 0) ||
           !num(i.perda) ||
           i.perda >= 100
         )
-          throw new Error("Quantidade ou perda inválida.");
+          throw new Error("Unidade, quantidade ou perda inválida.");
         if (i.receita_id) {
           if (
             !db.receitas!.some(
@@ -221,7 +227,8 @@ export function validarBackup(value: unknown): Database {
           h.quantidade <= 0 ||
           !num(h.rendimento, 100) ||
           h.rendimento <= 0 ||
-          !["g", "kg", "L", "ml", "un"].includes(h.unidade)
+          !unidades.includes(h.unidade) ||
+          !unidadesNaCompraValidas(h.unidadesNaCompra)
         )
           throw new Error("Histórico de insumo inválido.");
     for (const d of db.dnas)
@@ -248,7 +255,7 @@ export function validarBackup(value: unknown): Database {
             !text(c.chave) ||
             !num(c.conteudo) ||
             c.conteudo <= 0 ||
-            !["kg", "g", "L", "ml", "un"].includes(c.unidade),
+            !unidades.includes(c.unidade),
         ))
     )
       throw new Error("Conversão de fornecedor inválida");

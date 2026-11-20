@@ -1,5 +1,5 @@
 import Decimal from "decimal.js";
-import type { Canal, DNA, Insumo, Produto, ReceitaCasa } from "./types";
+import type { Canal, Database, DNA, Insumo, Produto, ReceitaCasa, Unidade } from "./types";
 Decimal.set({ precision: 32 });
 export interface EntradaDNA {
   faturamentoReferencia: number;
@@ -75,14 +75,46 @@ export function calcularPrecoDNA(e: EntradaDNA): ResultadoDNA {
     precoMinimo: precoMinimo.toNumber(),
   };
 }
-export function unidadeUso(insumo: Insumo) {
-  return ["kg", "g"].includes(insumo.unidade)
-    ? "g"
-    : ["L", "ml"].includes(insumo.unidade)
-      ? "ml"
-      : "un";
+const fatoresUnidade = { g: 1, kg: 1000, ml: 1, L: 1000, un: 1 } as const;
+
+export function unidadeUso(origem: Pick<Insumo, "unidade">): "g" | "ml" | "un" {
+  if (origem.unidade === "kg" || origem.unidade === "g") return "g";
+  if (origem.unidade === "L" || origem.unidade === "ml") return "ml";
+  return "un";
 }
-export function custoUnidadeUso(insumo: Insumo): Decimal {
+
+export function unidadesFicha(origem: Pick<Insumo, "unidade" | "unidadesNaCompra">): Unidade[] {
+  const base = unidadeUso(origem);
+  if (base === "un") return ["un"];
+  const opcoes: Unidade[] = base === "g" ? ["g", "kg"] : ["ml", "L"];
+  const total = origem.unidadesNaCompra;
+  if (total !== undefined && Number.isSafeInteger(total) && total > 0) opcoes.push("un");
+  return opcoes;
+}
+
+export function preservarUnidadesDeFicha(
+  db: Database,
+  origem: Pick<Insumo, "id" | "restaurante_id" | "unidade">,
+  novaUnidade: Unidade,
+  receita = false,
+) {
+  const anterior = unidadeUso(origem);
+  if (anterior === unidadeUso({ unidade: novaUnidade })) return;
+  for (const preparo of [...db.produtos, ...(db.receitas ?? [])]) {
+    if (preparo.restaurante_id !== origem.restaurante_id) continue;
+    for (const item of preparo.itens) {
+      const corresponde = receita
+        ? item.receita_id === origem.id
+        : !item.receita_id && item.insumo_id === origem.id;
+      if (corresponde && item.unidade === undefined) item.unidade = anterior;
+    }
+  }
+}
+
+export function custoUnidadeUso(
+  insumo: Insumo,
+  unidade: Unidade = unidadeUso(insumo),
+): Decimal {
   if (
     !Number.isFinite(insumo.quantidade) ||
     insumo.quantidade <= 0 ||
@@ -93,12 +125,21 @@ export function custoUnidadeUso(insumo: Insumo): Decimal {
     insumo.rendimento > 100
   )
     throw new Error("Insumo com quantidade, preço ou rendimento inválido.");
-  const fator = ["kg", "L"].includes(insumo.unidade) ? 1000 : 1;
+  if (!unidadesFicha(insumo).includes(unidade)) {
+    throw new Error(
+      unidade === "un"
+        ? "Informe quantas unidades vêm na compra deste insumo."
+        : "A unidade da ficha não é compatível com a compra deste insumo.",
+    );
+  }
+  const quantidade =
+    unidade === "un" && insumo.unidade !== "un"
+      ? new Decimal(insumo.unidadesNaCompra!)
+      : new Decimal(insumo.quantidade)
+          .times(fatoresUnidade[insumo.unidade])
+          .div(fatoresUnidade[unidade]);
   return new Decimal(insumo.preco).div(
-    new Decimal(insumo.quantidade)
-      .times(fator)
-      .times(insumo.rendimento)
-      .div(100),
+    quantidade.times(insumo.rendimento).div(100),
   );
 }
 export function calcularCMVDecimal(
@@ -135,16 +176,18 @@ export function calcularCMVDecimal(
       item.perda >= 100
     )
       throw new Error("Quantidade deve ser positiva e perda menor que 100%.");
+    let custo: Decimal;
+    if (receita) {
+      const unidade = item.unidade ?? unidadeUso(receita);
+      if (!unidadesFicha(receita).includes(unidade))
+        throw new Error("A unidade da ficha não é compatível com o rendimento desta receita.");
+      custo = custoReceita(receita, insumos, receitas, caminho).times(fatoresUnidade[unidade]);
+    } else {
+      if (insumo!.precoPendente) throw new Error("Preço de insumo pendente.");
+      custo = custoUnidadeUso(insumo!, item.unidade);
+    }
     total = total.plus(
-      (receita
-        ? custoReceita(receita, insumos, receitas, caminho)
-        : (() => {
-            if (insumo!.precoPendente)
-              throw new Error("Preço de insumo pendente.");
-            return custoUnidadeUso(insumo!);
-          })()
-      )
-        .times(item.quantidade)
+      custo.times(item.quantidade)
         .div(new Decimal(1).minus(new Decimal(item.perda).div(100))),
     );
   }
@@ -288,6 +331,6 @@ export function custoReceita(
     receitas,
     [...caminho, r.id],
   )
-    .div(r.rendimento * (["kg", "L"].includes(r.unidade) ? 1000 : 1))
+    .div(r.rendimento * fatoresUnidade[r.unidade])
     .div(new Decimal(1).minus(new Decimal(r.perda).div(100)));
 }

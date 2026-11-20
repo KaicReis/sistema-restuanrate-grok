@@ -1,4 +1,6 @@
 import { validarNota } from "./purchase-validation";
+import { preservarUnidadesDeFicha } from "./dna";
+import { insumosMes } from "./v2";
 import { z } from "zod";
 import type { Database, Unidade } from "./types";
 import Decimal from "decimal.js";
@@ -103,6 +105,7 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
       throw new Error("Insumo de outra operação ou inexistente");
   }
   const mes = compra.data.slice(0, 7);
+  const insumosNoMes = new Map(insumosMes(db, mes).map((i) => [i.id, i]));
   for (const linha of compra.itens) {
     if (linha.ignorar) continue;
     const custo = snapshotCusto(linha);
@@ -126,6 +129,8 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
       db.insumos.push(insumo);
       linha.insumo_id = insumo.id;
     }
+    const anterior = insumosNoMes.get(insumo.id);
+    if (anterior) preservarUnidadesDeFicha(db, anterior, linha.unidade);
     // O preço vem exclusivamente de vUnCom; totais e despesas são informativos.
     const h = {
       preco: custo.preco,
@@ -154,6 +159,7 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
       "0000-01": {
         preco: insumo.preco,
         quantidade: insumo.quantidade,
+        unidadesNaCompra: insumo.unidadesNaCompra,
         unidade: insumo.unidade,
         rendimento: insumo.rendimento,
         precoPendente: insumo.precoPendente,
@@ -161,7 +167,10 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
     };
     insumo.historicoPrecos[mes] = h;
     const latest = Object.keys(insumo.historicoPrecos).sort().at(-1);
-    if (latest === mes) Object.assign(insumo, h);
+    if (latest === mes) {
+      Object.assign(insumo, h);
+      delete insumo.unidadesNaCompra;
+    }
   }
   db.compras ??= [];
   db.compras.push(compra);

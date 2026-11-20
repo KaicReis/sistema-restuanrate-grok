@@ -23,7 +23,9 @@ import {
   custoReceita,
   dinheiro,
   paraCentavos,
+  preservarUnidadesDeFicha,
   unidadeUso,
+  unidadesFicha,
 } from "@/lib/dna";
 import { insumosMes } from "@/lib/v2";
 import { useSistema } from "./context";
@@ -55,10 +57,23 @@ export function Insumos() {
     try {
       if (!formString(f, "nome"))
         throw new Error("Nome: informe o nome do insumo.");
+      const unidadesTexto = formString(f, "unidadesNaCompra");
+      const unidade = formString(f, "unidade") as Unidade;
+      const unidadesNaCompra =
+        unidadesTexto && unidade !== "un"
+          ? formNumber(f, "unidadesNaCompra")
+          : undefined;
+      if (
+        unidadesNaCompra !== undefined &&
+        (!Number.isSafeInteger(unidadesNaCompra) || unidadesNaCompra <= 0)
+      ) {
+        throw new Error("Informe uma quantidade inteira e positiva de unidades no pacote.");
+      }
       const snapshot = {
         preco: paraCentavos(formString(f, "preco")),
         quantidade: formNumber(f, "quantidade"),
-        unidade: formString(f, "unidade") as Unidade,
+        unidade,
+        unidadesNaCompra,
         rendimento: formNumber(f, "rendimento"),
         precoPendente: formString(f, "preco") === "",
       };
@@ -73,13 +88,31 @@ export function Insumos() {
       if (
         atualizar((d) => {
           const original = d.insumos.find((i) => i.id === record?.id);
+          if (original) preservarUnidadesDeFicha(d, record ?? original, unidade);
+          const historicoAnterior = original?.historicoPrecos ??
+            (original
+              ? {
+                  "0000-01": {
+                    preco: original.preco,
+                    quantidade: original.quantidade,
+                    unidade: original.unidade,
+                    rendimento: original.rendimento,
+                    precoPendente: Boolean(original.precoPendente),
+                    unidadesNaCompra: original.unidadesNaCompra,
+                  },
+                }
+              : {});
+          const historicoPrecos = { ...historicoAnterior, [mes]: snapshot };
+          const ultimaCompetencia = Object.keys(historicoPrecos).sort().at(-1)!;
+          const ultimo = historicoPrecos[ultimaCompetencia];
           const i: Insumo = {
             ...original,
-            ...snapshot,
+            ...ultimo,
+            unidadesNaCompra: ultimo.unidadesNaCompra,
             id: record?.id ?? crypto.randomUUID(),
             restaurante_id: restaurante.id,
             nome: formString(f, "nome"),
-            historicoPrecos: { ...original?.historicoPrecos, [mes]: snapshot },
+            historicoPrecos,
           };
           if (original) d.insumos[d.insumos.indexOf(original)] = i;
           else d.insumos.push(i);
@@ -161,6 +194,8 @@ export function Insumos() {
                 <small>
                   {i.quantidade.toLocaleString("pt-BR")} {i.unidade} ·{" "}
                   {i.rendimento.toLocaleString("pt-BR")}% aproveitável
+                  {i.unidadesNaCompra !== undefined &&
+                    ` · ${i.unidadesNaCompra.toLocaleString("pt-BR")} un na compra`}
                   {(() => {
                     const compra = [...(db.compras ?? [])]
                       .filter(
@@ -254,6 +289,18 @@ export function Insumos() {
                   }
                 />
               </Field>
+              <Field
+                label="Unidades ou fatias na compra"
+                hint="Informe o total de unidades ou fatias correspondente ao preço pago. Se já compra em un, preencha apenas Quantidade da compra."
+              >
+                <Numeric
+                  name="unidadesNaCompra"
+                  min={1}
+                  step={1}
+                  defaultValue={record?.unidadesNaCompra ?? ""}
+                  placeholder="Ex.: 40 fatias"
+                />
+              </Field>
               <Field label="Rendimento aproveitável (%)">
                 <Numeric
                   name="rendimento"
@@ -275,6 +322,8 @@ export function Insumos() {
                         : m.split("-").reverse().join("/")}{" "}
                       · {h.precoPendente ? "Preço pendente" : dinheiro(h.preco)}{" "}
                       · {h.quantidade.toLocaleString("pt-BR")} {h.unidade}
+                      {h.unidadesNaCompra !== undefined &&
+                        ` · ${h.unidadesNaCompra.toLocaleString("pt-BR")} un na compra`}
                     </p>
                   ))}
               </Panel>
@@ -500,8 +549,12 @@ function Preparos({ casa }: { casa: boolean }) {
                 if (casa) {
                   d.receitas ??= [];
                   const idx = d.receitas.findIndex((r) => r.id === p.id);
-                  if (idx < 0) d.receitas.push(p as ReceitaCasa);
-                  else d.receitas[idx] = p as ReceitaCasa;
+                  const receita = p as ReceitaCasa;
+                  if (idx < 0) d.receitas.push(receita);
+                  else {
+                    preservarUnidadesDeFicha(d, d.receitas[idx], receita.unidade, true);
+                    d.receitas[idx] = receita;
+                  }
                 } else {
                   const idx = d.produtos.findIndex((r) => r.id === p.id);
                   if (idx < 0) d.produtos.push(p as Produto);
@@ -579,12 +632,14 @@ function PreparoModal({
       id: i.id,
       nome: i.nome,
       unidade: unidadeUso(i),
+      unidades: unidadesFicha(i),
       receita: false,
     })),
     ...receitas.map((r) => ({
       id: r.id,
       nome: r.nome,
-      unidade: unidadeUso({ unidade: r.unidade } as Insumo),
+      unidade: unidadeUso(r),
+      unidades: unidadesFicha(r),
       receita: true,
     })),
   ];
@@ -603,13 +658,25 @@ function PreparoModal({
         itens.some((i) => (!i.insumo_id && !i.receita_id) || i.quantidade <= 0)
       )
         throw new Error("Escolha cada item e informe quantidades positivas.");
+      const itensConfirmados = itens.map((item) => {
+        const opcao = options.find(
+          ({ id }) => id === (item.receita_id || item.insumo_id),
+        );
+        const unidade = item.unidade ?? opcao?.unidade;
+        if (!opcao || !unidade || !opcao.unidades.includes(unidade)) {
+          throw new Error(
+            "Confira a unidade de cada item e o conteúdo do pacote no cadastro do insumo.",
+          );
+        }
+        return { ...item, unidade, confirmar: false };
+      });
       const p = {
         ...record,
         id: record?.id ?? crypto.randomUUID(),
         restaurante_id: restaurante.id,
         nome: formString(f, "nome"),
         rendimento: formNumber(f, "rendimento"),
-        itens: itens.map((i) => ({ ...i, confirmar: false })),
+        itens: itensConfirmados,
         pendente: false,
         notas: formString(f, "notas"),
       };
@@ -687,20 +754,33 @@ function PreparoModal({
             placeholder="Digite para filtrar os itens…"
           />
         </Field>
+        <p className="field-help">
+          Para usar fatias ou peças de um insumo vendido por peso, informe as unidades da compra em Insumos.
+        </p>
         {itens.map((item, idx) => {
           const selected = item.receita_id || item.insumo_id;
           const o = options.find((o) => o.id === selected);
+          const unidade = item.unidade ?? o?.unidade;
+          const unidadesDisponiveis = o?.unidades ?? [];
+          const unidadeIndisponivel =
+            unidade !== undefined && !unidadesDisponiveis.includes(unidade);
           return (
-            <div className="recipe-item" key={idx}>
+            <div
+              className={`recipe-item recipe-item-com-medida ${casa ? "recipe-item-casa" : ""}`}
+              key={idx}
+            >
               <Field label="Insumo ou receita">
                 <select
                   required
                   value={selected}
                   onChange={(e) => {
-                    const o = options.find((o) => o.id === e.target.value)!;
+                    const novaOpcao = options.find((o) => o.id === e.target.value);
                     change(idx, {
-                      insumo_id: o.receita ? "" : o.id,
-                      receita_id: o.receita ? o.id : undefined,
+                      insumo_id: novaOpcao && !novaOpcao.receita ? novaOpcao.id : "",
+                      receita_id: novaOpcao?.receita ? novaOpcao.id : undefined,
+                      unidade: novaOpcao?.unidade,
+                      quantidade: 0,
+                      confirmar: true,
                     });
                   }}
                 >
@@ -725,8 +805,34 @@ function PreparoModal({
                     ))}
                 </select>
               </Field>
+              <Field label="Unidade na ficha">
+                <select
+                  aria-label={o ? `Unidade de ${o.nome}` : "Unidade na ficha"}
+                  value={unidade ?? ""}
+                  disabled={!o}
+                  onChange={(e) =>
+                    change(idx, {
+                      unidade: e.target.value as Unidade,
+                      quantidade: 0,
+                      confirmar: true,
+                    })
+                  }
+                >
+                  {!unidade && <option value="">Selecione o insumo</option>}
+                  {unidadeIndisponivel && (
+                    <option value={unidade} disabled>
+                      {unidade} · confira o insumo
+                    </option>
+                  )}
+                  {unidadesDisponiveis.map((medida) => (
+                    <option key={medida} value={medida}>
+                      {medida}
+                    </option>
+                  ))}
+                </select>
+              </Field>
               <Field
-                label={`Quantidade (${o?.unidade ?? "unidade"})${item.confirmar ? " · confirmar" : ""}`}
+                label={`Quantidade (${unidade ?? "unidade"})${item.confirmar ? " · confirmar" : ""}`}
               >
                 <Numeric
                   required

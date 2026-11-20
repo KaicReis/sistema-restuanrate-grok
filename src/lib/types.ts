@@ -45,6 +45,7 @@ export interface Insumo extends Registro {
   nome: string;
   unidade: Unidade;
   quantidade: number;
+  unidadesNaCompra?: number;
   preco: number;
   rendimento: number;
   precoPendente?: boolean;
@@ -54,6 +55,7 @@ export interface Insumo extends Registro {
     {
       preco: number;
       quantidade: number;
+      unidadesNaCompra?: number;
       unidade: Unidade;
       rendimento: number;
       precoPendente?: boolean;
@@ -63,6 +65,7 @@ export interface Insumo extends Registro {
 export interface ItemFicha {
   insumo_id: string;
   receita_id?: string;
+  unidade?: Unidade;
   canal?: string;
   confirmar?: boolean;
   quantidade: number;

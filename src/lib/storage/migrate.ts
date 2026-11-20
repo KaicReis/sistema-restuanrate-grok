@@ -32,6 +32,7 @@ export function migrar(db: Database): Database {
       "0000-01": {
         preco: i.preco,
         quantidade: i.quantidade,
+        unidadesNaCompra: i.unidadesNaCompra,
         unidade: i.unidade,
         rendimento: i.rendimento,
         precoPendente: !!i.precoPendente,

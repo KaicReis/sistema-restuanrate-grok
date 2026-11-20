@@ -418,3 +418,28 @@ body {
   text-align: left;
   white-space: normal;
 }
+
+.recipe-item.recipe-item-com-medida {
+  grid-template-columns: minmax(120px, 1.55fr) minmax(74px, .6fr) minmax(80px, .9fr)
+    minmax(90px, .9fr) minmax(100px, 1fr) auto;
+  align-items: end;
+  padding-bottom: 12px;
+}
+
+.recipe-item.recipe-item-casa {
+  grid-template-columns: minmax(160px, 1.65fr) minmax(68px, .55fr) minmax(105px, 1fr)
+    minmax(104px, .9fr) auto;
+}
+
+.recipe-item.recipe-item-com-medida > .field {
+  min-width: 0;
+}
+
+@media (max-width: 850px) {
+  .recipe-item.recipe-item-com-medida {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 135px), 1fr));
+  }
+  .recipe-item.recipe-item-com-medida > .field {
+    grid-column: auto;
+  }
+}
