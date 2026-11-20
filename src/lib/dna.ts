@@ -212,6 +212,9 @@ export function taxaCanal(canal: Canal) {
     .div(100)
     .toNumber();
 }
+export function insumoDeEmbalagem(insumo: Insumo) {
+  return insumo.categoria === "embalagem" || /embalagem/i.test(insumo.nome);
+}
 export function entradaPreco(
   dna: DNA,
   canal: Canal,
@@ -247,7 +250,7 @@ export function entradaPreco(
         insumos.some(
           (i) =>
             i.id === item.insumo_id &&
-            (i.categoria === "embalagem" || /embalagem/i.test(i.nome)),
+            insumoDeEmbalagem(i),
         ),
     )
       ? 0

@@ -8,6 +8,7 @@ export function mesclarDados(atual: Database, recebido: Database): Database {
     "canais",
     "insumos",
     "produtos",
+    "combos",
     "precos",
     "receitas",
     "alugueis",

@@ -42,6 +42,7 @@ import { Canais, Restaurantes } from "./cadastros";
 import { Vila } from "./vila";
 import { dnaComRateio } from "@/lib/v2";
 import { Insumos, Fichas, Receitas } from "./producao";
+import { Combos } from "./combos";
 import { Precos } from "./precos";
 import { Modal } from "./ui";
 const pages = [
@@ -56,6 +57,7 @@ const pages = [
   { id: "insumos", label: "Insumos", icon: FlaskConical },
   { id: "receitas", label: "Receitas da casa", icon: CookingPot },
   { id: "fichas", label: "Fichas técnicas", icon: NotebookPen },
+  { id: "combos", label: "Combos", icon: ShoppingCart },
   { id: "precos", label: "Precificação", icon: Tags },
   { id: "restaurantes", label: "Restaurantes", icon: Building2 },
 ] as const;
@@ -71,6 +73,7 @@ const descriptions: Record<Page, string> = {
   insumos: "Cadastre ingredientes e atualize seus custos de compra.",
   receitas: "Organize os preparos usados em mais de uma ficha técnica.",
   fichas: "Revise ingredientes, custo por porção e pendências dos pratos.",
+  combos: "Monte e precifique conjuntos de produtos por canal.",
   precos: "Compare preços praticados e preços sugeridos por canal.",
   restaurantes: "Gerencie as operações cadastradas na Vila.",
 };
@@ -403,7 +406,7 @@ export default function Sistema() {
               ["Financeiro", financeiro],
               [
                 "Cardápio e custos",
-                ["insumos", "receitas", "fichas", "precos"],
+                ["insumos", "receitas", "fichas", "precos", "combos"],
               ],
               ["Configurações", ["dna", "canais", "restaurantes"]],
             ]
@@ -603,6 +606,8 @@ export default function Sistema() {
                 <Receitas />
               ) : page === "fichas" ? (
                 <Fichas />
+              ) : page === "combos" ? (
+                <Combos />
               ) : page === "precos" ? (
                 <Precos />
               ) : (

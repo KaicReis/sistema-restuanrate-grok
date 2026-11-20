@@ -102,6 +102,7 @@ export interface Preco extends Registro {
   valor: number;
 }
 export interface Database {
+  combos?: import("./combos").Combo[];
   version: 1 | 2;
   capitais?: import("./capital").Capital[];
   saldosCaixa?: import("./fluxo-caixa").SaldoCaixa[];

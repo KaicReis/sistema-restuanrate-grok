@@ -261,6 +261,19 @@ export function validarBackup(value: unknown): Database {
     )
       throw new Error("Conversão de fornecedor inválida");
   }
+  if (db.combos !== undefined && (
+    !Array.isArray(db.combos) || db.combos.length > 10000 ||
+    db.combos.some((c) =>
+      !object(c) || !text(c.id) || !text(c.nome) || !text(c.canal) ||
+      !db.restaurantes.some((r) => r.id === c.restaurante_id) ||
+      (c.preco !== undefined && !money(c.preco)) ||
+      (c.embalagem !== undefined && !money(c.embalagem)) ||
+      !Array.isArray(c.itens) || c.itens.length < 2 || c.itens.length > 50 ||
+      c.itens.some((i) => !object(i) || !money(i.quantidade) || i.quantidade < 1 || i.quantidade > 100 ||
+        !db.produtos.some((p) => p.id === i.produto_id && p.restaurante_id === c.restaurante_id)) ||
+      new Set(c.itens.map((i) => i.produto_id)).size !== c.itens.length
+    ) || new Set(db.combos.map((c) => c.id)).size !== db.combos.length
+  )) throw new Error("Combo inválido ou com produto de outra operação.");
   v3Schema.parse(db);
   for (const rows of [
     db.capitais ?? [],

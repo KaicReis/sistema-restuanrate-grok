@@ -14,6 +14,7 @@ export type Page =
   | "receitas"
   | "fichas"
   | "precos"
+  | "combos"
   | "restaurantes";
 export interface AppContext {
   db: Database;

@@ -605,6 +605,9 @@ function Preparos({ casa }: { casa: boolean }) {
                     (r) => r.id !== (edit as ReceitaCasa).id,
                   );
                 } else {
+                  if (d.combos?.some((combo) => combo.itens.some((item) => item.produto_id === (edit as Produto).id))) {
+                    throw new Error("Esta ficha está em um combo. Remova o produto do combo primeiro.");
+                  }
                   d.produtos = d.produtos.filter(
                     (r) => r.id !== (edit as Produto).id,
                   );
