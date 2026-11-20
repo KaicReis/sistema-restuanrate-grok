@@ -30,6 +30,9 @@ it("calcula quantidades, embalagem única e preço avulso do combo", () => {
   };
   db.combos = [combo];
   expect(validarBackup(db).combos).toEqual([combo]);
+  const duplo = { ...combo, itens: [{ produto_id: "lanche", quantidade: 2 }] };
+  expect(validarBackup({ ...db, combos: [duplo] }).combos).toEqual([duplo]);
+  expect(cotarCombo(db, duplo, canal).avulsos).toBe(2000);
   const cotacao = cotarCombo(db, combo, canal);
   expect(cotacao.custo.toNumber()).toBe(1485);
   expect(cotacao.avulsos).toBe(3000);

@@ -106,9 +106,9 @@ function ComboEditor({ combo, produtos, canais, gravar, fechar, excluir }: {
       const preco = formString(form, "preco");
       const embalagem = formString(form, "embalagem");
       if (!nome || !canal) throw new Error("Informe o nome e o canal.");
-      if (itens.length < 2 || itens.some((i) => !i.produto_id || !Number.isInteger(i.quantidade) || i.quantidade < 1 || i.quantidade > 100) ||
+      if (itens.reduce((total, item) => total + item.quantidade, 0) < 2 || itens.some((i) => !i.produto_id || !Number.isInteger(i.quantidade) || i.quantidade < 1 || i.quantidade > 100) ||
           new Set(itens.map((i) => i.produto_id)).size !== itens.length)
-        throw new Error("Escolha pelo menos dois produtos diferentes e informe as quantidades.");
+        throw new Error("Escolha os produtos e informe pelo menos duas unidades no total.");
       gravar({
         id: combo?.id ?? crypto.randomUUID(), restaurante_id: restaurante.id, nome, canal, itens,
         ...(preco ? { preco: paraCentavos(preco) } : {}),
@@ -148,7 +148,7 @@ function ComboEditor({ combo, produtos, canais, gravar, fechar, excluir }: {
               <Field label="Quantidade">
                 <input required type="number" min={1} max={100} value={item.quantidade || ""} onChange={(e) => alterar(idx, { quantidade: Number(e.target.value) })} />
               </Field>
-              <button type="button" className="button" aria-label={`Remover produto ${idx + 1}`} disabled={itens.length <= 2} onClick={() => setItens(itens.filter((_, i) => i !== idx))}>Remover</button>
+              <button type="button" className="button" aria-label={`Remover produto ${idx + 1}`} disabled={itens.length <= 1} onClick={() => setItens(itens.filter((_, i) => i !== idx))}>Remover</button>
             </div>
           ))}
           <button type="button" className="button" disabled={itens.length >= 50} onClick={() => setItens([...itens, { produto_id: "", quantidade: 1 }])}>Adicionar produto</button>

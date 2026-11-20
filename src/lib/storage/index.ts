@@ -268,9 +268,10 @@ export function validarBackup(value: unknown): Database {
       !db.restaurantes.some((r) => r.id === c.restaurante_id) ||
       (c.preco !== undefined && !money(c.preco)) ||
       (c.embalagem !== undefined && !money(c.embalagem)) ||
-      !Array.isArray(c.itens) || c.itens.length < 2 || c.itens.length > 50 ||
+      !Array.isArray(c.itens) || c.itens.length < 1 || c.itens.length > 50 ||
       c.itens.some((i) => !object(i) || !money(i.quantidade) || i.quantidade < 1 || i.quantidade > 100 ||
         !db.produtos.some((p) => p.id === i.produto_id && p.restaurante_id === c.restaurante_id)) ||
+      c.itens.reduce((total, item) => total + item.quantidade, 0) < 2 ||
       new Set(c.itens.map((i) => i.produto_id)).size !== c.itens.length
     ) || new Set(db.combos.map((c) => c.id)).size !== db.combos.length
   )) throw new Error("Combo inválido ou com produto de outra operação.");
