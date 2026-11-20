@@ -582,7 +582,7 @@ export function DNAEditor() {
                 </Field>
                 <Field label="Valor (R$)">
                   <Numeric
-                    type="number"
+                    moeda
                     min="0"
                     step="0.01"
                     required

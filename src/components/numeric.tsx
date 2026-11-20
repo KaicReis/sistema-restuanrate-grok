@@ -10,21 +10,36 @@ type Props = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "onChange" | "value" | "defaultValue"
 > & {
+  moeda?: boolean;
   value?: string | number;
   defaultValue?: string | number;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
+const formatoMoeda = new Intl.NumberFormat("pt-BR", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 export function Numeric({
   value,
   defaultValue,
   onChange,
+  onBlur,
+  moeda = false,
   min,
   max,
   ...props
 }: Props) {
   const format = (v: string | number | undefined) =>
     v === undefined ? "" : String(v).replace(".", ",");
-  const [text, setText] = useState(format(value ?? defaultValue));
+  const formatarCampo = (v: string | number | undefined) => {
+    if (moeda && v !== undefined && String(v).trim() !== "") {
+      try {
+        return formatoMoeda.format(numeroBR(String(v)));
+      } catch {}
+    }
+    return format(v);
+  };
+  const [text, setText] = useState(() => formatarCampo(value ?? defaultValue));
   useEffect(() => {
     if (value !== undefined) {
       let n = NaN;
@@ -35,7 +50,7 @@ export function Numeric({
       try {
         next = numeroBR(String(value));
       } catch {}
-      if (n !== next) setText(format(value));
+      if (n !== next) setText(formatarCampo(value));
     }
   }, [value]);
   return (
@@ -44,6 +59,13 @@ export function Numeric({
       type="text"
       inputMode="decimal"
       value={text}
+      onBlur={(e) => {
+        const raw = e.target.value;
+        if (moeda && raw.trim() && e.target.validity.valid) {
+          setText(formatarCampo(raw));
+        }
+        onBlur?.(e);
+      }}
       onChange={(e) => {
         const raw = e.target.value;
         setText(raw);
