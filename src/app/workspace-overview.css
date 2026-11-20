@@ -1,0 +1,390 @@
+.overview-page {
+  display: grid;
+  gap: 22px;
+  color: #173a30;
+}
+
+.overview-page .notice,
+.overview-page .panel {
+  margin: 0;
+}
+
+.overview-finances {
+  padding: clamp(18px, 2.7vw, 30px);
+  border: 1px solid #cddbce;
+  border-radius: 22px;
+  background: linear-gradient(136deg, #dceadf 0%, #eef2e9 70%, #f3efe4 100%);
+}
+
+.overview-finances-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-bottom: 20px;
+}
+
+.overview-finances-head h2 {
+  margin: 0;
+  color: #17483b;
+  font-size: clamp(1.25rem, 2.2vw, 1.65rem);
+  font-weight: 750;
+  letter-spacing: -0.035em;
+}
+
+.overview-finances-head p {
+  margin-top: 3px;
+  color: #496255;
+  font-size: 0.9375rem;
+}
+
+.overview-finances-head .button {
+  padding-inline: 15px;
+  border-color: #bfcfc1;
+  background: #f7faf4;
+  color: #17483b;
+}
+
+.overview-finances-head .button:hover {
+  background: #fff;
+}
+
+.overview-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.overview-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  padding: clamp(11px, 1.7vw, 17px);
+  min-width: 0;
+  border: 1px solid #dce4d7;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.overview-stat.is-accent {
+  border-color: #17483b;
+  background: #17483b;
+  color: #fff;
+}
+
+.overview-stat-icon {
+  display: grid;
+  place-items: center;
+  align-self: flex-start;
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: #edf3e8;
+  color: #2c5d4c;
+}
+
+.overview-stat.is-accent .overview-stat-icon {
+  background: #366355;
+  color: #e6f4df;
+}
+
+.overview-stat-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.overview-stat h3,
+.overview-stat p {
+  color: #526b60;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.overview-stat h3 {
+  min-height: 2.8em;
+}
+
+.overview-stat p {
+  margin-top: 5px;
+}
+
+.overview-stat.is-accent h3,
+.overview-stat.is-accent p {
+  color: #d8e9de;
+}
+
+.overview-stat strong {
+  display: block;
+  font-size: clamp(1.15rem, 2.4vw, 2rem);
+  line-height: 1.16;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  overflow-wrap: anywhere;
+}
+
+.overview-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.overview-page .panel {
+  padding: clamp(16px, 2vw, 24px);
+  border-color: #dce3d9;
+  border-radius: 18px;
+}
+
+.overview-page .panel-head {
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0 0 16px;
+}
+
+.overview-page .panel-head h2 {
+  font-size: clamp(1rem, 1.65vw, 1.25rem);
+  font-weight: 720;
+  letter-spacing: -0.022em;
+}
+
+.overview-page .panel-head p,
+.overview-allocation-note {
+  color: #52685d;
+  font-size: 0.875rem;
+  line-height: 1.48;
+}
+
+.overview-page .panel-head select {
+  min-height: 40px;
+  max-width: 100%;
+  font-size: 0.875rem;
+}
+
+.overview-allocation {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  height: 21px;
+  margin-bottom: 13px;
+  border-radius: 6px;
+  background: #e8eee6;
+}
+
+.overview-allocation > span {
+  flex-basis: 0;
+}
+
+.overview-allocation-legend {
+  display: grid;
+  margin: 0;
+}
+
+.overview-allocation-legend > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid #e9efe7;
+  font-size: 0.875rem;
+}
+
+.overview-allocation-legend dt {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.overview-allocation-legend dt i {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  border-radius: 3px;
+}
+
+.overview-allocation-legend dd {
+  margin: 0;
+  font-weight: 650;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.overview-allocation-note {
+  margin-top: 11px;
+}
+
+.overview-empty {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 17px;
+  border-radius: 12px;
+  background: #f6f4eb;
+  color: #493f2e;
+}
+
+.overview-empty > svg {
+  flex: 0 0 auto;
+  color: #866321;
+}
+
+.overview-empty h3 {
+  font-size: 0.9375rem;
+}
+
+.overview-empty p {
+  margin-top: 6px;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.overview-empty .text-button {
+  min-height: 36px;
+  margin-top: 5px;
+}
+
+.overview-reviews {
+  display: grid;
+  gap: 7px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.overview-reviews button,
+.overview-checklist button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #e3e9e0;
+  border-radius: 10px;
+  background: #f9faf7;
+  color: inherit;
+  font-size: 0.875rem;
+  line-height: 1.35;
+  text-align: left;
+  transition: background 0.16s, border-color 0.16s;
+}
+
+.overview-reviews button:hover,
+.overview-checklist button:hover {
+  border-color: #bdcfbf;
+  background: #edf3ea;
+}
+
+.overview-reviews button {
+  gap: 8px;
+  min-height: 47px;
+  padding: 7px 10px;
+}
+
+.overview-reviews button > span,
+.overview-checklist button > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.overview-reviews button > strong {
+  min-width: 26px;
+  padding: 3px 6px;
+  border-radius: 7px;
+  background: #e9eee7;
+  color: #355746;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.overview-reviews button > strong.has-pending {
+  background: #f6e9cf;
+  color: #684a16;
+}
+
+.overview-reviews button > svg,
+.overview-checklist button > svg {
+  flex: 0 0 auto;
+  color: #52685d;
+}
+
+.overview-checklist {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.overview-checklist button {
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 59px;
+  padding: 10px;
+}
+
+.overview-checklist button > span {
+  display: grid;
+  place-items: center;
+  flex: 0 0 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: #edf0e8;
+  color: #52685d;
+}
+
+.overview-checklist button > span.is-started {
+  background: #e0edde;
+  color: #2b5c43;
+}
+
+.overview-checklist button > svg {
+  margin-top: 4px;
+}
+
+.overview-checklist small {
+  display: block;
+  margin-top: 4px;
+  color: #52685d;
+  font-size: 0.8125rem;
+}
+
+@media (max-width: 1100px) {
+  .overview-metrics,
+  .overview-checklist {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 820px) {
+  .overview-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 420px) {
+  .overview-page {
+    gap: 14px;
+  }
+
+  .overview-finances {
+    padding: 12px;
+  }
+
+  .overview-finances-head .button {
+    padding-inline: 10px;
+  }
+
+  .overview-stat {
+    gap: 7px;
+  }
+
+  .overview-checklist {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overview-reviews button,
+  .overview-checklist button {
+    transition: none;
+  }
+}

@@ -3,13 +3,7 @@ import { preparoPendente } from "./readiness";
 import { insumosMes } from "@/lib/v2";
 import { Numeric } from "./numeric";
 import { useState } from "react";
-import {
-  AlertTriangle,
-  ArrowRight,
-  Check,
-  Search,
-  TrendingUp,
-} from "lucide-react";
+import { AlertTriangle, Check, Search, TrendingUp } from "lucide-react";
 import type { Canal, Produto } from "@/lib/types";
 import {
   calcularMargens,
@@ -21,6 +15,12 @@ import {
 } from "@/lib/dna";
 import { useSistema } from "./context";
 import { Empty, Field } from "./ui";
+
+const filtros = [
+  { id: "todos", rotulo: "Todos" },
+  { id: "pendentes", rotulo: "Fichas pendentes" },
+  { id: "prontos", rotulo: "Prontos para precificar" },
+] as const;
 export function Precos() {
   const { db, restaurante, mes, ir } = useSistema(),
     [canalId, setCanal] = useState(
@@ -33,66 +33,75 @@ export function Precos() {
         )?.id ?? "todos",
     ),
     [search, setSearch] = useState(""),
-    [status, setStatus] = useState("todos");
+    [status, setStatus] = useState<(typeof filtros)[number]["id"]>("todos");
   const produtos = db.produtos.filter(
       (p) => p.restaurante_id === restaurante.id,
     ),
     canais = db.canais.filter(
       (c) => c.restaurante_id === restaurante.id && c.competencia === mes,
     ),
-    filtered = produtos.filter(
-      (p) =>
-        p.nome
-          .toLocaleLowerCase("pt-BR")
-          .includes(search.toLocaleLowerCase("pt-BR")) &&
-        (status === "todos" ||
-          preparoPendente(db, mes, p) === (status === "pendentes")),
-    );
+    fichas = produtos.map((produto) => ({
+      produto,
+      pendente: preparoPendente(db, mes, produto),
+    })),
+    pendentes = fichas.filter((ficha) => ficha.pendente).length,
+    totais = {
+      todos: fichas.length,
+      pendentes,
+      prontos: fichas.length - pendentes,
+    },
+    busca = search.trim().toLocaleLowerCase("pt-BR"),
+    filtered = fichas.filter(
+      ({ produto, pendente }) =>
+        produto.nome.toLocaleLowerCase("pt-BR").includes(busca) &&
+        (status === "todos" || pendente === (status === "pendentes")),
+    ),
+    selecionado = canais.some((canal) => canal.id === canalId)
+      ? canalId
+      : "todos";
   return (
-    <>
-      <div className="filter-chips">
-        {["todos", "pendentes", "prontos"].map((f) => (
-          <button
-            key={f}
-            className="button"
-            aria-pressed={status === f}
-            onClick={() => setStatus(f)}
+    <div className="pricing-workspace">
+      <div className="pricing-filters">
+        <div className="section-toolbar">
+          <label className="search">
+            <Search size={18} />
+            <input
+              aria-label="Buscar produto para precificação"
+              placeholder="Buscar ficha…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </label>
+          <select
+            aria-label="Filtrar canal de venda"
+            value={selecionado}
+            onChange={(e) => setCanal(e.target.value)}
           >
-            {f === "todos"
-              ? "Todos"
-              : f === "pendentes"
-                ? "Pendentes"
-                : "Prontos"}
-          </button>
-        ))}
-      </div>
-      <div className="section-toolbar">
-        <label className="search">
-          <Search size={18} />
-          <input
-            aria-label="Buscar produto para precificação"
-            placeholder="Buscar ficha…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </label>
-        <select
-          aria-label="Filtrar canal de venda"
-          value={canalId}
-          onChange={(e) => setCanal(e.target.value)}
+            <option value="todos">Todos os canais</option>
+            {canais.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.nome}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div
+          className="filter-chips"
+          role="group"
+          aria-label="Situação das fichas"
         >
-          <option value="todos">Todos os canais</option>
-          {canais.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.nome}
-            </option>
+          {filtros.map(({ id, rotulo }) => (
+            <button
+              key={id}
+              type="button"
+              className="button"
+              aria-pressed={status === id}
+              onClick={() => setStatus(id)}
+            >
+              {rotulo} <span className="workflow-count">{totais[id]}</span>
+            </button>
           ))}
-        </select>
-      </div>
-      <div className="notice">
-        Preço mínimo arredondado <strong>para cima ao centavo</strong>. A margem
-        projetada já considera os fixos uma única vez. Salve o preço praticado
-        para comparar.
+        </div>
       </div>
       {!produtos.length ? (
         <Empty
@@ -100,7 +109,7 @@ export function Precos() {
           description="Cadastre uma ficha técnica para calcular o preço mínimo em cada canal de venda."
           action={
             <button className="button primary" onClick={() => ir("fichas")}>
-              Criar ficha técnica <ArrowRight size={17} />
+              Criar ficha técnica
             </button>
           }
         />
@@ -116,7 +125,7 @@ export function Precos() {
         />
       ) : (
         <div className="pricing-products">
-          {filtered.map((p) => (
+          {filtered.map(({ produto: p, pendente }) => (
             <section className="pricing-product" key={p.id}>
               <div className="pricing-heading">
                 <span className="ingredient-icon">
@@ -130,11 +139,15 @@ export function Precos() {
                   </p>
                 </div>
               </div>
-              {preparoPendente(db, mes, p) ? (
-                <div className="notice warning">
-                  Ficha incompleta: confira composição, quantidades e preços.{" "}
+              {pendente ? (
+                <div className="notice warning pricing-pending">
+                  <span>
+                    <AlertTriangle size={18} aria-hidden="true" /> Confira a
+                    composição, as quantidades e o preço dos insumos.
+                  </span>
                   <button
-                    className="text-button"
+                    type="button"
+                    className="button"
                     onClick={() => ir("fichas", "pendentes")}
                   >
                     Completar ficha
@@ -143,7 +156,9 @@ export function Precos() {
               ) : (
                 <div className="pricing-grid">
                   {canais
-                    .filter((c) => canalId === "todos" || c.id === canalId)
+                    .filter(
+                      (c) => selecionado === "todos" || c.id === selecionado,
+                    )
                     .map((c) => (
                       <PrecoCard key={c.id} produto={p} canal={c} />
                     ))}
@@ -159,8 +174,12 @@ export function Precos() {
           )}
         </div>
       )}
-      <div className="formula-note">
-        <strong>O preço por trás do número</strong>
+      <details className="formula-note">
+        <summary>Como o preço mínimo é calculado</summary>
+        <p>
+          O preço mínimo é arredondado para cima ao centavo. A margem projetada
+          considera os fixos uma única vez.
+        </p>
         <code>
           PV = (CMV ingredientes + embalagem aplicada + custo/unidade) ÷ (1 −
           fixos% − variáveis% − impostos% − margem%)
@@ -169,8 +188,8 @@ export function Precos() {
           Margem de contribuição cobre os custos fixos e o lucro. A margem
           líquida gerencial desconta a proporção de fixos do DNA.
         </p>
-      </div>
-    </>
+      </details>
+    </div>
   );
 }
 function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
@@ -196,7 +215,7 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
     );
   } catch (e) {
     return (
-      <div className="price-card">
+      <div className="price-card price-card-error">
         <h3>{canal.nome}</h3>
         <p className="negative">{(e as Error).message}</p>
         <p>Complete a ficha e os preços dos insumos antes de precificar.</p>
@@ -264,7 +283,7 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
         <Field label="Preço praticado (R$)">
           <Numeric
             aria-label={`Preço praticado de ${produto.nome} em ${canal.nome}`}
-            type="number"
+            moeda
             min="0.01"
             max="99999999999"
             step="0.01"
@@ -276,18 +295,22 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
           />
         </Field>
         <button
-          className="icon-button save-price"
+          className="button primary save-price"
           type="submit"
           aria-label={`Salvar preço de ${produto.nome} em ${canal.nome}`}
         >
-          <Check size={20} />
+          <Check size={16} aria-hidden="true" /> Salvar
         </button>
       </form>
       <div className="compact-margin">
-        <span>Margem · meta 30%</span>
+        <span>Margem · meta {percentual(entrada.margem)}</span>
         <strong
           className={
-            margens ? (margens.margem < 0.3 ? "negative" : "positive") : "muted"
+            margens
+              ? margens.margem < entrada.margem
+                ? "negative"
+                : "positive"
+              : "muted"
           }
         >
           {margens ? percentual(margens.margem) : "Informe o preço"}

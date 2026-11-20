@@ -1,6 +1,16 @@
 "use client";
 import { confirmarExclusao } from "./ui";
 import { useState } from "react";
+import Image from "next/image";
+import {
+  BookOpen,
+  ChevronDown,
+  CircleCheck,
+  ClipboardList,
+  Clock3,
+  CookingPot,
+  Search,
+} from "lucide-react";
 import type {
   Insumo,
   ItemFicha,
@@ -19,6 +29,7 @@ import { insumosMes } from "@/lib/v2";
 import { useSistema } from "./context";
 import {
   AddButton,
+  Empty,
   Field,
   Modal,
   Money,
@@ -310,114 +321,174 @@ export function Fichas() {
 export function Receitas() {
   return <Preparos casa />;
 }
+const fotosFicha: Readonly<Record<string, string>> = {
+  "seed-p0": "x-salada-real-fundo-branco",
+  "seed-p1": "x-burguer-fundo-branco",
+  "seed-p3": "chicken-fundo-branco",
+  "seed-p41": "sashimi-salmao-fundo-branco",
+  "seed-p56": "hot-ball-fundo-branco",
+  "seed-p58": "oniguiri-salmao-fundo-branco",
+};
+const filtrosPreparo = [
+  { id: "todos", rotulo: "Todos" },
+  { id: "pendentes", rotulo: "Pendentes" },
+  { id: "prontos", rotulo: "Prontos" },
+] as const;
+
 function Preparos({ casa }: { casa: boolean }) {
   const { db, restaurante, mes, atualizar, filtro } = useSistema();
   const [status, setStatus] = useState(filtro);
   const [edit, setEdit] = useState<Produto | ReceitaCasa | "new" | null>(null),
     [busca, setBusca] = useState("");
-  const rows = (casa ? (db.receitas ?? []) : db.produtos).filter(
-      (p) => p.restaurante_id === restaurante.id,
-    ),
-    insumos = insumosMes(db, mes);
+  const insumos = insumosMes(db, mes);
+  const itens = (casa ? (db.receitas ?? []) : db.produtos)
+    .filter((preparo) => preparo.restaurante_id === restaurante.id)
+    .map((preparo) => ({
+      preparo,
+      pendente: preparoPendente(db, mes, preparo, casa),
+    }));
+  const pendentes = itens.filter(({ pendente }) => pendente).length;
+  const contagem = { todos: itens.length, pendentes, prontos: itens.length - pendentes };
+  const termo = busca.trim().toLocaleLowerCase("pt-BR");
+  const resultados = itens.filter(
+    ({ preparo, pendente }) =>
+      preparo.nome.toLocaleLowerCase("pt-BR").includes(termo) &&
+      (status === "todos" || pendente === (status === "pendentes")),
+  );
   return (
-    <>
-      <div className="filter-chips">
-        {["todos", "pendentes", "prontos"].map((f) => (
-          <button
-            key={f}
-            className="button"
-            aria-pressed={status === f}
-            onClick={() => setStatus(f)}
-          >
-            {f === "todos"
-              ? "Todos"
-              : f === "pendentes"
-                ? "Pendentes"
-                : "Prontos"}
-          </button>
-        ))}
+    <div className="preparos-workspace">
+      <div className="preparos-controls">
+        <div className="preparos-toolbar">
+          <label className="preparos-search">
+            <Search size={18} aria-hidden="true" />
+            <input
+              aria-label={casa ? "Buscar receita da casa" : "Buscar ficha técnica"}
+              placeholder={casa ? "Buscar receita da casa" : "Buscar ficha técnica"}
+              type="search"
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
+          </label>
+          <AddButton onClick={() => setEdit("new")}>
+            {casa ? "Nova receita da casa" : "Nova ficha técnica"}
+          </AddButton>
+        </div>
+        <div className="preparos-filters" role="group" aria-label="Situação da composição">
+          {filtrosPreparo.map(({ id, rotulo }) => (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={status === id}
+              onClick={() => setStatus(id)}
+            >
+              {rotulo} <span>{contagem[id]}</span>
+            </button>
+          ))}
+        </div>
       </div>
-      <div className="section-toolbar">
-        <input
-          aria-label="Buscar preparo"
-          placeholder="Buscar ficha…"
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-        />
-        <AddButton onClick={() => setEdit("new")}>
-          {casa ? "Nova receita da casa" : "Nova ficha técnica"}
-        </AddButton>
-      </div>
-      <div className="notice">
-        {casa
-          ? "Preparo feito na casa: rendimento em g, ml ou un. Composição sugerida precisa de confirmação. Comprados prontos ficam nos insumos."
-          : "Itens em g, ml ou un. Use “Todos os canais” para a base e “Salão” para cortesias. Embalagens: use ingredientes OU o valor separado, nunca os dois."}
-      </div>
-      <div className="recipe-grid">
-        {rows
-          .filter(
-            (p) =>
-              p.nome.toLowerCase().includes(busca.toLowerCase()) &&
-              (status === "todos" ||
-                preparoPendente(db, mes, p, casa) === (status === "pendentes")),
-          )
-          .map((p) => {
-            let custo: string;
+
+      <details className="preparos-guide">
+        <summary><BookOpen size={16} aria-hidden="true" /> {casa ? "Como cadastrar uma receita" : "Como preencher uma ficha"} <ChevronDown size={16} aria-hidden="true" /></summary>
+        <p>
+          {casa
+            ? "Informe o rendimento em g, ml ou un. Confirme a composição e cadastre os produtos comprados prontos em Insumos."
+            : "Use g, ml ou un. Registre os ingredientes da base em “Todos os canais” e as cortesias em “Salão”. Informe a embalagem nos ingredientes ou no campo de valor separado."}
+        </p>
+      </details>
+
+      {resultados.length ? (
+        <div className="preparos-grid">
+          {resultados.map(({ preparo, pendente }) => {
+            let custo: string | undefined;
             try {
               custo = dinheiro(
                 casa
-                  ? custoReceita(p as ReceitaCasa, insumos, db.receitas ?? [])
+                  ? custoReceita(preparo as ReceitaCasa, insumos, db.receitas ?? [])
                   : calcularCMV(
                       {
-                        ...p,
-                        itens: p.itens.filter((i) => !i.canal),
+                        ...preparo,
+                        itens: preparo.itens.filter((item) => !item.canal),
                       } as Produto,
                       insumos,
                       db.receitas,
                     ),
               );
             } catch {
-              custo = "Pendente: confirmar ficha, quantidades e preços";
+              // O status do preparo indica a composição que ainda precisa de revisão.
             }
+            const preco = "precoCardapio" in preparo ? preparo.precoCardapio : undefined;
+            const foto = casa ? undefined : fotosFicha[preparo.id];
+            const IconeStatus = pendente ? Clock3 : CircleCheck;
             return (
-              <Panel
-                key={p.id}
-                title={p.nome}
-                action={
-                  <button className="button" onClick={() => setEdit(p)}>
-                    Editar
-                  </button>
-                }
-              >
-                <p>
-                  {custo}
-                  {casa
-                    ? " / unidade de uso"
-                    : " · base comum (cortesias por canal na precificação)"}
-                </p>
-                {"precoCardapio" in p && p.precoCardapio !== undefined && (
-                  <p>Preço do PDF · Salão: {dinheiro(p.precoCardapio)}</p>
-                )}
-                {p.notas && (
+              <article className="preparo-card" key={preparo.id}>
+                <div className="preparo-card-heading">
+                  <div className="preparo-thumbnail">
+                    {foto ? (
+                      <Image
+                        src={`/fichas/${foto}.webp`}
+                        alt=""
+                        width={64}
+                        height={64}
+                        unoptimized
+                      />
+                    ) : casa ? (
+                      <CookingPot size={24} aria-hidden="true" />
+                    ) : (
+                      <ClipboardList size={24} aria-hidden="true" />
+                    )}
+                  </div>
+                  <div>
+                    <h2>{preparo.nome}</h2>
+                    <span className={`preparo-status ${pendente ? "is-pending" : "is-ready"}`}>
+                      <IconeStatus size={14} aria-hidden="true" />
+                      {pendente ? "Pendente" : "Composição confirmada"}
+                    </span>
+                  </div>
+                </div>
+                <dl className="preparo-metrics">
+                  <div>
+                    <dt>{casa ? "Custo por unidade de uso" : "Custo base"}</dt>
+                    <dd className={custo === undefined ? "preparo-sem-custo" : undefined}>
+                      {custo ?? "A confirmar"}
+                    </dd>
+                  </div>
+                  {preco !== undefined && (
+                    <div>
+                      <dt>Preço no salão</dt>
+                      <dd>{dinheiro(preco)}</dd>
+                    </div>
+                  )}
+                </dl>
+                {preparo.notas && (
                   <details className="preparo-note">
-                    <summary>Ver nota</summary>
-                    <p className="muted">{p.notas}</p>
+                    <summary>Ver nota <ChevronDown size={15} aria-hidden="true" /></summary>
+                    <p>{preparo.notas}</p>
                   </details>
                 )}
-                <p>
-                  {p.itens.length} itens ·{" "}
-                  {preparoPendente(db, mes, p, casa) ? (
-                    <button className="text-button" onClick={() => setEdit(p)}>
-                      Completar ficha
-                    </button>
-                  ) : (
-                    "Composição confirmada"
-                  )}
-                </p>
-              </Panel>
+                <div className="preparo-card-footer">
+                  <span>{preparo.itens.length} {preparo.itens.length === 1 ? "item" : "itens"}</span>
+                  <button
+                    type="button"
+                    className={`button ${pendente ? "preparo-completar" : ""}`}
+                    aria-label={`${pendente ? "Completar" : "Editar"} ${casa ? "receita" : "ficha"} de ${preparo.nome}`}
+                    onClick={() => setEdit(preparo)}
+                  >
+                    {pendente ? (casa ? "Completar receita" : "Completar ficha") : "Editar"}
+                  </button>
+                </div>
+              </article>
             );
           })}
-      </div>
+        </div>
+      ) : (
+        <Empty
+          title="Nenhum resultado"
+          description={busca || status !== "todos" ? "Tente outro nome ou mude o filtro." : casa ? "As receitas da casa aparecem aqui depois de cadastradas." : "As fichas técnicas aparecem aqui depois de cadastradas."}
+          action={busca || status !== "todos" ? (
+            <button type="button" className="button" onClick={() => { setBusca(""); setStatus("todos"); }}>Limpar filtros</button>
+          ) : undefined}
+        />
+      )}
       {edit && (
         <PreparoModal
           casa={casa}
@@ -475,7 +546,7 @@ function Preparos({ casa }: { casa: boolean }) {
           }}
         />
       )}
-    </>
+    </div>
   );
 }
 function PreparoModal({

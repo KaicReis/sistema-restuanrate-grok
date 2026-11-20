@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Building2, Settings2 } from "lucide-react";
 import { preparoPendente } from "./readiness";
 import {
   consolidar,
@@ -62,21 +63,19 @@ export function Vila() {
     ["Resultado gerencial", c.lucro === null ? "Pendente" : dinheiro(c.lucro)],
   ];
   return (
-    <>
-      <div className="welcome-banner compact-banner">
+    <div className="consolidado-workspace">
+      <div className="consolidado-summary">
         <div>
-          <span className="pill light">A VILA · VISÃO DO GRUPO</span>
-          <h2>Três operações. Um panorama completo.</h2>
-          <p>
-            Bora Burguer’s, Nativo’s Sushi e Bar ·{" "}
-            {mes.split("-").reverse().join("/")}
-          </p>
-          <button className="button cream" onClick={() => setConfig(true)}>
-            Aluguel e regra de rateio
-          </button>
+          <span className="consolidado-label"><Building2 size={16} aria-hidden="true" /> Todas as operações</span>
+          <h2>Resultados do grupo</h2>
+          <p>{c.rows.map(({ nome }) => nome).join(" · ")}</p>
         </div>
+        <button type="button" className="button cream" onClick={() => setConfig(true)}>
+          <Settings2 size={16} aria-hidden="true" />
+          Aluguel e rateio
+        </button>
       </div>
-      <div className="stats-grid">
+      <div className="consolidado-metrics">
         {metrics.map(([label, value]) => (
           <div className="stat" key={label}>
             <span>{label}</span>
@@ -102,14 +101,14 @@ export function Vila() {
                   }
                 }}
               >
-                {operacaoPendente?.nome}: informe {camposPendentes} no DNA ↗
+                {operacaoPendente ? `Completar DNA de ${operacaoPendente.nome}` : "Revisar DNA"}
               </button>
             )}
-            <small>Competência selecionada</small>
           </div>
         ))}
       </div>
       <div className="notice">
+        {operacaoPendente && <p><strong>{operacaoPendente.nome}</strong> precisa informar {camposPendentes} no DNA.</p>}
         Faturamento é a referência informada no DNA de cada operação (meta ou
         realizado). CMV, margem e equilíbrio exigem custos mensais informados;
         fichas técnicas e preços sozinhos não representam vendas realizadas.
@@ -334,6 +333,6 @@ export function Vila() {
           </form>
         </Modal>
       )}
-    </>
+    </div>
   );
 }

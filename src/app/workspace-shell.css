@@ -1,0 +1,370 @@
+.vila-shell {
+  --vila-sidenav: #142e25;
+  --vila-sidenav-text: #e5eee8;
+  --vila-sidenav-muted: #b2c5b9;
+  --vila-sidenav-accent: #f2dfbd;
+  --vila-sidenav-border: #385347;
+  --vila-sidenav-choice: #223e33;
+  --vila-surface: #fbfaf6;
+  --vila-shell-padding: clamp(24px, 3vw, 50px);
+  --vila-sidebar-width: clamp(222px, 19vw, 256px);
+  min-height: 100dvh;
+}
+
+.vila-shell .sidebar {
+  width: var(--vila-sidebar-width);
+  padding: 25px 16px 16px;
+  background: var(--vila-sidenav);
+  border-color: var(--vila-sidenav-border);
+  color: var(--vila-sidenav-text);
+  scrollbar-width: thin;
+  scrollbar-color: #647f6e var(--vila-sidenav);
+}
+
+.vila-shell .sidebar .brand {
+  gap: 11px;
+  padding: 3px 6px;
+  margin-bottom: 22px;
+  color: #f9f2e5;
+  font-size: 1.56rem;
+  letter-spacing: -0.035em;
+}
+
+.vila-shell .brand-symbol {
+  width: 42px;
+  height: 42px;
+  background: var(--vila-sidenav-accent);
+  color: var(--vila-sidenav);
+  border-radius: 12px;
+  flex: 0 0 42px;
+}
+
+.vila-shell .brand small {
+  margin-top: 5px;
+  color: var(--vila-sidenav-muted);
+  font-size: 0.79rem;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+
+.vila-shell .restaurant-switch {
+  min-height: 56px;
+  padding: 7px 10px;
+  margin-bottom: 14px;
+  gap: 9px;
+  border-color: var(--vila-sidenav-border);
+  background: var(--vila-sidenav-choice);
+  border-radius: 11px;
+}
+
+.vila-shell .restaurant-avatar {
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  border-radius: 9px;
+  color: var(--vila-sidenav-accent);
+  background: #385246;
+}
+
+.vila-shell .restaurant-switch small {
+  margin: 0;
+  color: var(--vila-sidenav-muted);
+  font-size: 0.77rem;
+  letter-spacing: 0;
+}
+
+.vila-shell .restaurant-switch select {
+  min-height: 27px;
+  border-radius: 4px;
+  color: #f6faf7;
+  background: transparent;
+  font-size: 0.88rem;
+  text-overflow: ellipsis;
+}
+
+.vila-shell .restaurant-switch option {
+  color: var(--vila-sidenav-text);
+  background: var(--vila-sidenav);
+}
+
+.vila-shell .restaurant-switch > svg {
+  display: block;
+  color: var(--vila-sidenav-muted);
+  pointer-events: none;
+}
+
+.vila-shell .nav-caption {
+  margin: 12px 0 3px;
+  padding: 0 10px;
+  color: var(--vila-sidenav-muted);
+  font-size: 0.77rem;
+  letter-spacing: 0;
+  font-weight: 650;
+}
+
+.vila-shell .nav-item {
+  min-height: 44px;
+  margin: 2px 0;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  color: var(--vila-sidenav-text);
+  font-size: 0.89rem;
+  font-weight: 520;
+}
+
+.vila-shell .nav-item svg {
+  color: var(--vila-sidenav-muted);
+  width: 17px;
+  height: 17px;
+}
+
+.vila-shell .nav-item:hover {
+  background: var(--vila-sidenav-choice);
+}
+
+.vila-shell .nav-item.active {
+  color: #20392a;
+  background: var(--vila-sidenav-accent);
+  font-weight: 700;
+}
+
+.vila-shell .nav-item.active svg {
+  color: currentColor;
+}
+
+.vila-shell .sidebar-bottom {
+  padding-top: 12px;
+}
+
+.vila-shell .sidebar-bottom .nav-item svg:last-child {
+  margin-left: 0;
+}
+
+.vila-shell .sidebar :focus-visible {
+  outline-color: var(--vila-sidenav-accent);
+}
+
+.vila-shell .workspace {
+  min-width: 0;
+  width: calc(100% - var(--vila-sidebar-width));
+  margin-left: var(--vila-sidebar-width);
+}
+
+.vila-shell .topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 12px;
+  row-gap: 8px;
+  height: auto;
+  min-height: 0;
+  padding: 10px var(--vila-shell-padding) 9px;
+  border-color: #e0e2d8;
+  background: var(--vila-surface);
+}
+
+.vila-shell .breadcrumb {
+  min-width: 0;
+  gap: 9px;
+  font-size: 0.91rem;
+}
+
+.vila-shell .breadcrumb .active-operation {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #304538;
+  font-weight: 700;
+}
+
+.vila-shell .breadcrumb strong {
+  display: inline;
+  white-space: nowrap;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.vila-shell .profile {
+  min-height: 44px;
+  min-width: 44px;
+  height: 44px;
+  margin: 0;
+  border: 1px solid #dce1d7;
+  border-radius: 11px;
+  background: #fff;
+  color: #294333;
+}
+
+.vila-shell .profile:hover {
+  background: #ecefe6;
+}
+
+.vila-shell .top-actions {
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+.vila-shell .cloud-indicator {
+  font-size: 0.79rem;
+  color: #435f4c;
+  line-height: 1.35;
+}
+
+.vila-shell .cloud-indicator.negative {
+  color: #a12f2b;
+}
+
+.vila-shell .operation-chips {
+  grid-column: 1 / -1;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 2px 0;
+}
+
+.vila-shell .operation-chip {
+  flex-shrink: 0;
+  margin: 0;
+  padding: 7px 13px;
+  min-height: 36px;
+  border: 1px solid #e0e3d7;
+  border-radius: 8px;
+  color: #44584a;
+  background: #fff;
+  font-size: 0.83rem;
+  font-weight: 570;
+}
+
+.vila-shell .operation-chip:hover {
+  background: #ecefe5;
+}
+
+.vila-shell .operation-chip[aria-pressed="true"] {
+  color: #fff;
+  background: #294e3c;
+  border-color: #294e3c;
+  font-weight: 700;
+}
+
+.vila-shell #conteudo {
+  padding-inline: var(--vila-shell-padding);
+}
+
+.vila-shell #conteudo:focus {
+  outline: none;
+}
+
+.vila-shell .page-heading h1 {
+  line-height: 1.13;
+  text-wrap: balance;
+}
+
+.vila-shell .page-heading p {
+  margin-top: 7px;
+  font-size: 0.94rem;
+}
+
+.vila-shell .month-select {
+  border-color: #e0e3d7;
+  border-radius: 12px;
+}
+
+.vila-shell .month-select > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #455c4c;
+  font-size: 0.84rem;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+@media (max-width: 900px) {
+  .vila-shell {
+    --vila-shell-padding: clamp(15px, 4vw, 32px);
+  }
+
+  .vila-shell .workspace {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .vila-shell .sidebar {
+    width: min(290px, 89vw);
+    transform: translateX(-100%);
+    visibility: hidden;
+    z-index: 42;
+    transition: transform 170ms ease;
+  }
+
+  .vila-shell .sidebar.opened {
+    transform: translateX(0);
+    visibility: visible;
+    box-shadow: 16px 0 48px #142e252e;
+  }
+
+  .vila-shell .menu-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: #0f281f85;
+    border: 0;
+    z-index: 41;
+  }
+
+  .vila-shell .mobile-close {
+    display: flex;
+    position: absolute;
+    right: 8px;
+    top: 25px;
+    color: var(--vila-sidenav-text);
+  }
+
+  .vila-shell .mobile-close:hover {
+    background: var(--vila-sidenav-choice);
+  }
+
+  .vila-shell .menu-toggle {
+    display: flex;
+    margin-left: -7px;
+  }
+
+  .vila-shell .operation-chips {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 3px;
+    scrollbar-width: thin;
+    scrollbar-color: #c0cbbf transparent;
+  }
+
+  .vila-shell .operation-chip {
+    min-height: 44px;
+  }
+
+  .vila-shell .breadcrumb {
+    flex-wrap: nowrap;
+  }
+}
+
+@media (max-width: 600px) {
+  .vila-shell .breadcrumb strong,
+  .vila-shell .breadcrumb .crumb-slash {
+    display: none;
+  }
+
+  .vila-shell .top-actions {
+    gap: 6px;
+  }
+
+  .vila-shell .cloud-indicator {
+    max-width: 105px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vila-shell .sidebar {
+    transition: none;
+  }
+}

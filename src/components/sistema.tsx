@@ -7,8 +7,8 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowDownToLine,
   ArrowUpFromLine,
-  ArrowUpRight,
   Building2,
+  CalendarDays,
   ChevronDown,
   CircleHelp,
   Dna,
@@ -20,6 +20,7 @@ import {
   X,
   Wallet,
   ShoppingCart,
+  Settings2,
   CookingPot,
   Tags,
   Archive,
@@ -51,17 +52,18 @@ const pages = [
   { id: "restaurantes", label: "Restaurantes", icon: Building2 },
 ] as const;
 const descriptions: Record<Page, string> = {
-  capital: "Planeje o dinheiro necessário para manter sua operação.",
+  capital: "Acompanhe caixa, despesas e necessidade de capital.",
   compras: "Lance notas, revise os itens e acompanhe as compras.",
-  visao: "Uma visão clara dos números. Um próximo passo mais seguro.",
-  dna: "Transforme a realidade do seu restaurante em uma base para precificar.",
-  canais: "Cada canal tem seus custos. Seu preço precisa acompanhar.",
-  insumos: "Custos atualizados na origem, fichas sempre em dia.",
-  receitas: "Preparos da casa com custo propagado aos pratos.",
-  fichas: "Cada ingrediente conta. Conheça o custo real de cada porção.",
-  precos: "Do custo à margem: encontre o preço que faz sentido.",
-  restaurantes: "Cada operação com seus números, seu DNA e suas decisões.",
+  visao: "Acompanhe os números e as pendências da operação.",
+  dna: "Configure receita, despesas, impostos e meta de margem do mês.",
+  canais: "Configure as taxas e a embalagem de cada canal de venda.",
+  insumos: "Cadastre ingredientes e atualize seus custos de compra.",
+  receitas: "Organize os preparos usados em mais de uma ficha técnica.",
+  fichas: "Revise ingredientes, custo por porção e pendências dos pratos.",
+  precos: "Compare preços praticados e preços sugeridos por canal.",
+  restaurantes: "Gerencie as operações cadastradas na Vila.",
 };
+const ordemOperacoes = ["a-vila", "bora", "nativos", "bar"];
 function preparar(db: Database, id: string, mes: string) {
   if (!db.dnas.some((d) => d.restaurante_id === id && d.competencia === mes))
     db.dnas.push(novoDNA(id, mes));
@@ -110,6 +112,8 @@ export default function Sistema() {
     [help, setHelp] = useState(false),
     [revisao, setRevisao] = useState(0);
   const input = useRef<HTMLInputElement>(null);
+  const abrirMenu = useRef<HTMLButtonElement>(null);
+  const fecharMenu = useRef<HTMLButtonElement>(null);
   const atual = useRef<Database | null>(null);
   useEffect(() => {
     try {
@@ -130,6 +134,20 @@ export default function Sistema() {
     const timer = setTimeout(() => setMessage(""), 5000);
     return () => clearTimeout(timer);
   }, [message]);
+  useEffect(() => {
+    if (!menu) return;
+    fecharMenu.current?.focus();
+    const viewport = window.matchMedia("(max-width: 900px)");
+    const fecharNoDesktop = () => {
+      if (!viewport.matches) setMenu(false);
+    };
+    viewport.addEventListener("change", fecharNoDesktop);
+    return () => viewport.removeEventListener("change", fecharNoDesktop);
+  }, [menu]);
+  function dispensarMenu() {
+    setMenu(false);
+    requestAnimationFrame(() => abrirMenu.current?.focus());
+  }
   function atualizar(
     change: (draft: Database) => void,
     mensagem = cloud.mode === "cloud"
@@ -276,7 +294,13 @@ export default function Sistema() {
     setFiltro(filter);
     setPage(p);
     setMenu(false);
+    if (menu) {
+      requestAnimationFrame(() => {
+        document.getElementById("conteudo")?.focus();
+      });
+    }
   };
+  const titulo = pages.find((p) => p.id === page)?.label;
   return (
     <Context.Provider
       value={{
@@ -294,15 +318,22 @@ export default function Sistema() {
       <a href="#conteudo" className="skip">
         Pular para o conteúdo
       </a>
-      <div className="app-shell">
+      <div className="app-shell vila-shell">
         {menu && (
           <button
             aria-label="Fechar menu"
             className="menu-backdrop"
-            onClick={() => setMenu(false)}
+            onClick={dispensarMenu}
+            tabIndex={-1}
           />
         )}
-        <aside className={`sidebar ${menu ? "opened" : ""}`}>
+        <aside
+          id="menu-gestao"
+          className={`sidebar ${menu ? "opened" : ""}`}
+          onKeyDown={(e) => {
+            if (menu && e.key === "Escape") dispensarMenu();
+          }}
+        >
           <a
             className="brand"
             href="#"
@@ -315,14 +346,15 @@ export default function Sistema() {
               <Dna size={25} />
             </span>
             <span>
-              dna<span className="brand-dot">.</span>
-              <small>RESTAURANTE</small>
+              A Vila
+              <small>Gestão do restaurante</small>
             </span>
           </a>
           <button
             className="mobile-close icon-button"
             aria-label="Fechar menu"
-            onClick={() => setMenu(false)}
+            ref={fecharMenu}
+            onClick={dispensarMenu}
           >
             <X />
           </button>
@@ -331,7 +363,7 @@ export default function Sistema() {
               {restaurante.nome.charAt(0)}
             </span>
             <label>
-              <small>SEU RESTAURANTE</small>
+              <small>Operação ativa</small>
               <select
                 aria-label="Restaurante ativo"
                 value={restaurante.id}
@@ -348,12 +380,12 @@ export default function Sistema() {
           </div>
           <nav aria-label="Menu principal">
             {[
-              ["Dia a dia", ["visao", "compras", "capital"]],
+              ["Operação", ["visao", "compras", "capital"]],
               [
                 "Cardápio e custos",
                 ["insumos", "receitas", "fichas", "precos"],
               ],
-              ["Configuração", ["dna", "canais", "restaurantes"]],
+              ["Configurações", ["dna", "canais", "restaurantes"]],
             ]
               .filter(
                 ([, ids]) =>
@@ -377,6 +409,7 @@ export default function Sistema() {
                         key={p.id}
                         onClick={() => ir(p.id)}
                         className={`nav-item ${page === p.id ? "active" : ""}`}
+                        aria-current={page === p.id ? "page" : undefined}
                       >
                         <p.icon size={19} />
                         <span>{p.label}</span>
@@ -396,29 +429,34 @@ export default function Sistema() {
             </button>
           </nav>
           <div className="sidebar-bottom">
-            <button className="nav-item" onClick={() => setHelp(true)}>
+            <button
+              className="nav-item"
+              onClick={() => {
+                setMenu(false);
+                setHelp(true);
+              }}
+            >
               <CircleHelp size={18} />
               Entenda o DNA
-              <ArrowUpRight size={16} />
             </button>
-            <div className="sidebar-foot">
-              FEITO PARA QUEM EMPREENDE <span>v3.3</span>
-            </div>
           </div>
         </aside>
-        <div className="workspace">
+        <div className="workspace" inert={menu}>
           <header className="topbar">
             <div className="breadcrumb">
               <button
                 className="icon-button menu-toggle"
                 aria-label="Abrir menu"
+                aria-expanded={menu}
+                aria-controls="menu-gestao"
+                ref={abrirMenu}
                 onClick={() => setMenu(true)}
               >
                 <Menu />
               </button>
               <span className="active-operation">{restaurante.nome}</span>
-              <span className="crumb-slash">/</span>
-              <strong>{pages.find((p) => p.id === page)?.label}</strong>
+              <span className="crumb-slash" aria-hidden="true">/</span>
+              <strong>{titulo}</strong>
             </div>
             <div className="top-actions">
               <CloudIndicator />
@@ -427,21 +465,23 @@ export default function Sistema() {
                 aria-label="Abrir configurações e backup"
                 onClick={() => setBackupMenu(true)}
               >
-                {restaurante.nome.charAt(0)}
+                <Settings2 size={19} aria-hidden="true" />
               </button>
             </div>
-            <div className="operation-chips" aria-label="Operação ativa">
+            <div className="operation-chips" role="group" aria-label="Trocar operação">
               {[...db.restaurantes]
-                .sort(
-                  (a, b) =>
-                    ["a-vila", "bora", "nativos", "bar"].indexOf(a.id) -
-                    ["a-vila", "bora", "nativos", "bar"].indexOf(b.id),
-                )
-                .map((r, i) => (
+                .sort((a, b) => {
+                  const ordem = (id: string) => {
+                    const posicao = ordemOperacoes.indexOf(id);
+                    return posicao < 0 ? ordemOperacoes.length : posicao;
+                  };
+                  return ordem(a.id) - ordem(b.id);
+                })
+                .map((r) => (
                   <button
                     key={r.id}
-                    aria-pressed={r.id === id}
-                    className={`operation-chip operation-${i % 4}`}
+                    aria-pressed={r.id === restaurante.id}
+                    className="operation-chip"
                     onClick={() => selecionar(r.id)}
                   >
                     {r.nome}
@@ -449,18 +489,14 @@ export default function Sistema() {
                 ))}
             </div>
           </header>
-          <main id="conteudo">
+          <main id="conteudo" tabIndex={-1}>
             <div className="page-heading">
               <div>
-                <div className="eyebrow">NÚMEROS QUE GUIAM DECISÕES</div>
-                <h1>
-                  {pages.find((p) => p.id === page)?.label}
-                  <span className="heading-dot">.</span>
-                </h1>
+                <h1>{titulo}</h1>
                 <p>{descriptions[page]}</p>
               </div>
-              <label className="month-select">
-                <span>COMPETÊNCIA</span>
+              <div className="month-select" role="group" aria-label="Competência">
+                <span><CalendarDays size={16} aria-hidden="true" /> Competência</span>
                 <div className="month-controls">
                   <button
                     type="button"
@@ -514,7 +550,7 @@ export default function Sistema() {
                     <ChevronRight />
                   </button>
                 </div>
-              </label>
+              </div>
             </div>
             <div
               key={`${id}:${mes}:${page}:${filtro}:${revisao}`}

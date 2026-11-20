@@ -8,6 +8,9 @@ import { useState, useRef, useEffect } from "react";
 import {
   ArrowRight,
   ArrowUpRight,
+  Check,
+  ChevronRight,
+  Circle,
   CircleDollarSign,
   Copy,
   Plus,
@@ -29,15 +32,13 @@ import type { CustoFixo } from "@/lib/types";
 import { useSistema } from "./context";
 import { Field, Money, Panel, Modal, formNumber, formString } from "./ui";
 export function Overview() {
-  const { db, dna, restaurante, ir } = useSistema(),
-    [canalId, setCanal] = useState("");
+  const { db, dna, restaurante, ir } = useSistema();
+  const [canalId, setCanal] = useState("");
   const canais = db.canais.filter(
-      (c) =>
-        c.restaurante_id === restaurante.id &&
-        c.competencia === dna.competencia,
-    ),
-    canal = canais.find((c) => c.id === canalId) ?? canais[0],
-    fixos = fixosOperacionais(dna);
+    (c) => c.restaurante_id === restaurante.id && c.competencia === dna.competencia,
+  );
+  const canal = canais.find((c) => c.id === canalId) ?? canais[0];
+  const fixos = fixosOperacionais(dna);
   const result = calcularPrecoDNA({
     faturamentoReferencia: dna.faturamento,
     custosFixosOperacionais: fixos,
@@ -46,283 +47,200 @@ export function Overview() {
     margem: dna.margem / 100,
     cmvIngredientes: 0,
   });
-  const produtos = db.produtos.filter(
-      (p) => p.restaurante_id === restaurante.id,
-    ),
-    insumos = insumosMes(db, dna.competencia).filter(
-      (i) => i.restaurante_id === restaurante.id,
-    );
-  const parts = [
+  const produtos = db.produtos.filter((p) => p.restaurante_id === restaurante.id);
+  const insumos = insumosMes(db, dna.competencia).filter(
+    (i) => i.restaurante_id === restaurante.id,
+  );
+  const receitas = (db.receitas ?? []).filter((r) => r.restaurante_id === restaurante.id);
+  const pendencias = [
     {
-      name: "Fixos operacionais",
-      value: dna.faturamento ? fixos / dna.faturamento : 0,
-      color: "#234f42",
+      label: "Insumos sem preço",
+      total: insumos.filter((i) => i.precoPendente).length,
+      page: "insumos" as const,
     },
     {
-      name: "Custos variáveis",
-      value: canal ? taxaCanal(canal) : 0,
-      color: "#8ea69a",
+      label: "Fichas incompletas",
+      total: produtos.filter((p) => preparoPendente(db, dna.competencia, p)).length,
+      page: "fichas" as const,
     },
-    { name: "Impostos", value: dna.imposto / 100, color: "#c7c6b8" },
-    { name: "Meta de lucro", value: dna.margem / 100, color: "#d7ad66" },
     {
-      name: "CMV disponível",
-      value: result.viavel ? result.cmvMaximoPercentual : 0,
-      color: "#a9c9a9",
+      label: "Receitas a confirmar",
+      total: receitas.filter((r) => preparoPendente(db, dna.competencia, r, true)).length,
+      page: "receitas" as const,
     },
   ];
-  let angle = 0;
-  const gradient = parts
-    .map((p) => {
-      const start = angle;
-      angle += p.value * 100;
-      return `${p.color} ${start}% ${angle}%`;
-    })
-    .join(", ");
+  const parts = result.viavel
+    ? [
+        { name: "Fixos operacionais", value: result.percentualFixos, color: "#17483b" },
+        { name: "Custos variáveis", value: canal ? taxaCanal(canal) : 0, color: "#4e8479" },
+        { name: "Impostos", value: dna.imposto / 100, color: "#8e8277" },
+        { name: "Meta de lucro", value: dna.margem / 100, color: "#c89743" },
+        { name: "CMV disponível", value: result.cmvMaximoPercentual, color: "#8da86d" },
+      ]
+    : [];
+
   return (
-    <>
-      <div className="notice warning">
-        Pendências:{" "}
-        <button
-          className="text-button"
-          onClick={() => ir("insumos", "pendentes")}
-        >
-          {insumos.filter((i) => i.precoPendente).length} insumos sem preço
-        </button>{" "}
-        ·{" "}
-        <button
-          className="text-button"
-          onClick={() => ir("fichas", "pendentes")}
-        >
-          {
-            produtos.filter((p) => preparoPendente(db, dna.competencia, p))
-              .length
-          }{" "}
-          fichas incompletas
-        </button>{" "}
-        ·{" "}
-        <button
-          className="text-button"
-          onClick={() => ir("receitas", "pendentes")}
-        >
-          {
-            (db.receitas ?? []).filter(
-              (r) =>
-                r.restaurante_id === restaurante.id &&
-                preparoPendente(db, dna.competencia, r, true),
-            ).length
-          }{" "}
-          receitas a confirmar
-        </button>
-      </div>
-      {!dna.faturamento && !dna.fixos.length ? (
-        <div className="welcome-banner">
-          <div>
-            <span className="pill light">
-              <span className="status-dot" /> SEU NEGÓCIO EM PERSPECTIVA
-            </span>
-            <h2>
-              Um restaurante saudável
-              <br />
-              começa com um bom <em>DNA.</em>
-            </h2>
-            <p>
-              Conheça seus custos, proteja sua margem e precifique com
-              confiança.
-            </p>
-            <button className="button cream" onClick={() => ir("dna")}>
-              {dna.faturamento ? "Revisar DNA do mês" : "Configurar meu DNA"}
-              <ArrowUpRight size={18} />
-            </button>
-          </div>
-          <div className="banner-art" aria-hidden="true">
-            <div className="orbit orbit-one" />
-            <div className="orbit orbit-two" />
-            <div className="orbit orbit-three" />
-            <div className="art-center">
-              dna<span>.</span>
-            </div>
-            <span className="art-label label-one">CUSTO</span>
-            <span className="art-label label-two">MARGEM</span>
-            <span className="art-label label-three">EQUILÍBRIO</span>
-          </div>
-        </div>
-      ) : (
-        <div className="notice">
-          <button className="text-button" onClick={() => ir("dna")}>
-            Revisar DNA do mês ↗
-          </button>
-        </div>
-      )}
+    <div className="overview-page">
       {dna.historico && (
-        <div className="notice warning">
-          Histórico abr/2025, não atual. Valores de referência fornecidos para
-          demonstração.
-        </div>
+        <p className="notice warning">Dados históricos de abril de 2025, usados para demonstração.</p>
       )}
-      <div className="stats-grid">
-        <Stat
-          label={`Faturamento de referência · ${dna.tipoFaturamento}`}
-          value={dinheiro(dna.faturamento)}
-          note="Base para o DNA desta competência"
-          icon={<CircleDollarSign />}
-        />
-        <Stat
-          label="Fixos operacionais"
-          value={dinheiro(fixos)}
-          note={
-            dna.faturamento
-              ? `${percentual(fixos / dna.faturamento)} do faturamento de referência`
-              : "Defina o faturamento para calcular a proporção"
-          }
-          icon={<Wallet />}
-        />
-        <Stat
-          label="Meta de margem líquida"
-          value={percentual(dna.margem / 100)}
-          note="Margem gerencial sobre a receita bruta"
-          icon={<Target />}
-        />
-        <Stat
-          label="CMV máximo permitido"
-          value={result.viavel ? percentual(result.cmvMaximoPercentual) : "—"}
-          note={
-            canal
-              ? `Disponível para custos diretos · ${canal.nome}`
-              : "Cadastre um canal de venda"
-          }
-          icon={<TrendingUp />}
-          accent
-        />
-      </div>
-      <div className="overview-grid">
+      <section className="overview-finances" aria-labelledby="overview-finances-title">
+        <header className="overview-finances-head">
+          <div>
+            <h2 id="overview-finances-title">Resumo financeiro</h2>
+            <p>{restaurante.nome}</p>
+          </div>
+          <button type="button" className="button" onClick={() => ir("dna")}>
+            {dna.faturamento ? "Revisar DNA do mês" : "Configurar DNA do mês"}
+          </button>
+        </header>
+        <div className="overview-metrics">
+          <Stat
+            label="Faturamento de referência"
+            value={dinheiro(dna.faturamento)}
+            note={dna.tipoFaturamento === "meta" ? "Meta da competência" : "Receita realizada"}
+            icon={<CircleDollarSign />}
+          />
+          <Stat
+            label="Fixos operacionais"
+            value={dinheiro(fixos)}
+            note={
+              dna.faturamento
+                ? `${percentual(fixos / dna.faturamento)} do faturamento de referência`
+                : "Informe o faturamento para comparar"
+            }
+            icon={<Wallet />}
+          />
+          <Stat
+            label="Meta de margem líquida"
+            value={percentual(dna.margem / 100)}
+            note="Sobre a receita bruta"
+            icon={<Target />}
+          />
+          <Stat
+            label="CMV máximo"
+            value={result.viavel ? percentual(result.cmvMaximoPercentual) : "—"}
+            note={canal ? `Canal de venda · ${canal.nome}` : "Cadastre um canal de venda"}
+            icon={<TrendingUp />}
+            accent
+          />
+        </div>
+      </section>
+
+      <div className="overview-body">
         <Panel
-          title="Para onde vai cada R$ 100?"
-          subtitle="A distribuição que sustenta seu preço."
+          title="Para onde vão R$ 100 do faturamento?"
+          subtitle="Distribuição por canal de venda."
           action={
             <select
               aria-label="Canal para distribuição"
               value={canal?.id ?? ""}
               onChange={(e) => setCanal(e.target.value)}
+              disabled={!canais.length}
             >
-              {canais.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.nome}
-                </option>
-              ))}
+              {canais.length ? canais.map((c) => (
+                <option key={c.id} value={c.id}>{c.nome}</option>
+              )) : <option value="">Sem canais</option>}
             </select>
           }
         >
           {result.viavel ? (
-            <div className="distribution">
-              <div
-                className="donut"
-                style={{ background: `conic-gradient(${gradient})` }}
-              >
-                <div>
-                  <small>A CADA</small>
-                  <strong>R$ 100</strong>
-                  <span>de faturamento</span>
-                </div>
+            <>
+              <div className="overview-allocation" aria-hidden="true">
+                {parts.map(({ name, value, color }) => (
+                  <span key={name} style={{ flexGrow: value, backgroundColor: color }} />
+                ))}
               </div>
-              <div className="distribution-legend">
-                {parts.map((p) => (
-                  <div className="legend-row" key={p.name}>
-                    <span>
-                      <i style={{ background: p.color }} />
-                      {p.name}
-                    </span>
-                    <strong>{dinheiro(p.value * 10000)}</strong>
+              <dl className="overview-allocation-legend">
+                {parts.map(({ name, value, color }) => (
+                  <div key={name}>
+                    <dt><i style={{ backgroundColor: color }} />{name}</dt>
+                    <dd>{dinheiro(value * 10000)}</dd>
                   </div>
                 ))}
-                <small className="muted">
-                  O CMV disponível cobre ingredientes, embalagem e custo por
-                  unidade do canal.
-                </small>
-              </div>
-            </div>
-          ) : (
-            <div className="dna-pending">
-              <Target size={35} />
-              <h3>
-                {dna.faturamento
-                  ? "O DNA não comporta a margem desejada"
-                  : "Vamos dar forma aos seus números?"}
-              </h3>
-              <p>
-                {dna.faturamento
-                  ? "Aumente o faturamento de referência ou reduza despesas e taxas. Reduzir CMV ajuda o preço, mas não corrige um denominador nulo ou negativo."
-                  : "Informe o faturamento e as despesas para visualizar como cada real é distribuído."}
+              </dl>
+              <p className="overview-allocation-note">
+                O CMV disponível cobre ingredientes, embalagem e custo por unidade do canal.
               </p>
-              <button className="text-button" onClick={() => ir("dna")}>
-                Ajustar DNA <ArrowRight size={16} />
-              </button>
+            </>
+          ) : (
+            <div className="overview-empty">
+              <Target size={24} aria-hidden="true" />
+              <div>
+                <h3>{dna.faturamento ? "A margem desejada não cabe neste cenário" : "Defina a receita de referência"}</h3>
+                <p>
+                  {dna.faturamento
+                    ? "Revise faturamento, despesas ou taxas para calcular quanto sobra para o custo direto."
+                    : "Informe o faturamento e as despesas para ver como cada R$ 100 são distribuídos."}
+                </p>
+                <button type="button" className="text-button" onClick={() => ir("dna")}>
+                  Ajustar DNA
+                </button>
+              </div>
             </div>
           )}
         </Panel>
-        <Panel
-          title="Seu caminho até o preço"
-          subtitle="Uma boa decisão começa pela base."
-        >
-          <div className="steps">
-            {[
-              {
-                title: "Defina o DNA do mês",
-                text: "Receita, despesas e meta de margem.",
-                done: dna.faturamento > 0,
-                page: "dna" as const,
-              },
-              {
-                title: "Cadastre seus insumos",
-                text: "Preços de compra e rendimento.",
-                done: insumos.length > 0,
-                page: "insumos" as const,
-              },
-              {
-                title: "Monte as fichas técnicas",
-                text: "O custo de cada produto, por porção.",
-                done: produtos.length > 0,
-                page: "fichas" as const,
-              },
-              {
-                title: "Encontre seu preço",
-                text: "Compare a margem em cada canal.",
-                done: db.precos.some(
-                  (p) => p.restaurante_id === restaurante.id,
-                ),
-                page: "precos" as const,
-              },
-            ].map((s, i) => (
-              <button key={s.title} className="step" onClick={() => ir(s.page)}>
-                <span className={`step-number ${s.done ? "done" : ""}`}>
-                  {s.done ? "✓" : `0${i + 1}`}
-                </span>
-                <span>
-                  <strong>{s.title}</strong>
-                  <small>{s.text}</small>
-                </span>
-                <ArrowUpRight size={16} />
-              </button>
+
+        <Panel title="Cadastros para revisar" subtitle="Abra a lista filtrada de cada pendência.">
+          <ul className="overview-reviews">
+            {pendencias.map(({ label, total, page }) => (
+              <li key={page}>
+                <button type="button" onClick={() => ir(page, "pendentes")}>
+                  <span>{label}</span>
+                  <strong className={total ? "has-pending" : ""}>{total}</strong>
+                  <ChevronRight size={16} aria-hidden="true" />
+                </button>
+              </li>
             ))}
-          </div>
+          </ul>
         </Panel>
       </div>
-      <div className="insight">
-        <span className="insight-icon">✦</span>
-        <div>
-          <strong>Seu preço precisa cuidar do seu negócio.</strong>
-          <p>
-            A meta padrão de 30% é um ponto de partida. Ajuste o DNA à realidade
-            da sua operação, mês a mês.
-          </p>
+
+      <Panel title="Da configuração à precificação">
+        <div className="overview-checklist">
+          {[
+            {
+              title: "DNA do mês",
+              text: "Receita, despesas e meta de margem",
+              done: dna.faturamento > 0,
+              page: "dna" as const,
+            },
+            {
+              title: "Insumos",
+              text: "Preços de compra e rendimento",
+              done: insumos.length > 0,
+              page: "insumos" as const,
+            },
+            {
+              title: "Fichas técnicas",
+              text: "Custo de cada produto por porção",
+              done: produtos.length > 0,
+              page: "fichas" as const,
+            },
+            {
+              title: "Precificação",
+              text: "Margem e preços em cada canal",
+              done: db.precos.some((p) => p.restaurante_id === restaurante.id),
+              page: "precos" as const,
+            },
+          ].map(({ title, text, done, page }) => (
+            <button type="button" key={page} onClick={() => ir(page)}>
+              <span className={done ? "is-started" : ""} aria-label={done ? "Dados cadastrados" : "A configurar"}>
+                {done ? <Check size={16} aria-hidden="true" /> : <Circle size={14} aria-hidden="true" />}
+              </span>
+              <div>
+                <strong>{title}</strong>
+                <small>{text}</small>
+              </div>
+              <ChevronRight size={15} aria-hidden="true" />
+            </button>
+          ))}
         </div>
-        <button className="text-button" onClick={() => ir("precos")}>
-          Ver precificação <ArrowRight size={17} />
-        </button>
-      </div>
-    </>
+      </Panel>
+    </div>
   );
 }
+
 function Stat({
   label,
   value,
@@ -337,13 +255,13 @@ function Stat({
   accent?: boolean;
 }) {
   return (
-    <div className={`stat ${accent ? "stat-accent" : ""}`}>
-      <div className="stat-label">
-        {label}
-        <span>{icon}</span>
+    <div className={`overview-stat${accent ? " is-accent" : ""}`}>
+      <span className="overview-stat-icon" aria-hidden="true">{icon}</span>
+      <div>
+        <h3>{label}</h3>
+        <strong>{value}</strong>
+        <p>{note}</p>
       </div>
-      <strong>{value}</strong>
-      <small>{note}</small>
     </div>
   );
 }

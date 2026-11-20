@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./workspace-catalog.css";
+import "./workspace-shell.css";
+import "./workspace-overview.css";
+import "./workspace-workflows.css";
 export const metadata: Metadata = {
   title: "DNA • Gestão e precificação de restaurantes",
   description:
