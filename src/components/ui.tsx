@@ -138,7 +138,7 @@ export const formString = (f: FormData, name: string) =>
 export const formNumber = (f: FormData, name: string) =>
   numeroBR(formString(f, name));
 
-export function confirmarExclusao(nome: string): Promise<boolean> {
+export function confirmarExclusao(nome: string, mensagem = "Confirme a exclusão deste item."): Promise<boolean> {
   return new Promise((resolve) => {
     const previous = document.activeElement as HTMLElement | null;
     const dialog = document.createElement("dialog");
@@ -146,7 +146,7 @@ export function confirmarExclusao(nome: string): Promise<boolean> {
     const title = document.createElement("h2");
     title.textContent = `Excluir “${nome}”?`;
     const copy = document.createElement("p");
-    copy.textContent = "Confirme a exclusão deste item.";
+    copy.textContent = mensagem;
     const actions = document.createElement("div");
     actions.className = "form-actions";
     const cancel = document.createElement("button");

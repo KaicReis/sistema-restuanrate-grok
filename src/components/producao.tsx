@@ -456,6 +456,37 @@ function Preparos({ casa }: { casa: boolean }) {
   const [status, setStatus] = useState(filtro);
   const [edit, setEdit] = useState<Produto | ReceitaCasa | "new" | null>(null),
     [busca, setBusca] = useState("");
+  async function excluirPreparo(preparo: Produto | ReceitaCasa) {
+    const referencias = (dados: typeof db) => [...(dados.receitas ?? []), ...dados.produtos]
+      .filter((r) => r.restaurante_id === restaurante.id &&
+        r.itens.some((item) => item.receita_id === preparo.id));
+    const usos = casa ? referencias(db) : [];
+    const mensagem = usos.length
+      ? `A receita será removida de ${usos.map((r) => r.nome).join(", ")}. Esses preparos ficarão pendentes para revisão de custos.`
+      : undefined;
+    if (!(await confirmarExclusao(preparo.nome, mensagem))) return;
+    if (atualizar((dados) => {
+      if (casa) {
+        const dependentes = referencias(dados);
+        if (dependentes.some((r) => !usos.some((original) => original.id === r.id))) {
+          throw new Error("Os vínculos mudaram. Abra a exclusão novamente para conferir.");
+        }
+        for (const dependente of dependentes) {
+          dependente.itens = dependente.itens.filter((i) => i.receita_id !== preparo.id);
+          dependente.pendente = true;
+        }
+        dados.receitas = dados.receitas?.filter((r) => r.id !== preparo.id);
+      } else {
+        if (dados.combos?.some((combo) => combo.itens.some((item) => item.produto_id === preparo.id))) {
+          throw new Error("Esta ficha está em um combo. Remova o produto do combo primeiro.");
+        }
+        dados.produtos = dados.produtos.filter((r) => r.id !== preparo.id);
+        dados.precos = dados.precos.filter((p) => p.produto_id !== preparo.id);
+      }
+    }, casa ? "Receita excluída." : "Ficha excluída.")) {
+      setEdit(null);
+    }
+  }
   const insumos = insumosMes(db, mes);
   const itens = (casa ? (db.receitas ?? []) : db.produtos)
     .filter((preparo) => preparo.restaurante_id === restaurante.id)
@@ -583,6 +614,11 @@ function Preparos({ casa }: { casa: boolean }) {
                 )}
                 <div className="preparo-card-footer">
                   <span>{preparo.itens.length} {preparo.itens.length === 1 ? "item" : "itens"}</span>
+                  {casa && (
+                    <button type="button" className="button danger" aria-label={`Excluir receita de ${preparo.nome}`} onClick={() => void excluirPreparo(preparo)}>
+                      Excluir
+                    </button>
+                  )}
                   <button
                     type="button"
                     className={`button ${pendente ? "preparo-completar" : ""}`}
@@ -631,42 +667,7 @@ function Preparos({ casa }: { casa: boolean }) {
             )
               setEdit(null);
           }}
-          remove={async () => {
-            if (!(await confirmarExclusao((edit as Produto).nome))) return;
-            if (
-              atualizar((d) => {
-                if (casa) {
-                  if (
-                    d.receitas?.some((r) =>
-                      r.itens.some(
-                        (i) => i.receita_id === (edit as ReceitaCasa).id,
-                      ),
-                    ) ||
-                    d.produtos.some((r) =>
-                      r.itens.some(
-                        (i) => i.receita_id === (edit as ReceitaCasa).id,
-                      ),
-                    )
-                  )
-                    throw new Error("Receita em uso em outra ficha.");
-                  d.receitas = d.receitas?.filter(
-                    (r) => r.id !== (edit as ReceitaCasa).id,
-                  );
-                } else {
-                  if (d.combos?.some((combo) => combo.itens.some((item) => item.produto_id === (edit as Produto).id))) {
-                    throw new Error("Esta ficha está em um combo. Remova o produto do combo primeiro.");
-                  }
-                  d.produtos = d.produtos.filter(
-                    (r) => r.id !== (edit as Produto).id,
-                  );
-                  d.precos = d.precos.filter(
-                    (p) => p.produto_id !== (edit as Produto).id,
-                  );
-                }
-              })
-            )
-              setEdit(null);
-          }}
+          remove={() => { if (edit !== "new") void excluirPreparo(edit); }}
         />
       )}
     </div>
