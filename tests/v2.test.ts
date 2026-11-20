@@ -98,8 +98,8 @@ describe("rateio e consolidação", () => {
     expect(c.receita).toBe(100000);
     expect(c.fixos).toBe(10001);
     expect(c.cmv).toBe(20000);
-    expect(c.lucro).toBe(59999);
-    expect(c.margem).toBeCloseTo(0.59999);
+    expect(c.lucro).toBe(49999);
+    expect(c.margem).toBeCloseTo(0.49999);
     expect(c.rows).toHaveLength(3);
   });
   it("não apresenta margem fictícia quando faltam custos mensais", () => {
@@ -289,7 +289,7 @@ describe("regressões de dados mensais", () => {
         percentuais: { bora: 80, nativos: 20, bar: 0 },
       },
     ];
-    expect(consolidar(db, "2026-11").equilibrio).toBe(200000);
+    expect(consolidar(db, "2026-11").equilibrio).toBe(250000);
   });
   it("não soma embalagem do canal quando já existe como ingrediente", () => {
     const d = { ...novoDNA("bora", "2026-11"), faturamento: 100000 },

@@ -14,7 +14,7 @@ export function novoDNA(restaurante_id: string, competencia: string): DNA {
     faturamento: 0,
     tipoFaturamento: "meta",
     fixos: [],
-    imposto: 0,
+    imposto: 10,
     margem: 30,
   };
 }
@@ -53,6 +53,7 @@ export function historicoVila(): DNA {
   return {
     ...novoDNA("a-vila", "2025-04"),
     historico: true,
+    imposto: 0,
     faturamento: 14000000,
     fixos: [
       ["Pessoal", "Funcionários", 28500, "operacional"],
