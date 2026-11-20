@@ -41,6 +41,7 @@ export interface Canal extends Registro {
 }
 export type Unidade = "kg" | "g" | "L" | "ml" | "un";
 export interface Insumo extends Registro {
+  arquivado?: boolean;
   conversoes?: { chave: string; conteudo: number; unidade: Unidade }[];
   nome: string;
   unidade: Unidade;

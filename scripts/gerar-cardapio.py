@@ -1,4 +1,4 @@
-import json, unicodedata
+import json, re, unicodedata
 from pathlib import Path
 ins=json.load(open('dados/cardapio/insumos.json'))['insumos']; rec=json.load(open('dados/cardapio/receitas_base.json'))['receitas_base']; pratos=json.load(open('dados/cardapio/pratos.json'))['pratos']
 ops=lambda n:'bora' if 'Bora' in n else 'nativos'
@@ -9,8 +9,10 @@ refs={op:[] for op in ['bora','nativos']}
 for p in pratos:refs[ops(p['restaurante'])]+=p.get('ingredientes_mencionados',[])
 for r in rec:
  for op in [ops(n) for n in r['restaurantes']]:refs[op]+=[i['nome'] for i in r['insumos']]
+def contem(termo, texto):
+ return bool(re.search(r"(?<!\w)" + re.escape(norm(termo)) + r"(?!\w)", norm(texto)))
 def destinos(i):
- matched=[op for op,vs in refs.items() if any(norm(i['nome']) in norm(v) or norm(v) in norm(i['nome']) for v in vs)]
+ matched=[op for op,vs in refs.items() if any(contem(i['nome'], v) or contem(v, i['nome']) for v in vs)]
  return ['bora','nativos'] if i['categoria']=='embalagem' else matched or ['nativos']
 rows=[]; recipes=[]; products=[]
 for op in ['bora','nativos']:

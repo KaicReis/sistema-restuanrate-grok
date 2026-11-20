@@ -1,3 +1,4 @@
+import { insumoArquivado } from "./insumos";
 import { validarNota } from "./purchase-validation";
 import { preservarUnidadesDeFicha } from "./dna";
 import { insumosMes } from "./v2";
@@ -62,17 +63,16 @@ export function sugerirInsumo(db: Database, operacao: string, nome: string) {
       .replace(/[^a-z0-9 ]/g, "")
       .trim();
   const n = normal(nome);
+  const ativos = db.insumos.filter(
+    (i) => i.restaurante_id === operacao && !insumoArquivado(i),
+  );
   return (
-    db.insumos
-      .filter((i) => i.restaurante_id === operacao)
-      .find((i) => normal(i.nome) === n)?.id ??
-    db.insumos
-      .filter((i) => i.restaurante_id === operacao)
-      .find(
-        (i) =>
-          n.length > 3 &&
-          (normal(i.nome).includes(n) || n.includes(normal(i.nome))),
-      )?.id
+    ativos.find((i) => normal(i.nome) === n)?.id ??
+    ativos.find((i) => {
+      const nomeAtivo = normal(i.nome);
+      return n.length > 3 && nomeAtivo.length > 0 &&
+        (` ${nomeAtivo} `.includes(` ${n} `) || ` ${n} `.includes(` ${nomeAtivo} `));
+    })?.id
   );
 }
 export function confirmarCompra(db: Database, input: Compra, conferido = false) {
@@ -99,10 +99,11 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
       !db.insumos.some(
         (i) =>
           i.id === linha.insumo_id &&
-          i.restaurante_id === compra.restaurante_id,
+          i.restaurante_id === compra.restaurante_id &&
+          !insumoArquivado(i),
       )
     )
-      throw new Error("Insumo de outra operação ou inexistente");
+      throw new Error("Insumo de outra operação, arquivado ou inexistente");
   }
   const mes = compra.data.slice(0, 7);
   const insumosNoMes = new Map(insumosMes(db, mes).map((i) => [i.id, i]));
@@ -114,7 +115,7 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
         i.id === linha.insumo_id && i.restaurante_id === compra.restaurante_id,
     );
     if (linha.insumo_id && !insumo)
-      throw new Error("Insumo de outra operação ou inexistente");
+      throw new Error("Insumo de outra operação, arquivado ou inexistente");
     if (!insumo) {
       insumo = {
         id: crypto.randomUUID(),
@@ -266,6 +267,7 @@ export function prepararLinha(
   const insumo = db.insumos.find(
     (i) =>
       i.restaurante_id === operacao &&
+      !insumoArquivado(i) &&
       i.conversoes?.some((c) => c.chave === chave),
   );
   const salvo = insumo?.conversoes?.find((c) => c.chave === chave);

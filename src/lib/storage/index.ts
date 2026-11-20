@@ -97,6 +97,7 @@ export function validarBackup(value: unknown): Database {
     db.insumos.some(
       (i) =>
         !text(i.nome) ||
+        (i.arquivado !== undefined && typeof i.arquivado !== "boolean") ||
         !unidades.includes(i.unidade) ||
         !unidadesNaCompraValidas(i.unidadesNaCompra) ||
         !num(i.quantidade) ||

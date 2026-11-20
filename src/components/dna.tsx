@@ -2,6 +2,7 @@
 import { confirmarExclusao } from "./ui";
 import { preparoPendente } from "./readiness";
 import { useCloud } from "./cloud";
+import { insumoArquivado } from "@/lib/insumos";
 import { insumosMes } from "@/lib/v2";
 import { Numeric } from "./numeric";
 import { useState, useRef, useEffect } from "react";
@@ -55,7 +56,7 @@ export function Overview() {
   const pendencias = [
     {
       label: "Insumos sem preço",
-      total: insumos.filter((i) => i.precoPendente).length,
+      total: insumos.filter((i) => i.precoPendente && !insumoArquivado(i)).length,
       page: "insumos" as const,
     },
     {

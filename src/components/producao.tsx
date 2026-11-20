@@ -1,4 +1,5 @@
 "use client";
+import { insumoArquivado } from "@/lib/insumos";
 import { confirmarExclusao } from "./ui";
 import { useState } from "react";
 import Image from "next/image";
@@ -126,14 +127,14 @@ export function Insumos() {
   return (
     <>
       <div className="filter-chips">
-        {["pendentes", "todos"].map((f) => (
+        {["todos", "pendentes", "arquivados"].map((f) => (
           <button
             key={f}
             className="button"
             aria-pressed={status === f}
             onClick={() => setStatus(f)}
           >
-            {f === "pendentes" ? "Pendentes" : "Todos"}
+            {f === "pendentes" ? "Pendentes" : f === "arquivados" ? "Arquivados" : "Ativos"}
           </button>
         ))}
       </div>
@@ -159,13 +160,14 @@ export function Insumos() {
         Embalagens devem entrar na ficha OU no custo do canal.
       </div>
       <Panel
-        title="Insumos da operação"
-        subtitle={`${rows.filter((i) => i.precoPendente).length} preços pendentes`}
+        title={`Insumos de ${restaurante.nome}`}
+        subtitle={`${rows.filter((i) => i.precoPendente && !insumoArquivado(i)).length} preços pendentes`}
       >
         {rows
           .filter(
             (i) =>
               i.nome.toLocaleLowerCase().includes(busca.toLocaleLowerCase()) &&
+              (status === "arquivados" ? insumoArquivado(i) : !insumoArquivado(i)) &&
               (status !== "pendentes" || i.precoPendente),
           )
           .map((i) => (
@@ -329,6 +331,23 @@ export function Insumos() {
               </Panel>
             )}
             <div className="form-actions">
+              {record && (
+                <button type="button" className="button" onClick={() => {
+                  const arquivado = !insumoArquivado(record);
+                  if (arquivado && [...db.produtos, ...(db.receitas ?? [])].some(
+                    (p) => p.itens.some((i) => i.insumo_id === record.id),
+                  )) {
+                    avisar("Insumo em uso. Revise as fichas antes de arquivar.");
+                    return;
+                  }
+                  if (atualizar((d) => {
+                    const insumo = d.insumos.find((i) => i.id === record.id);
+                    if (insumo) insumo.arquivado = arquivado;
+                  }, arquivado ? "Insumo arquivado nesta operação." : "Insumo reativado.")) setEdit(null);
+                }}>
+                  {insumoArquivado(record) ? "Reativar insumo" : "Arquivar insumo"}
+                </button>
+              )}
               <button
                 type="button"
                 className="button danger"
@@ -628,7 +647,7 @@ function PreparoModal({
       (r) => r.restaurante_id === restaurante.id && r.id !== record?.id,
     );
   const options = [
-    ...insumos.map((i) => ({
+    ...insumos.filter((i) => !insumoArquivado(i)).map((i) => ({
       id: i.id,
       nome: i.nome,
       unidade: unidadeUso(i),

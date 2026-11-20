@@ -1,17 +1,6 @@
 {
   "insumos": [
     {
-      "id": "seed-bora-i0",
-      "restaurante_id": "bora",
-      "nome": "Salmão",
-      "unidade": "kg",
-      "quantidade": 1,
-      "preco": 0,
-      "rendimento": 100,
-      "precoPendente": true,
-      "categoria": "proteína"
-    },
-    {
       "id": "seed-bora-i6",
       "restaurante_id": "bora",
       "nome": "Carne para blend de hambúrguer",

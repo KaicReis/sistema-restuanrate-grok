@@ -1,4 +1,5 @@
 "use client";
+import { insumoArquivado } from "@/lib/insumos";
 import { useEffect, useRef, useState } from "react";
 import { useSistema } from "./context";
 import {
@@ -480,7 +481,7 @@ export function Compras() {
                           <option value="">Criar insumo novo</option>
                           <option value="ignore">Ignorar linha</option>
                           {db.insumos
-                            .filter((i) => i.restaurante_id === restaurante.id)
+                            .filter((i) => i.restaurante_id === restaurante.id && !insumoArquivado(i))
                             .map((i) => (
                               <option key={i.id} value={i.id}>
                                 {i.nome}

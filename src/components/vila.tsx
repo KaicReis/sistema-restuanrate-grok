@@ -1,4 +1,5 @@
 "use client";
+import { insumoArquivado } from "@/lib/insumos";
 import { useState } from "react";
 import { Building2, Settings2 } from "lucide-react";
 import { preparoPendente } from "./readiness";
@@ -238,7 +239,7 @@ export function Vila() {
                 const count =
                   page === "insumos"
                     ? insumosMes(db, mes).filter(
-                        (i) => i.restaurante_id === r.id && i.precoPendente,
+                        (i) => i.restaurante_id === r.id && i.precoPendente && !insumoArquivado(i),
                       ).length
                     : (page === "fichas"
                         ? db.produtos
