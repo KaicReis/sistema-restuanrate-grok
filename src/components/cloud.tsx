@@ -10,8 +10,7 @@ import {
 } from "react";
 import type { Database } from "@/lib/types";
 import { repositorio, validarBackup } from "@/lib/storage";
-import { mesclarDados } from "@/lib/import-data";
-import { migrar } from "@/lib/storage/migrate";
+import { criarBase } from "@/lib/storage/seed";
 const CloudContext = createContext({
   mode: "local",
   notice: "",
@@ -46,7 +45,7 @@ export function CloudIndicator() {
 }
 export function Cloud({ children }: { children: ReactNode }) {
   const [state, setState] = useState<
-      "loading" | "login" | "import" | "ready" | "error"
+      "loading" | "login" | "ready" | "error"
     >("loading"),
     [mode, setMode] = useState(""),
     [notice, setNotice] = useState(""),
@@ -59,9 +58,7 @@ export function Cloud({ children }: { children: ReactNode }) {
   const revision = useRef(0),
     pending = useRef(0),
     stopped = useRef(false),
-    server = useRef<Database | null>(null),
-    chain = useRef(Promise.resolve()),
-    local = useRef<Database | null>(null);
+    chain = useRef(Promise.resolve());
   async function initialize() {
     try {
       const auth = await fetch("/api/auth", { cache: "no-store" });
@@ -83,30 +80,20 @@ export function Cloud({ children }: { children: ReactNode }) {
       if (!response.ok) throw new Error("Não foi possível carregar o banco.");
       const cloud = await response.json();
       revision.current = cloud.revision;
-      server.current = cloud.data;
-      try {
-        local.current = repositorio.carregar();
-      } catch {
-        local.current = null;
-      }
+      const data = cloud.data ? validarBackup(cloud.data) : criarBase();
+      const copiaLocal =
+        localStorage.getItem("dna-restaurante:v2") ??
+        localStorage.getItem("dna-restaurante:v1");
       if (
-        !cloud.data ||
-        (local.current &&
-          (localStorage.getItem("vila:pending") ||
-            (!localStorage.getItem("vila:linked") &&
-              (localStorage.getItem("dna-restaurante:v2") ||
-                localStorage.getItem("dna-restaurante:v1")))))
+        copiaLocal &&
+        (localStorage.getItem("vila:pending") ||
+          !localStorage.getItem("vila:linked"))
       ) {
-        setState("import");
-        return;
+        localStorage.setItem("dna-restaurante:antes-da-nuvem", copiaLocal);
       }
-      if (local.current)
-        localStorage.setItem(
-          "dna-restaurante:antes-da-nuvem",
-          JSON.stringify(local.current),
-        );
-      repositorio.salvar(validarBackup(cloud.data));
+      repositorio.salvar(data);
       localStorage.setItem("vila:linked", "true");
+      localStorage.removeItem("vila:pending");
       setNotice("Salvo na nuvem");
       setState("ready");
     } catch (e) {
@@ -117,37 +104,6 @@ export function Cloud({ children }: { children: ReactNode }) {
   useEffect(() => {
     void initialize();
   }, []);
-  async function firstImport(file?: File) {
-    try {
-      if (file && file.size > 10 * 1024 * 1024)
-        throw new Error("Backup deve ter até 10 MB");
-      const parsed = file
-        ? validarBackup(migrar(validarBackup(JSON.parse(await file.text()))))
-        : null;
-      const incoming =
-        parsed && local.current
-          ? mesclarDados(local.current, parsed)
-          : (parsed ?? local.current ?? repositorio.carregar());
-      const data = server.current
-        ? mesclarDados(server.current, incoming)
-        : incoming;
-      const res = await fetch("/api/data", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ data, revision: revision.current }),
-      });
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.error);
-      revision.current = result.revision;
-      repositorio.salvar(data);
-      localStorage.setItem("vila:linked", "true");
-      localStorage.removeItem("vila:pending");
-      setNotice("Dados importados e sincronizados.");
-      setState("ready");
-    } catch (e) {
-      setNotice((e as Error).message);
-    }
-  }
   useLayoutEffect(() => {
     if (state !== "ready" || mode !== "cloud") return;
     const save = (event: Event) => {
@@ -318,49 +274,6 @@ export function Cloud({ children }: { children: ReactNode }) {
             {entering ? "Entrando…" : "Entrar"}
           </button>
         </form>
-      )}
-      {state === "import" && (
-        <>
-          <p>
-            Importe os dados deste navegador e/ou um backup JSON. Em conflitos,
-            os dados importados prevalecem, e as versões integrais ficam
-            arquivadas no backup exportável (importacoes).
-          </p>
-          {server.current && (
-            <button
-              className="button"
-              onClick={() => {
-                if (local.current)
-                  localStorage.setItem(
-                    "dna-restaurante:antes-da-nuvem",
-                    JSON.stringify(local.current),
-                  );
-                repositorio.salvar(server.current!);
-                localStorage.setItem("vila:linked", "true");
-                localStorage.removeItem("vila:pending");
-                setState("ready");
-                setNotice(
-                  "Dados da nuvem carregados. Cópia anterior preservada neste navegador.",
-                );
-              }}
-            >
-              Usar dados da nuvem
-            </button>
-          )}
-          <button className="button primary" onClick={() => void firstImport()}>
-            Importar dados locais automaticamente
-          </button>
-          <label className="field">
-            Importar backup JSON
-            <input
-              type="file"
-              accept=".json,application/json"
-              onChange={(e) => {
-                if (e.target.files?.[0]) void firstImport(e.target.files[0]);
-              }}
-            />
-          </label>
-        </>
       )}
       {state === "error" && (
         <button className="button" onClick={() => void initialize()}>
