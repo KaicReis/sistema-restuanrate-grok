@@ -4,10 +4,11 @@ import { Numeric } from "./numeric";
 import { useState } from "react";
 import { Building2, Pencil, Plus, Store, Trash2 } from "lucide-react";
 import { dinheiro, paraCentavos, taxaCanal, percentual } from "@/lib/dna";
+import { recebimentosSchema } from "@/lib/recebimentos";
 import { novosCanais, novoDNA } from "@/lib/storage/seed";
-import type { Canal, Restaurante, Taxa } from "@/lib/types";
+import type { Canal, RegraRecebimento, Restaurante, Taxa } from "@/lib/types";
 import { useSistema } from "./context";
-import { AddButton, Empty, Field, Modal, Money, Panel, formString } from "./ui";
+import { AddButton, Empty, Field, Modal, Money, Panel, formNumber, formString } from "./ui";
 export function Restaurantes() {
   const { db, restaurante, mes, atualizar, selecionar } = useSistema(),
     [edit, setEdit] = useState<Restaurante | "new" | null>(null);
@@ -188,6 +189,22 @@ export function Canais() {
                 </strong>
               </div>
             </div>
+            {!!c.recebimentos?.length && (
+              <>
+                <h3 className="form-subtitle">Taxas e prazos de recebimento</h3>
+                <div className="detail-list">
+                  {c.recebimentos.map((regra) => (
+                    <div key={regra.id}>
+                      <span>{regra.forma}{regra.bandeira ? ` · ${regra.bandeira}` : ""}</span>
+                      <strong>
+                        {percentual(regra.percentual / 100)} ·{" "}
+                        {regra.dias === 0 ? "No mesmo dia" : `${regra.dias} ${regra.dias === 1 ? "dia" : "dias"}`}
+                      </strong>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
           </Panel>
         ))}
       </div>
@@ -227,19 +244,37 @@ function CanalModal({
 }) {
   const { restaurante, mes } = useSistema(),
     [taxas, setTaxas] = useState<Taxa[]>(structuredClone(canal?.taxas ?? []));
+  const [recebimentos, setRecebimentos] = useState<
+    (Partial<RegraRecebimento> & { id: string })[]
+  >(canal?.recebimentos ?? []);
+  const [erro, setErro] = useState("");
   function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setErro("");
     const f = new FormData(e.currentTarget),
       embalagem = formString(f, "embalagem");
-    save({
-      id: canal?.id ?? crypto.randomUUID(),
-      restaurante_id: restaurante.id,
-      competencia: mes,
-      nome: formString(f, "nome"),
-      custoUnidade: paraCentavos(formString(f, "custo")),
-      embalagem: embalagem === "" ? null : paraCentavos(embalagem),
-      taxas,
-    });
+    try {
+      const regras = recebimentosSchema.safeParse(recebimentos.map(({ id }) => ({
+        id,
+        forma: formString(f, `forma-${id}`),
+        bandeira: formString(f, `bandeira-${id}`) || undefined,
+        percentual: formNumber(f, `taxa-${id}`),
+        dias: formNumber(f, `dias-${id}`),
+      })));
+      if (!regras.success) throw new Error(regras.error.issues[0].message);
+      save({
+        id: canal?.id ?? crypto.randomUUID(),
+        restaurante_id: restaurante.id,
+        competencia: mes,
+        nome: formString(f, "nome"),
+        custoUnidade: paraCentavos(formString(f, "custo")),
+        embalagem: embalagem === "" ? null : paraCentavos(embalagem),
+        taxas,
+        ...(regras.data.length > 0 && { recebimentos: regras.data }),
+      });
+    } catch (e) {
+      setErro((e as Error).message);
+    }
   }
   return (
     <Modal title={canal ? "Editar canal" : "Novo canal"} close={close}>
@@ -339,6 +374,69 @@ function CanalModal({
           <Plus size={16} />
           Adicionar taxa
         </button>
+        <h3 className="form-subtitle">Taxas e prazos de recebimento</h3>
+        <p className="muted">
+          Cadastre a condição contratada para cada forma de pagamento e bandeira.
+        </p>
+        {recebimentos.map(({ id, forma, bandeira, percentual, dias }, indice) => (
+          <fieldset key={id}>
+            <legend>Condição {indice + 1}</legend>
+            <div className="form-grid">
+              <Field label="Forma de pagamento">
+                <input
+                  name={`forma-${id}`}
+                  required
+                  maxLength={80}
+                  defaultValue={forma}
+                  placeholder="Ex.: Crédito à vista"
+                />
+              </Field>
+              <Field label="Bandeira">
+                <input
+                  name={`bandeira-${id}`}
+                  maxLength={80}
+                  defaultValue={bandeira}
+                  placeholder="Se aplicável"
+                />
+              </Field>
+              <Field label="Taxa de recebimento (%)">
+                <Numeric
+                  name={`taxa-${id}`}
+                  required
+                  min={0}
+                  max={100}
+                  defaultValue={percentual}
+                />
+              </Field>
+              <Field label="Prazo de recebimento (dias)">
+                <input
+                  name={`dias-${id}`}
+                  type="number"
+                  required
+                  min={0}
+                  step={1}
+                  defaultValue={dias}
+                />
+              </Field>
+            </div>
+            <button
+              type="button"
+              className="button"
+              onClick={() => setRecebimentos((rows) => rows.filter((regra) => regra.id !== id))}
+            >
+              <Trash2 size={16} aria-hidden="true" /> Remover condição
+            </button>
+          </fieldset>
+        ))}
+        <button
+          type="button"
+          className="button"
+          onClick={() => setRecebimentos((rows) => [...rows, { id: crypto.randomUUID() }])}
+        >
+          <Plus size={16} />
+          Adicionar condição
+        </button>
+        {erro && <p className="notice warning" role="alert">{erro}</p>}
         <div className="form-actions">
           <button type="button" className="button" onClick={close}>
             Cancelar

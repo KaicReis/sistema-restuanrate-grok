@@ -3,6 +3,7 @@ import { insumoArquivado } from "@/lib/insumos";
 import { useEffect, useRef, useState } from "react";
 import { useSistema } from "./context";
 import {
+  alterarVencimentoCompra,
   confirmarCompra,
   prepararLinha,
   resumoCompra,
@@ -16,7 +17,7 @@ import { validarNota } from "@/lib/purchase-validation";
 import { prepararFoto } from "@/lib/prepare-photo";
 import { dinheiro } from "@/lib/dna";
 import { AlertTriangle, FileUp, QrCode, ReceiptText } from "lucide-react";
-import { Modal, Panel } from "./ui";
+import { Field, formString, Modal, Panel } from "./ui";
 export function Compras() {
   const { db, restaurante, atualizar, avisar } = useSistema(),
     input = useRef<HTMLInputElement>(null),
@@ -24,6 +25,8 @@ export function Compras() {
     reviewCursor = useRef(-1),
     [cancelar, setCancelar] = useState(false),
     [nota, setNota] = useState<Compra | null>(null),
+    [vencimentoNota, setVencimentoNota] = useState(""),
+    [compraParaAgendar, setCompraParaAgendar] = useState<Compra | null>(null),
     [preparando, setPreparando] = useState(false),
     [conferido, setConferido] = useState<string | null>(null),
     [busy, setBusy] = useState(false),
@@ -32,6 +35,9 @@ export function Compras() {
   const historico = (db.compras ?? [])
     .filter((compra) => compra.restaurante_id === restaurante.id)
     .sort((a, b) => b.data.localeCompare(a.data));
+  const contas = new Map((db.movimentosCaixa ?? [])
+    .filter((movimento) => movimento.compra_id)
+    .map((movimento) => [movimento.compra_id, movimento]));
   const validacao = nota ? validarNota(nota) : null;
   const assinatura = JSON.stringify(nota);
   const podeConfirmar = validacao?.valido || conferido === assinatura;
@@ -59,6 +65,7 @@ export function Compras() {
       const n = result.nota;
       if (!Array.isArray(n.itens) || n.itens.length > 300)
         throw new Error("Nota ilegível. Tente outra foto.");
+      setVencimentoNota("");
       setNota({
         id: crypto.randomUUID(),
         restaurante_id: restaurante.id,
@@ -226,8 +233,10 @@ export function Compras() {
                   );
                 if (
                   atualizar(
-                    (d) => confirmarCompra(d, nota, conferido === assinatura),
-                    "Compra salva. Custos das receitas e pratos atualizados.",
+                    (d) => confirmarCompra(d, nota, conferido === assinatura, vencimentoNota),
+                    vencimentoNota
+                      ? "Compra salva e vencimento lançado no fluxo de caixa."
+                      : "Compra salva. Custos das receitas e pratos atualizados.",
                   )
                 ) {
                   setNota(null);
@@ -281,6 +290,16 @@ export function Compras() {
                 onChange={(e) => setNota({ ...nota, data: e.target.value })}
               />
             </label>
+            <Field
+              label="Vencimento da compra"
+              hint="Preencha a data para lançar o total da nota como conta a pagar."
+            >
+              <input
+                type="date"
+                value={vencimentoNota}
+                onChange={(e) => setVencimentoNota(e.target.value)}
+              />
+            </Field>
             <div className="form-grid">
               {(
                 [
@@ -646,44 +665,92 @@ export function Compras() {
           </p>
         )}
         <div className="purchase-history-list">
-          {historico.map((c) => (
-            <details className="purchase-history" key={c.id}>
-              <summary>
-                <span className="workflow-icon">
-                  <ReceiptText size={19} aria-hidden="true" />
-                </span>
-                <span className="purchase-history-name">
-                  <strong>{c.fornecedor || "Fornecedor não informado"}</strong>
-                  <span>
-                    {c.data.split("-").reverse().join("/")} · {c.originais?.registro === "resumo-documento"
-                      ? `${c.originais.tipo ?? "Documento"} nº ${c.originais.numeroDocumento}`
-                      : `${c.itens.length} ${c.itens.length === 1 ? "item" : "itens"}`}
+          {historico.map((c) => {
+            const conta = contas.get(c.id);
+            return (
+              <details className="purchase-history" key={c.id}>
+                <summary>
+                  <span className="workflow-icon">
+                    <ReceiptText size={19} aria-hidden="true" />
                   </span>
-                </span>
-                <strong>
-                  {dinheiro(Math.round(resumoCompra(c).total * 100))}
-                </strong>
-              </summary>
-              {c.originais?.registro === "resumo-documento" ? (
-                <p className="muted">Total conferido no documento. Os preços dos insumos podem ser consultados no histórico por competência.</p>
-              ) : <ul>
-                {c.itens.map((i, n) => (
-                  <li key={n}>
+                  <span className="purchase-history-name">
+                    <strong>{c.fornecedor || "Fornecedor não informado"}</strong>
                     <span>
-                      {i.nome}
-                      {i.ignorar ? " (ignorado)" : ""}
+                      {c.data.split("-").reverse().join("/")} · {c.originais?.registro === "resumo-documento"
+                        ? `${c.originais.tipo ?? "Documento"} nº ${c.originais.numeroDocumento}`
+                        : `${c.itens.length} ${c.itens.length === 1 ? "item" : "itens"}`}
                     </span>
-                    <span>
-                      {formatarBR(i.quantidade)} {i.unidade}
-                    </span>
-                    <strong>{dinheiro(Math.round(i.total * 100))}</strong>
-                  </li>
-                ))}
-              </ul>}
-            </details>
-          ))}
+                  </span>
+                  <strong>
+                    {dinheiro(Math.round(resumoCompra(c).total * 100))}
+                  </strong>
+                </summary>
+                {c.originais?.registro === "resumo-documento" ? (
+                  <p className="muted">Total conferido no documento. Os preços dos insumos podem ser consultados no histórico por competência.</p>
+                ) : <ul>
+                  {c.itens.map((i, n) => (
+                    <li key={n}>
+                      <span>
+                        {i.nome}
+                        {i.ignorar ? " (ignorado)" : ""}
+                      </span>
+                      <span>
+                        {formatarBR(i.quantidade)} {i.unidade}
+                      </span>
+                      <strong>{dinheiro(Math.round(i.total * 100))}</strong>
+                    </li>
+                  ))}
+                </ul>}
+                <div className="form-actions">
+                  {conta && (
+                    <p className="muted">
+                      Vencimento: {conta.vencimento?.split("-").reverse().join("/")}
+                      {conta.situacao === "realizado" &&
+                        ` · Pago em ${conta.data.split("-").reverse().join("/")}`}
+                    </p>
+                  )}
+                  {conta?.situacao !== "realizado" && (
+                    <button
+                      className="button"
+                      type="button"
+                      onClick={() => setCompraParaAgendar(c)}
+                    >
+                      {conta ? "Editar vencimento" : "Agendar pagamento"}
+                    </button>
+                  )}
+                </div>
+              </details>
+            );
+          })}
         </div>
       </Panel>
+      {compraParaAgendar && (
+        <Modal title="Vencimento da compra" close={() => setCompraParaAgendar(null)}>
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const vencimento = formString(new FormData(e.currentTarget), "vencimento");
+            if (atualizar(
+              (draft) => alterarVencimentoCompra(draft, compraParaAgendar.id, vencimento),
+              vencimento ? "Conta a pagar atualizada no fluxo de caixa." : "Vencimento removido.",
+            )) setCompraParaAgendar(null);
+          }}>
+            <p>{compraParaAgendar.fornecedor} · {dinheiro(Math.round(resumoCompra(compraParaAgendar).total * 100))}</p>
+            <Field label="Vencimento" hint="Deixe em branco para retirar o lançamento previsto.">
+              <input
+                name="vencimento"
+                type="date"
+                defaultValue={contas.get(compraParaAgendar.id)?.vencimento}
+              />
+            </Field>
+            <div className="form-actions">
+              <button type="button" className="button" onClick={() => setCompraParaAgendar(null)}>
+                Cancelar
+              </button>
+              <button className="button primary">Salvar vencimento</button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import type { Database } from "../types";
+import { semHistoricoAninhado } from "../historico-importacoes";
 import cardapio from "./cardapio.json";
 export function migrar(db: Database): Database {
   if (db.version === 2) return db;
   const next = structuredClone(db);
-  next.legadoV1 = structuredClone(db);
+  next.legadoV1 = structuredClone(semHistoricoAninhado(db));
   next.version = 2;
   if (!next.restaurantes.some((r) => r.id === "bar"))
     next.restaurantes.push({ id: "bar", nome: "Bar", regime: "Simples" });

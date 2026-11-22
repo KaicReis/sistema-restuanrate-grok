@@ -30,6 +30,8 @@ export interface MovimentoCaixa {
   categoria: CategoriaCaixa;
   situacao: SituacaoCaixa;
   valorCentavos: number;
+  compra_id?: string;
+  vencimento?: string;
 }
 
 export function dataAtualCaixa() {

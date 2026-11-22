@@ -4,6 +4,8 @@ import { migrar } from "./migrate";
 import { validarRateio } from "../v2";
 import { criarBase } from "./seed";
 import { insumoDeEmbalagem, unidadesFicha } from "../dna";
+import { recebimentosSchema } from "../recebimentos";
+import { compactarBackup } from "../historico-importacoes";
 const KEY = "dna-restaurante:v2";
 const object = (v: unknown): v is Record<string, unknown> =>
   !!v && typeof v === "object" && !Array.isArray(v);
@@ -83,6 +85,7 @@ export function validarBackup(value: unknown): Database {
         !text(c.nome) ||
         !money(c.custoUnidade) ||
         (c.embalagem !== null && !money(c.embalagem)) ||
+        (c.recebimentos !== undefined && !recebimentosSchema.safeParse(c.recebimentos).success) ||
         !Array.isArray(c.taxas) ||
         c.taxas.some(
           (t) =>
@@ -318,13 +321,22 @@ export function validarBackup(value: unknown): Database {
     (db.movimentosCaixa ?? []).length
   )
     throw new Error("Movimentação de caixa duplicada.");
+  const comprasPorId = new Map((db.compras ?? []).map((c) => [c.id, c]));
+  const comprasComLancamento = new Set<string>();
+  for (const movimento of db.movimentosCaixa ?? []) {
+    if (movimento.compra_id === undefined) continue;
+    if (comprasComLancamento.has(movimento.compra_id) ||
+        comprasPorId.get(movimento.compra_id)?.restaurante_id !== movimento.restaurante_id)
+      throw new Error("Conta a pagar com compra inválida ou duplicada.");
+    comprasComLancamento.add(movimento.compra_id);
+  }
   for (const registros of [db.saldosCaixa ?? [], db.fechamentosFinanceiros ?? []])
     if (
       new Set(registros.map((r) => r.restaurante_id + ":" + r.competencia)).size !==
       registros.length
     )
       throw new Error("Registro financeiro mensal duplicado.");
-  return db;
+  return compactarBackup(db);
 }
 export interface Repositorio {
   carregar(): Database;
@@ -347,11 +359,11 @@ export const repositorio: Repositorio = {
     }
   },
   salvar(db) {
-    validarBackup(db);
+    const dados = validarBackup(db);
     try {
-      localStorage.setItem(KEY, JSON.stringify(db));
+      localStorage.setItem(KEY, JSON.stringify(dados));
       if (typeof window !== "undefined")
-        window.dispatchEvent(new CustomEvent("vila-save", { detail: db }));
+        window.dispatchEvent(new CustomEvent("vila-save", { detail: dados }));
     } catch {
       throw new Error(
         "Não foi possível salvar no navegador. Verifique o espaço disponível e as permissões de armazenamento.",

@@ -17,7 +17,11 @@ export const vendaSetorEstimadaMensalSchema = z.strictObject({
   unidadesExcluidas: inteiroNaoNegativo.optional(),
   setores: z.array(vendaSetorSchema),
   relatorioParcial: z.boolean().optional(),
+  periodoAte: z.iso.date().optional(),
 }).refine(
+  ({ competencia, periodoAte }) => !periodoAte || periodoAte.startsWith(competencia + "-"),
+  { path: ["periodoAte"], message: "A data final da estimativa deve pertencer à competência." },
+).refine(
   ({ setores }) => new Set(setores.map((s) => s.restaurante_id)).size === setores.length,
   { path: ["setores"], message: "Há setores repetidos na mesma competência." },
 ).refine(

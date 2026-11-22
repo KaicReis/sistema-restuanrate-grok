@@ -84,6 +84,8 @@ export function Dre() {
   const [erro, setErro] = useState("");
   const consolidado = restaurante.id === "a-vila";
   const resultado = demonstrativo(db, mes, restaurante.id);
+  const receitaAnotai = resultado.receitaAnotai;
+  const tituloReceita = receitaAnotai ? "Receita registrada no Anotaí" : "Receita após abatimentos";
   const fechamento = db.fechamentosFinanceiros?.find(
     (registro) =>
       registro.competencia === mes &&
@@ -157,7 +159,7 @@ export function Dre() {
         </div>
         <div className="financeiro-metrics">
           <div>
-            <span>Receita após abatimentos</span>
+            <span>{tituloReceita}</span>
             <strong>
               <Valor value={resultado.receita} />
             </strong>
@@ -181,19 +183,23 @@ export function Dre() {
         <div className="notice warning financeiro-notice">
           <CircleAlert size={18} aria-hidden="true" />
           <p>
-            {consolidado
-              ? "O resultado da Vila depende do fechamento de todas as operações. Complete os valores pendentes em cada uma."
-              : "Complete o fechamento e informe o CMV e as despesas variáveis realizados no DNA mensal. Use zero quando o valor realizado for zero."}
-            {consolidado && Boolean(db.vendasAnotai?.length) && (
-              <>
-                {" "}O Anotaí traz as vendas da Vila sem identificar a operação de cada pedido.{" "}
-                <button type="button" className="text-button" onClick={() => ir("relatorios")}>
-                  Ver vendas importadas
-                </button>
-              </>
-            )}
+            {resultado.receitaParcial
+              ? "O resultado e a margem aguardam uma receita com cobertura completa da competência."
+              : consolidado
+                ? "Complete os custos e os demais valores pendentes de cada operação para apurar o resultado da Vila."
+                : "Complete o fechamento e informe o CMV e as despesas variáveis realizados no DNA mensal. Use zero quando o valor realizado for zero."}
           </p>
         </div>
+      )}
+
+      {receitaAnotai && (
+        <p className="notice">
+          A receita do Anotaí é o subtotal dos pedidos finalizados, sem frete.
+          {receitaAnotai.periodoAte && ` Dados até ${receitaAnotai.periodoAte.slice(8, 10)}/${receitaAnotai.periodoAte.slice(5, 7)}.`}
+          {receitaAnotai.coberturaSalao === "ausente" && " Sem cobertura do salão."}
+          {receitaAnotai.coberturaSalao === "parcial" && " Cobertura parcial do salão."}
+          {" "}<button type="button" className="text-button" onClick={() => ir("relatorios")}>Ver vendas importadas</button>
+        </p>
       )}
 
       <Panel
@@ -201,7 +207,7 @@ export function Dre() {
         subtitle="Vendas, descontos, estornos, impostos e despesas são valores da competência."
       >
         <dl className="financeiro-dre">
-          {linhasDre.map((linha) => (
+          {linhasDre.filter(({ chave }) => !receitaAnotai || !["receitaBruta", "descontos", "estornos"].includes(chave)).map((linha) => (
             <div
               key={linha.chave}
               className={
@@ -209,8 +215,11 @@ export function Dre() {
               }
             >
               <dt>
-                {linha.rotulo}
-                {"origem" in linha && <small>{linha.origem}</small>}
+                {linha.chave === "receita" ? tituloReceita : linha.rotulo}
+                {linha.chave === "receita" && receitaAnotai && <small>Pedidos finalizados sem frete</small>}
+                {"origem" in linha && (
+                  <small>{linha.chave === "aluguel" && resultado.aluguelProvisorio ? "Rateio provisório da Vila" : linha.origem}</small>
+                )}
               </dt>
               <dd>
                 <Valor

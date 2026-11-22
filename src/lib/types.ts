@@ -32,10 +32,18 @@ export interface Taxa {
   descricao: string;
   percentual: number;
 }
+export interface RegraRecebimento {
+  id: string;
+  forma: string;
+  bandeira?: string;
+  percentual: number;
+  dias: number;
+}
 export interface Canal extends Registro {
   competencia: string;
   nome: string;
   taxas: Taxa[];
+  recebimentos?: RegraRecebimento[];
   custoUnidade: number;
   embalagem: number | null;
 }
@@ -110,6 +118,7 @@ export interface Database {
   fechamentosFinanceiros?: import("./financeiro").FechamentoFinanceiro[];
   compras?: import("./purchases").Compra[];
   vendasAnotai?: import("./vendas-anotai").VendaAnotaiMensal[];
+  faturamentosConsolidados?: import("./vendas-anotai").FaturamentoConsolidado[];
   vendasSetoresEstimadas?: import("./vendas-estimadas-setor").VendaSetorEstimadaMensal[];
   importacoes?: { data: unknown; criadoEm: string }[];
   receitas?: ReceitaCasa[];

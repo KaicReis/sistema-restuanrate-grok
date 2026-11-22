@@ -2,7 +2,14 @@ import { expect, it } from "vitest";
 import { mesclarDados } from "../src/lib/import-data";
 import { validarBackup } from "../src/lib/storage";
 import { criarBase } from "../src/lib/storage/seed";
-import { vendaAnotaiMensalSchema, vendasAnotaiSchema, type VendaAnotaiMensal } from "../src/lib/vendas-anotai";
+import {
+  faturamentoAnotai,
+  faturamentoConsolidadoNoMes,
+  inicioSalaoAnotai,
+  vendaAnotaiMensalSchema,
+  vendasAnotaiSchema,
+  type VendaAnotaiMensal,
+} from "../src/lib/vendas-anotai";
 
 const zero = { pedidos: 0, subtotal: 0, frete: 0, total: 0 };
 const outubro: VendaAnotaiMensal = {
@@ -42,4 +49,23 @@ it("rejeita divergências de valores, cobertura e competências duplicadas", () 
     ...outubro, canais: { ...outubro.canais, delivery: { ...outubro.canais.delivery, total: 2_800 } },
   }).success).toBe(false);
   expect(vendasAnotaiSchema.safeParse([outubro, outubro]).success).toBe(false);
+});
+
+it("registra subtotal sem frete e preserva a cobertura do salão e o corte do mês", () => {
+  const setembro = { ...outubro, competencia: "2026-09", salaoDesde: undefined, canais: { ...outubro.canais, salao: zero } };
+  const novembro = { ...outubro, competencia: "2026-11", salaoDesde: "2026-11-01", periodoAte: "2026-11-21" };
+  const vendas = [setembro, outubro, novembro];
+  const valores = vendas.map((venda) => faturamentoAnotai(venda, inicioSalaoAnotai(vendas)));
+  expect(valores.map((valor) => [valor.valor, valor.coberturaSalao, valor.periodoAte])).toEqual([
+    [2300, "ausente", undefined],
+    [3500, "parcial", undefined],
+    [3500, "integral", "2026-11-21"],
+  ]);
+  const base = criarBase();
+  const merged = mesclarDados(
+    { ...base, faturamentosConsolidados: valores.slice(0, 2) },
+    { ...base, faturamentosConsolidados: valores.slice(2) },
+  );
+  expect(faturamentoConsolidadoNoMes(validarBackup(merged), "2026-11")).toEqual(valores[2]);
+  expect(merged.faturamentosConsolidados).toEqual(valores);
 });

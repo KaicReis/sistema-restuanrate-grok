@@ -6,6 +6,7 @@ import { z } from "zod";
 import type { Database, Unidade } from "./types";
 import Decimal from "decimal.js";
 import { numeroBR } from "./purchase-numbers";
+import { LIMITE_CENTAVOS_CAIXA, type MovimentoCaixa } from "./fluxo-caixa";
 const numero = z.preprocess((v) => {
   try {
     return numeroBR(v);
@@ -82,7 +83,12 @@ export function sugerirInsumo(db: Database, operacao: string, nome: string) {
     })?.id
   );
 }
-export function confirmarCompra(db: Database, input: Compra, conferido = false) {
+export function confirmarCompra(
+  db: Database,
+  input: Compra,
+  conferido = false,
+  vencimento?: string,
+) {
   const compra = compraSchema.parse(input);
   if (
     !db.restaurantes.some(
@@ -96,6 +102,7 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
     throw new Error("Selecione pelo menos um item");
   if (!conferido && !validarNota(compra).valido)
     throw new Error("Confira as divergências aritméticas das linhas da nota");
+  const conta = vencimento ? contaDaCompra(compra, vencimento) : undefined;
   // Validate every row before mutating the database (confirmation is atomic).
   for (const linha of compra.itens) {
     if (linha.ignorar) continue;
@@ -182,6 +189,59 @@ export function confirmarCompra(db: Database, input: Compra, conferido = false) 
   }
   db.compras ??= [];
   db.compras.push(compra);
+  if (conta) (db.movimentosCaixa ??= []).push(conta);
+}
+
+function contaDaCompra(compra: Compra, vencimento: string): MovimentoCaixa {
+  validarVencimento(vencimento);
+  const valorCentavos = new Decimal(resumoCompra(compra).total)
+    .times(100)
+    .toDecimalPlaces(0, Decimal.ROUND_HALF_UP)
+    .toNumber();
+  if (!Number.isSafeInteger(valorCentavos) ||
+      valorCentavos <= 0 || valorCentavos > LIMITE_CENTAVOS_CAIXA)
+    throw new Error("Informe um total de compra positivo dentro do limite do caixa.");
+  return {
+    id: crypto.randomUUID(),
+    restaurante_id: compra.restaurante_id,
+    compra_id: compra.id,
+    vencimento,
+    data: vencimento,
+    descricao: `Compra de ${compra.fornecedor.trim()}`.slice(0, 180).trimEnd(),
+    tipo: "saida",
+    situacao: "previsto",
+    categoria: "Fornecedores",
+    valorCentavos,
+  };
+}
+
+function validarVencimento(vencimento: string) {
+  if (!z.iso.date().safeParse(vencimento).success)
+    throw new Error("Informe uma data de vencimento válida.");
+}
+
+export function alterarVencimentoCompra(
+  db: Database,
+  compraId: string,
+  vencimento?: string,
+) {
+  const compra = db.compras?.find((item) => item.id === compraId);
+  if (!compra) throw new Error("Compra não encontrada.");
+  const atual = db.movimentosCaixa?.find((item) => item.compra_id === compraId);
+  if (atual?.situacao === "realizado")
+    throw new Error("Esta conta já foi paga. A baixa permanece no fluxo de caixa.");
+  if (!vencimento) {
+    if (atual) db.movimentosCaixa = db.movimentosCaixa!.filter((item) => item.id !== atual.id);
+    return;
+  }
+  if (atual) {
+    validarVencimento(vencimento);
+    atual.data = vencimento;
+    atual.vencimento = vencimento;
+    return;
+  }
+  const conta = contaDaCompra(compra, vencimento);
+  (db.movimentosCaixa ??= []).push(conta);
 }
 
 const normalizar = (s: string) =>

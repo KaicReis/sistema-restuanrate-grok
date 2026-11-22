@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { baseEquilibrio, calcularEquilibrio, demonstrativo } from "../src/lib/financeiro";
 import { novoDNA } from "../src/lib/storage/seed";
+import { consolidar } from "../src/lib/v2";
 import type { Database } from "../src/lib/types";
 
 const mes = "2026-11";
@@ -52,12 +53,62 @@ describe("Financeiro", () => {
     });
   });
 
-  it("inclui aluguel ainda sem rateio apenas no consolidado", () => {
+  it("rateia pelo DRE realizado mesmo se a meta no DNA for zero", () => {
     const db = base();
     db.dnas.forEach((dna) => { dna.faturamento = 0; });
-    expect(demonstrativo(db, mes, "bora").resultado).toBeNull();
-    expect(demonstrativo(db, mes, "bora").aluguel).toBeNull();
+    expect(demonstrativo(db, mes, "bora")).toMatchObject({ aluguel: 50_000, resultado: 275_000 });
     expect(demonstrativo(db, mes, "a-vila").resultado).toBe(475_000);
+  });
+
+  it("rateia R$ 7.000 em quatro parcelas de R$ 1.750, sem aluguel de Vinhos", () => {
+    const db = base();
+    db.restaurantes.push(
+      { id: "bar", nome: "Bar", regime: "Simples" },
+      { id: "marias", nome: "Maria’s", regime: "Simples" },
+      { id: "vinhos", nome: "Carta de Vinhos", regime: "Simples" },
+    );
+    db.fechamentosFinanceiros = [];
+    db.alugueis = [{
+      competencia: mes, valor: 700_000, regra: "fixo",
+      percentuais: { nativos: 25, bora: 25, bar: 25, marias: 25 },
+    }];
+    for (const id of ["nativos", "bora", "bar", "marias"]) {
+      expect(demonstrativo(db, mes, id)).toMatchObject({ aluguel: 175_000, aluguelProvisorio: false });
+    }
+    expect(demonstrativo(db, mes, "vinhos").aluguel).toBe(0);
+    expect(demonstrativo(db, mes, "a-vila").aluguel).toBe(700_000);
+  });
+
+  it("usa o mesmo resultado e margem no DRE e na visão da Vila", () => {
+    const db = base();
+    const dre = demonstrativo(db, mes, "a-vila");
+    expect(consolidar(db, mes)).toMatchObject({
+      receita: dre.receita, cmv: dre.cmv, lucro: dre.resultado, margem: dre.margem,
+    });
+  });
+
+  it("usa a receita consolidada sem repetir abatimentos quando o DRE setorial está incompleto", () => {
+    const db = base();
+    db.faturamentosConsolidados = [{
+      competencia: mes, valor: 1_600_000, fonte: "anotai", coberturaSalao: "integral",
+    }];
+    expect(demonstrativo(db, mes, "a-vila")).toMatchObject({ receita: 1_500_000, fonteReceita: "dre" });
+    delete db.fechamentosFinanceiros![1].receitaBruta;
+    expect(demonstrativo(db, mes, "a-vila")).toMatchObject({
+      receita: 1_600_000, fonteReceita: "anotai", descontos: 20_000, estornos: 30_000,
+      resultado: 575_000,
+    });
+    expect(demonstrativo(db, mes, "nativos").receita).toBeNull();
+    db.faturamentosConsolidados[0].coberturaSalao = "ausente";
+    expect(demonstrativo(db, mes, "a-vila")).toMatchObject({
+      receita: 1_600_000, receitaParcial: true, resultado: null, margem: null,
+    });
+    db.faturamentosConsolidados[0].coberturaSalao = "integral";
+    db.faturamentosConsolidados[0].periodoAte = "2026-11-21";
+    expect(demonstrativo(db, mes, "a-vila")).toMatchObject({
+      receita: 1_600_000, receitaParcial: true, resultado: null, margem: null,
+    });
+    expect(baseEquilibrio(db, mes, "a-vila").receitaReal).toBeNull();
   });
 
   it("calcula a meta em centavos e não divide por zero dias nem margem não positiva", () => {

@@ -8,6 +8,7 @@
 }
 
 .anotai-head,
+.anotai-acoes,
 .anotai-evolucao-head,
 .anotai-sem-competencia {
   display: flex;
@@ -15,6 +16,15 @@
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+}
+
+.anotai-registrado {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--anotai-pine);
+  font-size: .875rem;
+  font-weight: 650;
 }
 
 .anotai-head h2 {

@@ -1,7 +1,7 @@
 import Decimal from "decimal.js";
 import type { Insumo } from "./types";
 
-type PrecoInsumo = Pick<Insumo, "preco" | "quantidade" | "unidade" | "precoPendente">;
+export type PrecoInsumo = Pick<Insumo, "preco" | "quantidade" | "unidade" | "precoPendente">;
 
 const referencia = {
   kg: { unidade: "kg", fator: 1 },
@@ -11,8 +11,8 @@ const referencia = {
   un: { unidade: "un", fator: 1 },
 } as const;
 
-function normalizar(preco: PrecoInsumo) {
-  if (preco.precoPendente || preco.quantidade <= 0 || !Number.isFinite(preco.preco)) return null;
+export function normalizarPrecoInsumo(preco: PrecoInsumo) {
+  if (preco.precoPendente || !Number.isFinite(preco.quantidade) || preco.quantidade <= 0 || !Number.isFinite(preco.preco)) return null;
   const { unidade, fator } = referencia[preco.unidade];
   return {
     unidade,
@@ -26,7 +26,7 @@ export function historicoInsumo(insumo: Insumo, mes: string) {
     .filter(([competencia]) => competencia !== "0000-01" && competencia <= mes)
     .sort(([a], [b]) => b.localeCompare(a))
     .flatMap(([competencia, preco]) => {
-      const base = normalizar(preco);
+      const base = normalizarPrecoInsumo(preco);
       return base ? [{ competencia, ...base }] : [];
     });
   const atual = historico[0] ?? null;
@@ -41,6 +41,6 @@ export function historicoInsumo(insumo: Insumo, mes: string) {
     atual,
     anterior,
     variacao,
-    referencia: legado ? normalizar(legado) : null,
+    referencia: legado ? normalizarPrecoInsumo(legado) : null,
   };
 }

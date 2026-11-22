@@ -8,6 +8,13 @@
       "when": 1794693113076,
       "tag": "0000_parched_gertrude_yorkes",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1795383994019,
+      "tag": "0001_amusing_moon_knight",
+      "breakpoints": true
     }
   ]
 }

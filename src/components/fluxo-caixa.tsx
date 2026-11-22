@@ -8,6 +8,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { dinheiro, numeroBR, paraCentavos } from "@/lib/dna";
+import { alterarVencimentoCompra } from "@/lib/purchases";
 import {
   categoriasCaixa,
   dataAtualCaixa,
@@ -74,7 +75,10 @@ export function FluxoCaixa() {
     hoje,
   );
   const movimentos = caixa.lancamentos.filter(
-    (movimento) => filtro === "todos" || filtro === movimento.situacao,
+    (movimento) =>
+      filtro === "todos" ||
+      filtro === movimento.situacao ||
+      (filtro === "a-pagar" && movimento.tipo === "saida" && movimento.situacao === "previsto"),
   );
   const nomes = new Map(lista.map((operacao) => [operacao.id, operacao.nome]));
   const faltaSaldo = lista.filter((r) => !caixa.abertura.has(r.id));
@@ -226,6 +230,7 @@ export function FluxoCaixa() {
             <span>Exibir</span>
             <select value={filtro} onChange={(e) => setFiltro(e.target.value)}>
               <option value="todos">Todos os lançamentos</option>
+              <option value="a-pagar">Contas a pagar</option>
               <option value="previsto">Previstos</option>
               <option value="realizado">Realizados</option>
             </select>
@@ -253,17 +258,20 @@ export function FluxoCaixa() {
                     <strong>{m.descricao}</strong>
                     <span>
                       {dataBR(m.data)} · {m.categoria}
+                      {m.compra_id ? " · Compra" : ""}
                       {consolidado ? ` · ${nomes.get(m.restaurante_id)}` : ""}
                     </span>
                   </div>
                   <span
                     className={`caixa-situacao ${vencido ? "vencido" : m.situacao}`}
                   >
-                    {vencido
-                      ? "Previsto · vencido"
-                      : m.situacao === "previsto"
-                        ? "Previsto"
-                        : "Realizado"}
+                    {m.compra_id
+                      ? vencido
+                        ? "A pagar · vencida"
+                        : m.situacao === "previsto" ? "A pagar" : "Pago"
+                      : vencido
+                        ? "Previsto · vencido"
+                        : m.situacao === "previsto" ? "Previsto" : "Realizado"}
                   </span>
                   <strong className="caixa-valor">
                     {m.tipo === "saida" ? "−" : "+"}
@@ -457,6 +465,7 @@ function MovimentoEditor({
   fechar: () => void;
 }) {
   const { atualizar } = useSistema();
+  const compra = movimento?.compra_id ? movimento : undefined;
   const [tipo, setTipo] = useState<TipoCaixa>(movimento?.tipo ?? "entrada");
   const [situacao, setSituacao] = useState<SituacaoCaixa>(
     movimento?.situacao ?? "previsto",
@@ -470,10 +479,10 @@ function MovimentoEditor({
     evento.preventDefault();
     const form = new FormData(evento.currentTarget);
     try {
-      const operacao = formString(form, "operacao");
+      const operacao = compra?.restaurante_id ?? formString(form, "operacao");
       const descricao = formString(form, "descricao");
       const data = formString(form, "data");
-      const categoria = formString(form, "categoria") as CategoriaCaixa;
+      const categoria = compra?.categoria ?? formString(form, "categoria") as CategoriaCaixa;
       const valorCentavos = paraCentavos(formString(form, "valor"));
       if (!operacoes.some((op) => op.id === operacao))
         throw new Error("Selecione uma operação.");
@@ -490,7 +499,8 @@ function MovimentoEditor({
       }
       if (situacao === "realizado" && data > hoje)
         throw new Error("Para uma data futura, use a situação Previsto.");
-      if (!categoriasCaixa[tipo].some((opcao) => opcao === categoria))
+      const tipoLancamento = compra?.tipo ?? tipo;
+      if (!categoriasCaixa[tipoLancamento].some((opcao) => opcao === categoria))
         throw new Error("Selecione uma categoria.");
       if (valorCentavos <= 0 || valorCentavos > LIMITE_CENTAVOS_CAIXA)
         throw new Error("Informe um valor positivo dentro do limite.");
@@ -501,12 +511,23 @@ function MovimentoEditor({
         data,
         categoria,
         valorCentavos,
-        tipo,
+        tipo: tipoLancamento,
         situacao,
+        ...(compra && {
+          compra_id: compra.compra_id,
+          vencimento: situacao === "previsto" ? data : compra.vencimento,
+        }),
       };
       if (
         atualizar(
           (draft) => {
+            if (compra) {
+              const atual = draft.movimentosCaixa?.find((item) => item.id === compra.id);
+              if (!atual) throw new Error("O lançamento da compra foi alterado. Abra-o novamente.");
+              if (atual.situacao === "realizado" && situacao === "previsto")
+                throw new Error("Esta conta já foi paga.");
+              if (situacao === "realizado") registro.vencimento = atual.vencimento;
+            }
             draft.movimentosCaixa = movimento
               ? (draft.movimentosCaixa ?? []).map((item) =>
                   item.id === movimento.id ? registro : item,
@@ -532,7 +553,7 @@ function MovimentoEditor({
       <form onSubmit={salvar}>
         <div className="form-grid">
           <Field label="Operação">
-            <select name="operacao" defaultValue={movimento?.restaurante_id}>
+            <select name="operacao" defaultValue={movimento?.restaurante_id} disabled={!!compra}>
               {operacoes.map((op) => (
                 <option key={op.id} value={op.id}>
                   {op.nome}
@@ -543,6 +564,7 @@ function MovimentoEditor({
           <Field label="Tipo">
             <select
               value={tipo}
+              disabled={!!compra}
               onChange={(e) => setTipo(e.target.value as TipoCaixa)}
             >
               <option value="entrada">Entrada</option>
@@ -554,6 +576,7 @@ function MovimentoEditor({
               key={tipo}
               name="categoria"
               required
+              disabled={!!compra}
               defaultValue={tipo === movimento?.tipo ? movimento.categoria : ""}
             >
               <option value="">Selecione a categoria</option>
@@ -569,17 +592,19 @@ function MovimentoEditor({
               value={situacao}
               onChange={(e) => setSituacao(e.target.value as SituacaoCaixa)}
             >
-              <option value="previsto">Previsto</option>
+              <option value="previsto" disabled={compra?.situacao === "realizado"}>Previsto</option>
               <option
                 value="realizado"
                 disabled={!movimento && hoje < primeiroDia}
               >
-                Realizado
+                {compra ? "Pago" : "Realizado"}
               </option>
             </select>
           </Field>
           <Field
-            label={situacao === "previsto" ? "Data prevista" : "Data efetiva"}
+            label={compra
+              ? situacao === "previsto" ? "Vencimento" : "Data de pagamento"
+              : situacao === "previsto" ? "Data prevista" : "Data efetiva"}
             hint={movimento ? "A competência acompanha a data." : undefined}
           >
             <input
@@ -627,7 +652,7 @@ function MovimentoEditor({
           </p>
         )}
         <div className="form-actions">
-          {movimento && (
+          {movimento && (!compra || movimento.situacao === "previsto") && (
             <button
               className="button"
               type="button"
@@ -635,9 +660,12 @@ function MovimentoEditor({
                 if (
                   (await confirmarExclusao(movimento.descricao)) &&
                   atualizar((draft) => {
-                    draft.movimentosCaixa = (
-                      draft.movimentosCaixa ?? []
-                    ).filter((item) => item.id !== movimento.id);
+                    if (compra?.compra_id)
+                      alterarVencimentoCompra(draft, compra.compra_id);
+                    else
+                      draft.movimentosCaixa = (
+                        draft.movimentosCaixa ?? []
+                      ).filter((item) => item.id !== movimento.id);
                   }, "Lançamento excluído.")
                 )
                   fechar();

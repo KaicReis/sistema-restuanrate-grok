@@ -1,7 +1,8 @@
 import Decimal from "decimal.js";
 import { fixosOperacionais } from "./dna";
 import type { Database } from "./types";
-import { operacoes, ratear } from "./v2";
+import { operacoes, rateioAluguel, receitaAposAbatimentos } from "./rateio";
+import { faturamentoConsolidadoNoMes } from "./vendas-anotai";
 
 export interface FechamentoFinanceiro {
   restaurante_id: string;
@@ -23,11 +24,12 @@ function baseMensal(db: Database, mes: string, id: string) {
   const operacoesSelecionadas = operacoes(db).filter(
     (operacao) => grupo || operacao.id === id,
   );
-  const rateios = ratear(db, mes);
+  const { valores: rateios, criterio } = rateioAluguel(db, mes);
   const totalAluguel = db.alugueis?.find((a) => a.competencia === mes)?.valor ?? 0;
-  const aluguelPendente = Object.values(rateios).reduce((soma, valor) => soma + valor, 0) < totalAluguel;
   return {
-    aluguel: grupo ? totalAluguel : aluguelPendente ? null : (rateios[id] ?? 0),
+    aluguel: grupo ? totalAluguel : (rateios[id] ?? 0),
+    aluguelProvisorio: !grupo && rateios[id] > 0 && (criterio === "fixo-provisorio" || criterio === "igual-provisorio"),
+    faturamentoConsolidado: grupo ? faturamentoConsolidadoNoMes(db, mes) : null,
     linhas: operacoesSelecionadas.map((operacao) => ({
       dna: db.dnas.find(
         (d) => d.restaurante_id === operacao.id && d.competencia === mes,
@@ -39,7 +41,7 @@ function baseMensal(db: Database, mes: string, id: string) {
   };
 }
 
-function apurar({ linhas, aluguel }: ReturnType<typeof baseMensal>) {
+function apurar({ linhas, aluguel, aluguelProvisorio, faturamentoConsolidado }: ReturnType<typeof baseMensal>) {
   const receitaBruta = somarCompleto(linhas.map(({ fechamento }) => fechamento?.receitaBruta));
   const descontos = somarCompleto(linhas.map(({ fechamento }) => fechamento?.descontos));
   const estornos = somarCompleto(linhas.map(({ fechamento }) => fechamento?.estornos));
@@ -47,18 +49,21 @@ function apurar({ linhas, aluguel }: ReturnType<typeof baseMensal>) {
   const fixos = somarCompleto(linhas.map(({ fechamento }) => fechamento?.fixos));
   const cmv = somarCompleto(linhas.map(({ dna }) => dna?.cmvReal));
   const variaveis = somarCompleto(linhas.map(({ dna }) => dna?.variaveisReais));
-  const receita = receitaBruta === null || descontos === null || estornos === null
-    ? null
-    : receitaBruta - descontos - estornos;
-  const contribuicao = receita === null || impostos === null || cmv === null || variaveis === null
+  const receitaFechada = somarCompleto(linhas.map(({ fechamento }) => receitaAposAbatimentos(fechamento)));
+  const receitaAnotai = receitaFechada === null ? faturamentoConsolidado ?? null : null;
+  const receita = receitaFechada ?? receitaAnotai?.valor ?? null;
+  const fonteReceita = receitaFechada !== null ? "dre" as const : receitaAnotai ? "anotai" as const : null;
+  const receitaParcial = Boolean(receitaAnotai &&
+    (receitaAnotai.periodoAte || receitaAnotai.coberturaSalao !== "integral"));
+  const contribuicao = receitaParcial || receita === null || impostos === null || cmv === null || variaveis === null
     ? null
     : receita - impostos - cmv - variaveis;
   const resultado = contribuicao === null || fixos === null || aluguel === null
     ? null
     : contribuicao - fixos - aluguel;
   return {
-    receitaBruta, descontos, estornos, receita, impostos, cmv, variaveis,
-    contribuicao, fixos, aluguel, resultado,
+    receitaBruta, descontos, estornos, receita, fonteReceita, receitaAnotai, receitaParcial, impostos, cmv, variaveis,
+    contribuicao, fixos, aluguel, aluguelProvisorio, resultado,
     margem: receita !== null && receita > 0 && resultado !== null ? resultado / receita : null,
   };
 }
@@ -82,7 +87,7 @@ export function baseEquilibrio(db: Database, mes: string, id: string) {
     ),
     dre.aluguel,
   ]);
-  const receitaReal = dre.receita;
+  const receitaReal = dre.receitaParcial ? null : dre.receita;
   const receitaPositiva = receitaReal !== null && receitaReal > 0 ? receitaReal : null;
   const taxaReal = (valor: number | null) =>
     receitaPositiva !== null && valor !== null ? valor / receitaPositiva : null;

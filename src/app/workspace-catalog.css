@@ -60,6 +60,35 @@ body {
   font-size: 0.8125rem;
 }
 
+.alertas-insumos {
+  display: grid;
+  gap: 8px;
+}
+
+.alertas-insumos .alerta-insumo {
+  margin: 0;
+}
+
+.alerta-insumo summary {
+  cursor: pointer;
+}
+
+.alerta-insumo summary svg {
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: -3px;
+}
+
+.alerta-insumo p {
+  margin: 8px 0 0;
+}
+
+.alerta-insumo ul {
+  list-style: disc;
+  margin: 8px 0 0;
+  padding-inline-start: 20px;
+}
+
 .preparos-workspace {
   display: grid;
   gap: 16px;

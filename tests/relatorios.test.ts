@@ -40,13 +40,13 @@ describe("relatórios da Vila", () => {
     expect(montarRelatorio(db, mes, "bora", 3).atual.fixos).toBe(358655);
   });
 
-  it("mantém aluguel sem rateio no total do grupo e fora dos totais dos setores", () => {
+  it("preserva o aluguel no total do grupo e identifica o rateio provisório nos setores", () => {
     const db = base();
     db.alugueis = [{ competencia: mes, valor: 12500, regra: "faturamento", percentuais: {} }];
     const grupo = montarRelatorio(db, mes, "a-vila", 3);
-    expect(grupo.atual).toMatchObject({ fixos: 12500, aluguelSemRateio: 12500 });
-    expect(grupo.categorias).toEqual([{ nome: "Aluguel sem rateio", valor: 12500 }]);
-    expect(grupo.setores.map((r) => r.fixos)).toEqual([null, null]);
+    expect(grupo.atual).toMatchObject({ fixos: 12500, aluguelSemRateio: 0, aluguelProvisorio: true });
+    expect(grupo.categorias).toEqual([{ nome: "Aluguel", valor: 12500 }]);
+    expect(grupo.setores.map((r) => r.fixos)).toEqual([6250, 6250]);
   });
 
   it("separa compras registradas do DRE, conserva zeros e sinaliza fechamento incompleto", () => {

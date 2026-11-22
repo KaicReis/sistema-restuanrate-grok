@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { compraRegistradaSchema } from "./purchases";
 import { categoriasCaixa, LIMITE_CENTAVOS_CAIXA } from "./fluxo-caixa";
-import { vendasAnotaiSchema } from "./vendas-anotai";
+import { faturamentosConsolidadosSchema, vendasAnotaiSchema } from "./vendas-anotai";
 import { vendasSetoresEstimadasSchema } from "./vendas-estimadas-setor";
 const num = z.number().finite().nonnegative();
 export const capitalSchema = z.object({
@@ -42,11 +42,23 @@ const movimentoCaixa = z
     categoria: z.enum([...categoriasCaixa.entrada, ...categoriasCaixa.saida]),
     situacao: z.enum(["previsto", "realizado"]),
     valorCentavos: centavosCaixa.positive(),
+    compra_id: z.string().min(1).optional(),
+    vencimento: z.iso.date().optional(),
   })
   .refine(
     (m) =>
       categoriasCaixa[m.tipo].some((categoria) => categoria === m.categoria),
     "A categoria não pertence ao tipo de movimentação.",
+  )
+  .refine(
+    (m) =>
+      m.compra_id === undefined
+        ? m.vencimento === undefined
+        : m.tipo === "saida" &&
+          m.categoria === "Fornecedores" &&
+          m.vencimento !== undefined &&
+          (m.situacao === "realizado" || m.data === m.vencimento),
+    "Vínculo ou vencimento da conta a pagar inválido.",
   );
 const centavosDre = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 const fechamentoFinanceiro = z
@@ -72,6 +84,7 @@ export const v3Schema = z.object({
   capitais: z.array(capitalSchema).optional(),
   compras: z.array(compraRegistradaSchema).optional(),
   vendasAnotai: vendasAnotaiSchema.optional(),
+  faturamentosConsolidados: faturamentosConsolidadosSchema.optional(),
   vendasSetoresEstimadas: vendasSetoresEstimadasSchema.optional(),
   importacoes: z
     .array(z.object({ data: z.unknown(), criadoEm: z.string() }))

@@ -20,6 +20,7 @@
   max-width: none;
 }
 
+.estimativa-realizado,
 .estimativa-resumo {
   display: flex;
   align-items: center;
@@ -33,17 +34,26 @@
   color: #23473a;
 }
 
+.estimativa-realizado {
+  background: #1c4b3d;
+  color: #fdf9f1;
+}
+
+.estimativa-realizado > div,
 .estimativa-resumo > div {
   display: grid;
   gap: 3px;
 }
 
 .estimativa-resumo span,
-.estimativa-resumo p {
+.estimativa-resumo p,
+.estimativa-realizado span,
+.estimativa-realizado p {
   margin: 0;
   font-size: .88rem;
 }
 
+.estimativa-realizado > div strong,
 .estimativa-resumo > div strong {
   font-size: clamp(1.12rem, 2.2vw, 1.55rem);
   font-variant-numeric: tabular-nums;

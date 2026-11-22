@@ -1,46 +1,26 @@
 import type { Database } from "./types";
-// A versão recebida prevalece nos conflitos, e as duas versões integrais ficam no backup.
+import { colecoesImportaveis, identidadeRegistro } from "./identidade-colecoes";
+import { compactarHistorico, semHistoricoAninhado } from "./historico-importacoes";
+
+// A versão recebida prevalece nos conflitos, preservando baixas de compras já pagas.
 export function mesclarDados(atual: Database, recebido: Database): Database {
-  const next = structuredClone(atual);
-  for (const key of [
-    "restaurantes",
-    "dnas",
-    "canais",
-    "insumos",
-    "produtos",
-    "combos",
-    "precos",
-    "receitas",
-    "alugueis",
-    "capitais",
-    "compras",
-    "saldosCaixa",
-    "movimentosCaixa",
-    "fechamentosFinanceiros",
-    "vendasAnotai",
-    "vendasSetoresEstimadas",
-  ] as const) {
-    const identity = (r: Record<string, unknown>) =>
-      key === "alugueis" || key === "vendasAnotai" || key === "vendasSetoresEstimadas"
-        ? String(r.competencia)
-        : key === "capitais" ||
-            key === "dnas" ||
-            key === "saldosCaixa" ||
-            key === "fechamentosFinanceiros"
-          ? `${r.restaurante_id}:${r.competencia}`
-          : String(r.id);
-    const map = new Map<string, unknown>();
-    for (const r of [...(atual[key] ?? []), ...(recebido[key] ?? [])])
-      map.set(
-        identity(r as unknown as Record<string, unknown>),
-        structuredClone(r),
-      );
+  const next = structuredClone(semHistoricoAninhado(atual));
+  for (const key of colecoesImportaveis) {
+    const map = new Map<string, Record<string, unknown>>();
+    for (const r of [...(atual[key] ?? []), ...(recebido[key] ?? [])]) {
+      const registro = r as unknown as Record<string, unknown>;
+      const identidade = identidadeRegistro(key, registro);
+      if (key === "movimentosCaixa" && registro.compra_id !== undefined &&
+          registro.situacao === "previsto" && map.get(identidade)?.situacao === "realizado")
+        continue;
+      map.set(identidade, structuredClone(registro));
+    }
     (next as unknown as Record<string, unknown>)[key] = [...map.values()];
   }
-  next.importacoes = [
-    ...(atual.importacoes ?? []),
-    { data: atual, criadoEm: new Date().toISOString() },
-    { data: recebido, criadoEm: new Date().toISOString() },
-  ];
+  const criadoEm = new Date().toISOString();
+  next.importacoes = compactarHistorico([
+    { data: atual, criadoEm },
+    { data: recebido, criadoEm },
+  ]);
   return next;
 }

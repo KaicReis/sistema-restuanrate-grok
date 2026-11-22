@@ -663,8 +663,8 @@ export default function Sistema() {
         <Modal title="Importar backup" close={() => setBackup(null)}>
           <div className="notice warning">
             Os dados serão mesclados. Nos conflitos, o backup importado
-            prevalece. As duas versões integrais ficam arquivadas no próximo
-            backup exportado (campo importacoes).
+            prevalece. O próximo backup inclui um histórico limitado de versões
+            distintas recentes. Guarde uma cópia do arquivo original.
           </div>
           <p className="modal-copy">
             O arquivo contém {backup.restaurantes.length} restaurante(s),{" "}

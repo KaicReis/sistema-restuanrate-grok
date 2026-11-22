@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import { criarBase, novoDNA, novosCanais } from "../src/lib/storage/seed";
 import { migrar } from "../src/lib/storage/migrate";
 import { validarBackup, repositorio } from "../src/lib/storage";
-import { ratear, consolidar, dnaComRateio, insumosMes } from "../src/lib/v2";
+import { ratear, rateioAluguel, consolidar, dnaComRateio, insumosMes } from "../src/lib/v2";
 import {
   custoReceita,
   calcularCMV,
@@ -40,17 +40,24 @@ const prato: Produto = {
 describe("rateio e consolidação", () => {
   function base() {
     const db = criarBase();
+    db.fechamentosFinanceiros = [];
     for (const [id, fat] of [
       ["bora", 60000],
       ["nativos", 30000],
       ["bar", 10000],
-    ] as const)
+    ] as const) {
       db.dnas.push({
         ...novoDNA(id, "2026-11"),
-        faturamento: fat,
+        faturamento: 999999,
+        tipoFaturamento: "meta",
         cmvReal: fat * 0.2,
         variaveisReais: fat * 0.1,
       });
+      db.fechamentosFinanceiros.push({
+        restaurante_id: id, competencia: "2026-11",
+        receitaBruta: fat, descontos: 0, estornos: 0, impostos: fat * 0.1, fixos: 0,
+      });
+    }
     db.alugueis = [
       {
         competencia: "2026-11",
@@ -85,11 +92,38 @@ describe("rateio e consolidação", () => {
     db.alugueis![0].percentuais.bar = 24;
     expect(() => validarBackup(db)).toThrow("100%");
   });
-  it("sem faturamento mantém rateio pendente sem dividir por zero", () => {
+  it("reparte igualmente os centavos na falta de realizado e exclui Vinhos", () => {
     const db = base();
-    db.dnas.forEach((d) => (d.faturamento = 0));
-    expect(Object.values(ratear(db, "2026-11"))).toEqual([0, 0, 0]);
-    expect(consolidar(db, "2026-11").alertas.join()).toContain("não rateado");
+    db.restaurantes.push(
+      { id: "marias", nome: "Maria’s", regime: "Simples" },
+      { id: "vinhos", nome: "Carta de Vinhos", regime: "Simples" },
+    );
+    const rateio = rateioAluguel(db, "2026-11");
+    expect(rateio.criterio).toBe("igual-provisorio");
+    expect(rateio.valores.vinhos).toBe(0);
+    expect([rateio.valores.bora, rateio.valores.nativos, rateio.valores.bar, rateio.valores.marias].sort())
+      .toEqual([2500, 2500, 2500, 2501]);
+    expect(Object.values(rateio.valores).reduce((s, v) => s + v, 0)).toBe(10001);
+  });
+  it("respeita realizado explícito do DNA e percentuais provisórios até completar a receita", () => {
+    const db = base();
+    db.fechamentosFinanceiros = db.fechamentosFinanceiros!.filter(({ restaurante_id }) => restaurante_id !== "bora");
+    db.alugueis![0].percentuais = { bora: 50, nativos: 30, bar: 20 };
+    expect(rateioAluguel(db, "2026-11").criterio).toBe("fixo-provisorio");
+    expect(ratear(db, "2026-11")).toEqual({ bora: 5001, nativos: 3000, bar: 2000 });
+    Object.assign(db.dnas[0], { faturamento: 60000, tipoFaturamento: "realizado" });
+    expect(rateioAluguel(db, "2026-11").criterio).toBe("realizado");
+    expect(ratear(db, "2026-11")).toEqual({ bora: 6001, nativos: 3000, bar: 1000 });
+  });
+  it("preserva percentuais fixos antigos ao retirar Vinhos do aluguel", () => {
+    const db = base();
+    db.restaurantes.push({ id: "vinhos", nome: "Carta de Vinhos", regime: "Simples" });
+    db.alugueis![0] = {
+      competencia: "2026-11", valor: 15000, regra: "fixo",
+      percentuais: { bora: 25, nativos: 25, bar: 25, vinhos: 25 },
+    };
+    expect(() => validarBackup(db)).not.toThrow();
+    expect(ratear(db, "2026-11")).toEqual({ bora: 5000, nativos: 5000, bar: 5000, vinhos: 0 });
   });
   it("consolida operações sem somar a Vila ou duplicar aluguel", () => {
     const db = base();
@@ -256,38 +290,33 @@ describe("regressões de dados mensais", () => {
       JSON.parse(localStorage.getItem("dna-restaurante:v2")!).legadoV1,
     ).toEqual(old);
   });
-  it("inclui aluguel não alocado no custo do grupo", () => {
+  it("conta a totalidade do aluguel no custo do grupo com rateio provisório", () => {
     const db = criarBase();
     db.alugueis = [
-      {
-        competencia: "2026-11",
-        valor: 750000,
-        regra: "faturamento",
-        percentuais: {},
-      },
+      { competencia: "2026-11", valor: 750000, regra: "faturamento", percentuais: {} },
     ];
     expect(consolidar(db, "2026-11").fixos).toBe(750000);
+    expect(rateioAluguel(db, "2026-11").criterio).toBe("igual-provisorio");
   });
-  it("calcula equilíbrio do grupo pela contribuição ponderada", () => {
+  it("calcula equilíbrio do grupo pela contribuição ponderada do DRE", () => {
     const db = criarBase();
+    db.fechamentosFinanceiros = [];
     for (const [id, receita, cmv] of [
       ["bora", 100000, 20000],
       ["nativos", 300000, 180000],
       ["bar", 0, 0],
-    ] as const)
+    ] as const) {
       db.dnas.push({
-        ...novoDNA(id, "2026-11"),
-        faturamento: receita,
-        cmvReal: cmv,
-        variaveisReais: 0,
+        ...novoDNA(id, "2026-11"), faturamento: receita,
+        cmvReal: cmv, variaveisReais: 0,
       });
+      db.fechamentosFinanceiros.push({
+        restaurante_id: id, competencia: "2026-11",
+        receitaBruta: receita, descontos: 0, estornos: 0, impostos: receita / 10, fixos: 0,
+      });
+    }
     db.alugueis = [
-      {
-        competencia: "2026-11",
-        valor: 100000,
-        regra: "fixo",
-        percentuais: { bora: 80, nativos: 20, bar: 0 },
-      },
+      { competencia: "2026-11", valor: 100000, regra: "fixo", percentuais: { bora: 80, nativos: 20, bar: 0 } },
     ];
     expect(consolidar(db, "2026-11").equilibrio).toBe(250000);
   });

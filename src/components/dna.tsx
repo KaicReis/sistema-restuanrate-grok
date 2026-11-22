@@ -364,6 +364,7 @@ export function DNAEditor() {
             id: crypto.randomUUID(),
             competencia: destino,
             taxas: c.taxas.map((t) => ({ ...t, id: crypto.randomUUID() })),
+            recebimentos: c.recebimentos?.map((regra) => ({ ...regra, id: crypto.randomUUID() })),
           })),
         );
       }, "DNA e taxas de canais duplicados. Preços praticados não foram copiados.")

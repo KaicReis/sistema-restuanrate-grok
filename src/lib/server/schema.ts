@@ -1,4 +1,4 @@
-import { pgTable, text, integer, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { index, pgTable, text, integer, jsonb, timestamp } from "drizzle-orm/pg-core";
 import type { Database } from "../types";
 export const users = pgTable("users", {
   id: text("id").primaryKey(),
@@ -21,10 +21,11 @@ export const workspaces = pgTable("workspaces", {
 export const snapshots = pgTable("snapshots", {
   id: text("id").primaryKey(),
   data: jsonb("data").$type<Database>().notNull(),
+  revision: integer("revision"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),
-});
+}, (t) => [index("snapshots_revision_idx").on(t.revision)]);
 export const attempts = pgTable("login_attempts", {
   key: text("key").primaryKey(),
   count: integer("count").notNull(),

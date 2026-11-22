@@ -2,7 +2,7 @@ import Decimal from "decimal.js";
 import { demonstrativo } from "./financeiro";
 import { resumoCompra } from "./purchases";
 import type { Database } from "./types";
-import { operacoes, ratear } from "./v2";
+import { operacoes, rateioAluguel } from "./rateio";
 
 export interface MesRelatorio {
   mes: string;
@@ -16,6 +16,7 @@ export interface MesRelatorio {
   setoresTotal: number;
   setoresComFixos: number;
   aluguelSemRateio: number;
+  aluguelProvisorio: boolean;
 }
 
 const somar = (valores: (number | null)[]): number | null =>
@@ -27,7 +28,9 @@ function apurarMes(db: Database, mes: string, setor: string) {
   const grupo = setor === "a-vila";
   const selecionadas = operacoes(db).filter((r) => grupo || r.id === setor);
   const aluguel = db.alugueis?.find((a) => a.competencia === mes);
-  const rateios = ratear(db, mes);
+  const { valores: rateios, criterio } = rateioAluguel(db, mes);
+  const aluguelProvisorio = (grupo || rateios[setor] > 0)
+    && (criterio === "fixo-provisorio" || criterio === "igual-provisorio");
   const aluguelSemRateio = Math.max(
     0, (aluguel?.valor ?? 0) - Object.values(rateios).reduce((total, valor) => total + valor, 0),
   );
@@ -88,6 +91,7 @@ function apurarMes(db: Database, mes: string, setor: string) {
     setoresTotal: setores.length,
     setoresComFixos: setores.filter((r) => r.fixos !== null).length,
     aluguelSemRateio,
+    aluguelProvisorio,
   };
 
   return {

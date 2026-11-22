@@ -1,9 +1,10 @@
 "use client";
 import { embalagensBoraPendentes, insumoArquivado } from "@/lib/insumos";
 import { confirmarExclusao } from "./ui";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import {
+  TriangleAlert,
   BookOpen,
   ChevronDown,
   CircleCheck,
@@ -12,6 +13,12 @@ import {
   CookingPot,
   Search,
 } from "lucide-react";
+import {
+  alertasDeInsumos,
+  compararPrecosInsumo,
+  type AltaManualInsumo,
+  type AlertaInsumo,
+} from "@/lib/alertas-insumos";
 import type {
   Insumo,
   ItemFicha,
@@ -26,6 +33,7 @@ import {
   dinheiro,
   insumoDeEmbalagem,
   paraCentavos,
+  percentual,
   preservarUnidadesDeFicha,
   unidadeUso,
   unidadesFicha,
@@ -44,12 +52,58 @@ import {
 } from "./ui";
 import { preparoPendente } from "./readiness";
 import { Numeric } from "./numeric";
+
+const moedaInsumo = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+  maximumFractionDigits: 4,
+});
+
+function AlertasInsumos({ alertas }: { alertas: AlertaInsumo[] }) {
+  if (!alertas.length) return null;
+  return (
+    <Panel
+      title="Altas de preço dos insumos"
+      subtitle="Compare o preço de compra por quilo, litro ou unidade e consulte os pratos afetados."
+    >
+      <div className="alertas-insumos">
+        {alertas.map(({ insumoId, nome, alta, pratos }) => (
+          <details className="notice warning alerta-insumo" key={insumoId}>
+            <summary>
+              <TriangleAlert aria-hidden="true" size={16} />{" "}
+              <strong>{nome}</strong>{alta.variacao === null ? " · Alta de preço" : ` · +${percentual(alta.variacao)}`}
+              {` · ${pratos.length === 1 ? "1 prato afetado" : `${pratos.length} pratos afetados`}`}
+            </summary>
+            <p>
+              {moedaInsumo.format(alta.anterior.valor / 100)} / {alta.anterior.unidade}
+              {` (${alta.referenciaAnterior}) → `}
+              <strong>{moedaInsumo.format(alta.atual.valor / 100)} / {alta.atual.unidade}</strong>
+            </p>
+            {pratos.length ? (
+              <ul>
+                {pratos.map(({ produto, direto, viaReceitas }) => (
+                  <li key={produto.id}>
+                    <strong>{produto.nome}</strong>
+                    {direto ? " · Uso direto" : ""}
+                    {viaReceitas.length ? ` · Via ${viaReceitas.join(", ")}` : ""}
+                  </li>
+                ))}
+              </ul>
+            ) : <p>Nenhuma ficha técnica cadastrada usa este insumo.</p>}
+          </details>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
 export function Insumos() {
   const { db, restaurante, mes, atualizar, avisar, filtro } = useSistema();
   const [edit, setEdit] = useState<Insumo | "new" | null>(null),
     [busca, setBusca] = useState(""),
     [status, setStatus] = useState(filtro),
     [cadastrarEmbalagens, setCadastrarEmbalagens] = useState(false),
+    [altaManual, setAltaManual] = useState<AltaManualInsumo | null>(null),
     [error, setError] = useState("");
   const rows = insumosMes(db, mes).filter(
       (i) => i.restaurante_id === restaurante.id,
@@ -57,6 +111,8 @@ export function Insumos() {
     record = edit && edit !== "new" ? edit : null;
   const embalagensPendentes = restaurante.id === "bora" ? embalagensBoraPendentes(db.insumos) : [];
   const emCombo = db.combos?.some((combo) => combo.embalagens?.some((item) => item.insumo_id === record?.id));
+  const setor = restaurante.id;
+  const alertas = useMemo(() => alertasDeInsumos(db, setor, mes, altaManual), [db, setor, mes, altaManual]);
   function gravarEmbalagens() {
     if (atualizar((draft) => {
       for (const modelo of embalagensBoraPendentes(draft.insumos)) {
@@ -106,6 +162,11 @@ export function Insumos() {
         throw new Error(
           "Quantidade deve ser positiva e rendimento entre 0 e 100%.",
         );
+      const anterior = record?.historicoPrecos?.[mes];
+      const alta = record && compararPrecosInsumo(snapshot, anterior ?? record, "preço antes da última edição");
+      const mensagem = alta
+        ? `Preço de compra de ${formString(f, "nome")} subiu. Consulte os pratos afetados em Insumos.`
+        : "Insumo salvo nesta competência. Meses anteriores preservados.";
       if (
         atualizar((d) => {
           const original = d.insumos.find((i) => i.id === record?.id);
@@ -138,9 +199,13 @@ export function Insumos() {
           };
           if (original) d.insumos[d.insumos.indexOf(original)] = i;
           else d.insumos.push(i);
-        }, "Insumo salvo nesta competência. Meses anteriores preservados.")
-      )
+        }, mensagem)
+      ) {
+        if (record && anterior) {
+          setAltaManual(alta ? { insumoId: record.id, mes, alta } : null);
+        }
         setEdit(null);
+      }
     } catch (e) {
       setError((e as Error).message);
     }
@@ -183,6 +248,7 @@ export function Insumos() {
         significa pendente. VM e VG são tamanhos com custos independentes.
         Embalagens devem entrar na ficha OU no custo do canal.
       </div>
+      <AlertasInsumos alertas={alertas} />
       <Panel
         title={`Insumos de ${restaurante.nome}`}
         subtitle={`${rows.filter((i) => i.precoPendente && !insumoArquivado(i)).length} preços pendentes`}

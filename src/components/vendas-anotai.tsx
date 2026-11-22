@@ -1,9 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { ChartColumnIncreasing, ShoppingBag } from "lucide-react";
+import { ChartColumnIncreasing, Check, ShoppingBag } from "lucide-react";
 import { dinheiro } from "@/lib/dna";
-import type { VendaAnotaiMensal } from "@/lib/vendas-anotai";
+import {
+  faturamentoAnotai,
+  faturamentoConsolidadoNoMes,
+  coberturaSalaoAnotai,
+  inicioSalaoAnotai,
+  totalizarVendasAnotai as totalizar,
+  type VendaAnotaiMensal,
+} from "@/lib/vendas-anotai";
 import { useSistema } from "./context";
 import "./vendas-anotai.css";
 
@@ -28,15 +35,8 @@ function rotuloParcial(periodoAte: string) {
   return `Parcial até ${formatos.diaMes.format(new Date(`${periodoAte}T12:00:00Z`))}`;
 }
 
-function totalizar(venda: VendaAnotaiMensal) {
-  return canais.reduce((soma, { id }) => ({
-    subtotal: soma.subtotal + venda.canais[id].subtotal,
-    pedidos: soma.pedidos + venda.canais[id].pedidos,
-  }), { subtotal: 0, pedidos: 0 });
-}
-
-function estaCoberto(canal: Filtro, mes: string, inicioSalao?: string) {
-  return canal !== "salao" || !inicioSalao || mes >= inicioSalao.slice(0, 7);
+function estaCoberto(canal: Filtro, venda: VendaAnotaiMensal, inicioSalao?: string) {
+  return canal !== "salao" || coberturaSalaoAnotai(venda, inicioSalao) !== "ausente";
 }
 
 function dadosCanal(venda: VendaAnotaiMensal, canal: Filtro) {
@@ -48,7 +48,7 @@ function Modalidades({ venda, inicioSalao }: { venda: VendaAnotaiMensal; inicioS
     <dl className="anotai-canais">
       {canais.map(({ id, nome }) => {
         const dados = venda.canais[id];
-        const coberto = estaCoberto(id, venda.competencia, inicioSalao);
+        const coberto = estaCoberto(id, venda, inicioSalao);
         return (
           <div key={id}>
             <dt>{nome}</dt>
@@ -73,7 +73,7 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
   const serie = vendas.filter((venda) => venda.competencia.startsWith(ano + "-"));
   const ativo = serie.find((venda) => venda.competencia === foco) ?? serie.at(-1);
   const max = Math.max(1, ...serie.map((venda) =>
-    estaCoberto(canal, venda.competencia, inicioSalao) ? dadosCanal(venda, canal).subtotal : 0,
+    estaCoberto(canal, venda, inicioSalao) ? dadosCanal(venda, canal).subtotal : 0,
   ));
   const modos = [{ id: "todos", nome: "Total" }, ...canais] as const;
   const totalAno = serie.reduce((soma, venda) => {
@@ -106,7 +106,7 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
         {serie.map((venda) => {
           const { competencia, periodoAte } = venda;
           const parcial = periodoAte ? rotuloParcial(periodoAte) : null;
-          const coberto = estaCoberto(canal, competencia, inicioSalao);
+          const coberto = estaCoberto(canal, venda, inicioSalao);
           const { subtotal, pedidos: quantidade } = dadosCanal(venda, canal);
           return (
             <li key={competencia}>
@@ -153,7 +153,7 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
                       {venda.periodoAte && <small className="anotai-indicacao-parcial">{rotuloParcial(venda.periodoAte)}</small>}
                     </th>
                     {canais.map(({ id }) => (
-                      <td key={id}>{estaCoberto(id, venda.competencia, inicioSalao) ? dinheiro(venda.canais[id].subtotal) : "—"}</td>
+                      <td key={id}>{estaCoberto(id, venda, inicioSalao) ? dinheiro(venda.canais[id].subtotal) : "—"}</td>
                     ))}
                     <td>{dinheiro(total.subtotal)}</td><td>{formatos.numero.format(total.pedidos)}</td>
                   </tr>
@@ -167,6 +167,27 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
   );
 }
 
+function AplicarFaturamento({ venda, inicioSalao }: { venda: VendaAnotaiMensal; inicioSalao?: string }) {
+  const { db, atualizar } = useSistema();
+  const faturamento = faturamentoAnotai(venda, inicioSalao);
+  const aplicado = faturamentoConsolidadoNoMes(db, venda.competencia);
+  const registrado = aplicado?.valor === faturamento.valor &&
+    aplicado?.periodoAte === faturamento.periodoAte &&
+    aplicado?.coberturaSalao === faturamento.coberturaSalao;
+
+  if (registrado) {
+    return <span className="anotai-registrado"><Check size={16} aria-hidden="true" /> Faturamento registrado</span>;
+  }
+  return (
+    <button type="button" className="button" onClick={() => atualizar((draft) => {
+      const outros = (draft.faturamentosConsolidados ?? []).filter(({ competencia }) => competencia !== venda.competencia);
+      draft.faturamentosConsolidados = [...outros, faturamento].sort((a, b) => a.competencia.localeCompare(b.competencia));
+    }, "Faturamento realizado do Anotaí registrado.")}>
+      {aplicado ? "Atualizar faturamento do mês" : "Usar como faturamento realizado"}
+    </button>
+  );
+}
+
 export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
   const { db, mes, selecionar, ir } = useSistema();
   const vendas = [...(db.vendasAnotai ?? [])].sort((a, b) => a.competencia.localeCompare(b.competencia));
@@ -174,20 +195,23 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
   const ultima = vendas.at(-1);
   const referencia = atual ?? ultima;
   const total = referencia ? totalizar(referencia) : null;
-  const inicioSalao = vendas.flatMap(({ salaoDesde }) => salaoDesde && /^\d{4}-\d{2}-\d{2}$/.test(salaoDesde) ? [salaoDesde] : []).sort()[0];
+  const inicioSalao = inicioSalaoAnotai(vendas);
 
   return (
     <section className="anotai-panel panel" aria-labelledby="anotai-titulo">
       <div className="anotai-head">
         <div>
-          <h2 id="anotai-titulo"><ShoppingBag size={21} aria-hidden="true" /> Vendas da Vila</h2>
+          <h2 id="anotai-titulo"><ShoppingBag size={21} aria-hidden="true" /> Faturamento realizado da Vila</h2>
           <p>Anotaí · Pedidos finalizados · Sem frete</p>
         </div>
-        {!detalhado && ultima && (
-          <button type="button" className="button" onClick={() => ir("relatorios")}>
-            <ChartColumnIncreasing size={16} aria-hidden="true" /> Ver evolução
-          </button>
-        )}
+        <div className="anotai-acoes">
+          {atual && <AplicarFaturamento venda={atual} inicioSalao={inicioSalao} />}
+          {!detalhado && ultima && (
+            <button type="button" className="button" onClick={() => ir("relatorios")}>
+              <ChartColumnIncreasing size={16} aria-hidden="true" /> Ver evolução
+            </button>
+          )}
+        </div>
       </div>
       {!atual && (
         <div className="anotai-sem-competencia">
@@ -212,7 +236,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
       )}
       {detalhado && vendas.length > 0 && <EvolucaoAnotai vendas={vendas} mes={mes} inicioSalao={inicioSalao} />}
       {inicioSalao && (
-        <p className="anotai-cobertura">O salão consta no Anotaí desde {formatos.dia.format(new Date(`${inicioSalao}T12:00:00Z`))}. O primeiro mês do salão tem cobertura parcial.</p>
+        <p className="anotai-cobertura">Os relatórios incluem vendas do salão a partir de {formatos.dia.format(new Date(`${inicioSalao}T12:00:00Z`))}.</p>
       )}
     </section>
   );

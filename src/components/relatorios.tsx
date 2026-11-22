@@ -285,6 +285,9 @@ export function Relatorios() {
       {atual.aluguelSemRateio > 0 && (
         <p className="notice warning">{dinheiro(atual.aluguelSemRateio)} de aluguel aguardam distribuição entre os setores.</p>
       )}
+      {atual.aluguelProvisorio && (
+        <p className="notice warning">Os fixos incluem o rateio provisório do aluguel enquanto falta faturamento realizado por operação.</p>
+      )}
       <Evolucao serie={relatorio.serie} atual={mes} />
       <div className="report-breakdowns">
         <Panel title="Fixos por categoria" subtitle="Despesas operacionais cadastradas no mês, com aluguel rateado.">
