@@ -3,6 +3,7 @@
   --anotai-ink: #20392f;
   --anotai-wash: #edf4ee;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
 }
 
@@ -113,6 +114,7 @@
 
 .anotai-evolucao {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 11px;
   padding-top: 13px;
   border-top: 1px solid var(--line);
@@ -218,6 +220,11 @@
 .anotai-tabela summary {
   font-weight: 650;
   cursor: pointer;
+}
+
+.anotai-tabela,
+.anotai-tabela > div {
+  min-width: 0;
 }
 
 .anotai-tabela > div {
