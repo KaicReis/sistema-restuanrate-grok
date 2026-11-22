@@ -58,9 +58,9 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
                 <strong>{temEstimativa ? dinheiro(total) : "—"}</strong>
               </div>
               {grupo ? (
-                <p><strong>{numero.format(unidades)} de {numero.format(registro.unidadesNoArquivo)}</strong> unidades do arquivo com setor e preço identificados.</p>
+                <p><strong>{numero.format(unidades)} de {numero.format(registro.unidadesNoArquivo)}</strong> unidades do arquivo com valor estimado.</p>
               ) : (
-                <p>{temEstimativa ? `${numero.format(unidades)} unidades com setor e preço identificados.` : "Sem estimativa para este setor no mês."}</p>
+                <p>{temEstimativa ? `${numero.format(unidades)} unidades com valor estimado.` : "Sem estimativa para este setor no mês."}</p>
               )}
             </div>
             <dl className="estimativa-setores">
@@ -71,7 +71,7 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
                   <dd className="estimativa-barra" aria-hidden="true">
                     <span style={{ width: `${(dados?.valor ?? 0) / maior * 100}%` }} />
                   </dd>
-                  <dd className="estimativa-unidades">{dados ? `${numero.format(dados.unidades)} un. identificadas` : "Sem estimativa"}</dd>
+                  <dd className="estimativa-unidades">{dados ? `${numero.format(dados.unidades)} un. incluídas` : "Sem estimativa"}</dd>
                 </div>
               ))}
             </dl>
