@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { compraRegistradaSchema } from "../src/lib/purchases";
 import { montarRelatorio } from "../src/lib/relatorios";
 import { historicoInsumo } from "../src/lib/relatorio-insumos";
 import { novoDNA } from "../src/lib/storage/seed";
@@ -92,4 +93,20 @@ it("compara preços de insumos pela mesma unidade de compra e preserva meses sem
   expect(anterior.historico.map(({ competencia }) => competencia)).toEqual(["2025-12", "2025-09"]);
   expect(anterior.variacao).toBeCloseTo(0.05);
   expect(historicoInsumo(insumo, mes).variacao).toBeNull();
+});
+
+
+it("inclui totais conferidos de documentos históricos sem exigir itens fictícios", () => {
+  const db = base();
+  const resumo = compraRegistradaSchema.parse({
+    id: "nota-resumo", restaurante_id: "bora", fornecedor: "Fornecedor", data: mes + "-03",
+    totalNota: 11560.05, itens: [],
+    originais: { registro: "resumo-documento", tipo: "Pré-venda", numeroDocumento: "49605" },
+  });
+  db.compras = [resumo];
+  expect(montarRelatorio(db, mes, "a-vila", 3).atual).toMatchObject({
+    compras: 1156005, quantidadeCompras: 1, cmv: null,
+  });
+  expect(compraRegistradaSchema.safeParse({ ...resumo, totalNota: undefined }).success).toBe(false);
+  expect(compraRegistradaSchema.safeParse({ ...resumo, originais: undefined }).success).toBe(false);
 });

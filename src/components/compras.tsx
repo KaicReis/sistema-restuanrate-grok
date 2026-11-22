@@ -637,7 +637,7 @@ export function Compras() {
       )}
       <Panel
         title="Histórico de compras"
-        subtitle={`${historico.length} ${historico.length === 1 ? "nota registrada" : "notas registradas"} nesta operação`}
+        subtitle={`${historico.length} ${historico.length === 1 ? "compra registrada" : "compras registradas"} nesta operação`}
       >
         {historico.length === 0 && (
           <p className="muted">
@@ -655,15 +655,18 @@ export function Compras() {
                 <span className="purchase-history-name">
                   <strong>{c.fornecedor || "Fornecedor não informado"}</strong>
                   <span>
-                    {c.data.split("-").reverse().join("/")} · {c.itens.length}{" "}
-                    {c.itens.length === 1 ? "item" : "itens"}
+                    {c.data.split("-").reverse().join("/")} · {c.originais?.registro === "resumo-documento"
+                      ? `${c.originais.tipo ?? "Documento"} nº ${c.originais.numeroDocumento}`
+                      : `${c.itens.length} ${c.itens.length === 1 ? "item" : "itens"}`}
                   </span>
                 </span>
                 <strong>
                   {dinheiro(Math.round(resumoCompra(c).total * 100))}
                 </strong>
               </summary>
-              <ul>
+              {c.originais?.registro === "resumo-documento" ? (
+                <p className="muted">Total conferido no documento. Os preços dos insumos podem ser consultados no histórico por competência.</p>
+              ) : <ul>
                 {c.itens.map((i, n) => (
                   <li key={n}>
                     <span>
@@ -676,7 +679,7 @@ export function Compras() {
                     <strong>{dinheiro(Math.round(i.total * 100))}</strong>
                   </li>
                 ))}
-              </ul>
+              </ul>}
             </details>
           ))}
         </div>

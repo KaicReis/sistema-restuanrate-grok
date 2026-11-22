@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { compraSchema } from "./purchases";
+import { compraRegistradaSchema } from "./purchases";
 import { categoriasCaixa, LIMITE_CENTAVOS_CAIXA } from "./fluxo-caixa";
 const num = z.number().finite().nonnegative();
 export const capitalSchema = z.object({
@@ -68,7 +68,7 @@ export const v3Schema = z.object({
   movimentosCaixa: z.array(movimentoCaixa).max(20000).optional(),
   fechamentosFinanceiros: z.array(fechamentoFinanceiro).max(20000).optional(),
   capitais: z.array(capitalSchema).optional(),
-  compras: z.array(compraSchema).optional(),
+  compras: z.array(compraRegistradaSchema).optional(),
   importacoes: z
     .array(z.object({ data: z.unknown(), criadoEm: z.string() }))
     .optional(),

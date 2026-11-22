@@ -29,7 +29,7 @@ export const linhaSchema = z.object({
   insumo_id: z.string().optional(),
   ignorar: z.boolean().optional(),
 });
-export const compraSchema = z.object({
+const compraBaseSchema = z.object({
   id: z.string().min(1),
   restaurante_id: z.string().min(1),
   fornecedor: z.string().min(1).max(500),
@@ -50,8 +50,15 @@ export const compraSchema = z.object({
   chave: z.string().max(60).optional(),
   emitente: z.string().max(30).optional(),
   originais: z.record(z.string(), z.string().nullable()).optional(),
-  itens: z.array(linhaSchema).min(1).max(300),
+  itens: z.array(linhaSchema).max(300),
 });
+export const compraSchema = compraBaseSchema.extend({ itens: z.array(linhaSchema).min(1).max(300) });
+export const compraRegistradaSchema = compraBaseSchema.refine(
+  (compra) => compra.originais?.registro === "resumo-documento"
+    ? compra.itens.length === 0 && compra.totalNota !== undefined && Boolean(compra.originais.numeroDocumento?.trim())
+    : compra.itens.length > 0,
+  "Informe os itens da compra ou o número e o total do documento no registro resumido.",
+);
 // Extração e revisão usam reais; somente a confirmação converte em centavos.
 export type Compra = z.infer<typeof compraSchema>;
 export function sugerirInsumo(db: Database, operacao: string, nome: string) {
