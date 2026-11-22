@@ -68,6 +68,23 @@
   font-size: .81rem;
 }
 
+.anotai-selo-parcial {
+  justify-self: start;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #f2deaf;
+  color: #563707;
+}
+
+.anotai-indicacao-parcial {
+  display: block;
+  margin-top: 2px;
+  color: #76500f;
+  font-size: .75rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
 .anotai-canais {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -208,8 +225,12 @@
   background-color: #437763;
 }
 
-.anotai-grafico [aria-pressed="true"] .anotai-barra > span {
+.anotai-grafico [aria-pressed="true"] .anotai-barra:not(.anotai-barra-parcial) > span {
   background: var(--anotai-pine);
+}
+
+.anotai-grafico .anotai-barra-parcial > span {
+  background: repeating-linear-gradient(130deg, #a06b1e 0 4px, #dab983 4px 8px);
 }
 
 .anotai-detalhe {

@@ -42,7 +42,9 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
           <label className="estimativa-competencia">
             <span>Mês da estimativa</span>
             <select value={registro.competencia} onChange={(e) => setMesEscolhido(e.target.value)}>
-              {historico.map(({ competencia }) => <option key={competencia} value={competencia}>{nomeMes(competencia)}</option>)}
+              {historico.map(({ competencia, relatorioParcial }) => (
+                <option key={competencia} value={competencia}>{nomeMes(competencia)}{relatorioParcial ? " · Parcial" : ""}</option>
+              ))}
             </select>
           </label>
         )}
@@ -51,6 +53,12 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
           <>
             {!mesEscolhido && registro.competencia !== mes && (
               <p className="estimativa-cobertura">A competência selecionada não tem estimativa. Exibindo {nomeMes(registro.competencia)}.</p>
+            )}
+            {registro.relatorioParcial && (
+              <p className="estimativa-parcial">
+                <strong>Relatório parcial de itens</strong>
+                <span>O arquivo de itens tem cobertura própria. O total do Anotaí reúne os pedidos finalizados do CSV.</span>
+              </p>
             )}
             <div className="estimativa-resumo" aria-live="polite">
               <div>

@@ -15,6 +15,7 @@ export const vendaSetorEstimadaMensalSchema = z.strictObject({
   competencia: z.string().regex(/^(?!0000)\d{4}-(0[1-9]|1[0-2])$/),
   unidadesNoArquivo: inteiroNaoNegativo,
   setores: z.array(vendaSetorSchema),
+  relatorioParcial: z.boolean().optional(),
 }).refine(
   ({ setores }) => new Set(setores.map((s) => s.restaurante_id)).size === setores.length,
   { path: ["setores"], message: "Há setores repetidos na mesma competência." },

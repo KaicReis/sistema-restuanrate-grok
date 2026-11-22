@@ -23,9 +23,13 @@ export const vendaAnotaiMensalSchema = z.strictObject({
   }),
   pedidosExportados: inteiroNaoNegativo,
   salaoDesde: z.iso.date().optional(),
+  periodoAte: z.iso.date().optional(),
 }).refine(
   ({ competencia, salaoDesde }) => !salaoDesde || salaoDesde.startsWith(competencia + "-"),
   { path: ["salaoDesde"], message: "A data de cobertura do salão deve pertencer à competência." },
+).refine(
+  ({ competencia, periodoAte }) => !periodoAte || periodoAte.startsWith(competencia + "-"),
+  { path: ["periodoAte"], message: "A data final do relatório deve pertencer à competência." },
 ).refine(
   ({ canais, pedidosExportados }) => {
     const totais = Object.values(canais);

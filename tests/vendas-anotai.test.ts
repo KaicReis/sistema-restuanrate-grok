@@ -19,7 +19,7 @@ const outubro: VendaAnotaiMensal = {
 it("preserva competências de vendas ao mesclar um backup e atualiza o mês recebido", () => {
   const base = criarBase();
   const setembro = { ...outubro, competencia: "2026-09", salaoDesde: undefined };
-  const correcao = { ...outubro, pedidosExportados: 5 };
+  const correcao = { ...outubro, pedidosExportados: 5, periodoAte: "2026-10-22" };
   const merged = mesclarDados(
     { ...base, vendasAnotai: [setembro, outubro] },
     { ...base, vendasAnotai: [correcao] },
@@ -35,6 +35,8 @@ it("rejeita divergências de valores, cobertura e competências duplicadas", () 
   expect(vendaAnotaiMensalSchema.safeParse(outubro).success).toBe(true);
   expect(vendaAnotaiMensalSchema.safeParse({ ...outubro, salaoDesde: "2026-10-32" }).success).toBe(false);
   expect(vendaAnotaiMensalSchema.safeParse({ ...outubro, salaoDesde: "2026-11-01" }).success).toBe(false);
+  expect(vendaAnotaiMensalSchema.safeParse({ ...outubro, periodoAte: "2026-10-32" }).success).toBe(false);
+  expect(vendaAnotaiMensalSchema.safeParse({ ...outubro, periodoAte: "2026-11-01" }).success).toBe(false);
   expect(vendaAnotaiMensalSchema.safeParse({ ...outubro, pedidosExportados: 2 }).success).toBe(false);
   expect(vendaAnotaiMensalSchema.safeParse({
     ...outubro, canais: { ...outubro.canais, delivery: { ...outubro.canais.delivery, total: 2_800 } },

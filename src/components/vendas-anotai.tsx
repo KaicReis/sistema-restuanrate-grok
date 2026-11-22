@@ -17,11 +17,16 @@ type Filtro = Canal | "todos";
 const formatos = {
   mes: new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric", timeZone: "UTC" }),
   curto: new Intl.DateTimeFormat("pt-BR", { month: "short", timeZone: "UTC" }),
+  diaMes: new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", timeZone: "UTC" }),
   dia: new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" }),
   numero: new Intl.NumberFormat("pt-BR"),
 };
 const dataMes = (mes: string) => new Date(`${mes}-01T12:00:00Z`);
 const pedidos = (n: number) => `${formatos.numero.format(n)} ${n === 1 ? "pedido" : "pedidos"}`;
+
+function rotuloParcial(periodoAte: string) {
+  return `Parcial até ${formatos.diaMes.format(new Date(`${periodoAte}T12:00:00Z`))}`;
+}
 
 function totalizar(venda: VendaAnotaiMensal) {
   return canais.reduce((soma, { id }) => ({
@@ -81,7 +86,7 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
       <div className="anotai-evolucao-head">
         <div>
           <h3>Evolução das vendas</h3>
-          <p className="anotai-total-ano">{dinheiro(totalAno.subtotal)} em {pedidos(totalAno.pedidos)} nos meses importados de {ano}.</p>
+          <p className="anotai-total-ano">{dinheiro(totalAno.subtotal)} em {pedidos(totalAno.pedidos)} nos períodos importados de {ano}.{serie.some(({ periodoAte }) => periodoAte) && " A soma inclui meses parciais."}</p>
         </div>
         {anos.length > 1 && (
           <label>
@@ -99,7 +104,8 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
       </div>
       <ol className="anotai-grafico" aria-label="Vendas por mês, sem frete">
         {serie.map((venda) => {
-          const { competencia } = venda;
+          const { competencia, periodoAte } = venda;
+          const parcial = periodoAte ? rotuloParcial(periodoAte) : null;
           const coberto = estaCoberto(canal, competencia, inicioSalao);
           const { subtotal, pedidos: quantidade } = dadosCanal(venda, canal);
           return (
@@ -107,14 +113,17 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
               <button
                 type="button"
                 aria-pressed={ativo?.competencia === competencia}
-                aria-label={`${formatos.mes.format(dataMes(competencia))}, ${coberto ? `${dinheiro(subtotal)}, ${pedidos(quantidade)}` : "salão sem cobertura"}`}
+                aria-label={`${formatos.mes.format(dataMes(competencia))}, ${coberto ? `${dinheiro(subtotal)}, ${pedidos(quantidade)}` : "salão sem cobertura"}${parcial ? `, ${parcial}` : ""}`}
                 onClick={() => setFoco(competencia)}
               >
                 <span>{formatos.curto.format(dataMes(competencia))}</span>
-                <span className="anotai-barra" aria-hidden="true">
+                <span className={`anotai-barra${parcial ? " anotai-barra-parcial" : ""}`} aria-hidden="true">
                   <span style={{ width: `${coberto ? Math.max(0, subtotal) / max * 100 : 0}%` }} />
                 </span>
-                <strong>{coberto ? dinheiro(subtotal) : "—"}</strong>
+                <strong>
+                  {coberto ? dinheiro(subtotal) : "—"}
+                  {parcial && <small className="anotai-indicacao-parcial">{parcial}</small>}
+                </strong>
               </button>
             </li>
           );
@@ -123,6 +132,7 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
       {ativo && (
         <section className="anotai-detalhe" aria-label="Detalhes da competência" aria-live="polite">
           <h4>{formatos.mes.format(dataMes(ativo.competencia))}</h4>
+          {ativo.periodoAte && <p className="anotai-cobertura">{rotuloParcial(ativo.periodoAte)}</p>}
           <Modalidades venda={ativo} inicioSalao={inicioSalao} />
         </section>
       )}
@@ -138,7 +148,10 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
                 const total = totalizar(venda);
                 return (
                   <tr key={venda.competencia}>
-                    <th scope="row">{formatos.mes.format(dataMes(venda.competencia))}</th>
+                    <th scope="row">
+                      {formatos.mes.format(dataMes(venda.competencia))}
+                      {venda.periodoAte && <small className="anotai-indicacao-parcial">{rotuloParcial(venda.periodoAte)}</small>}
+                    </th>
                     {canais.map(({ id }) => (
                       <td key={id}>{estaCoberto(id, venda.competencia, inicioSalao) ? dinheiro(venda.canais[id].subtotal) : "—"}</td>
                     ))}
@@ -190,6 +203,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
         <div className="anotai-mensal">
           <div className="anotai-total">
             <span>{atual ? "" : "Último mês importado · "}{formatos.mes.format(dataMes(referencia.competencia))}</span>
+            {referencia.periodoAte && <span className="anotai-selo-parcial">{rotuloParcial(referencia.periodoAte)}</span>}
             <strong>{dinheiro(total.subtotal)}</strong>
             <small>{pedidos(total.pedidos)} finalizados</small>
           </div>

@@ -101,6 +101,14 @@
   background: #437763;
 }
 
+.estimativa-parcial {
+  display: grid;
+  gap: 2px;
+  margin: 0 0 7px;
+  color: #76500f;
+  font-size: .87rem;
+}
+
 .estimativa-cobertura {
   margin: 0;
   color: var(--muted);

@@ -16,7 +16,7 @@ const outubro: VendaSetorEstimadaMensal = {
 it("preserva estimativas mensais no backup e atualiza apenas a competência recebida", () => {
   const base = criarBase();
   const setembro = { ...outubro, competencia: "2026-09" };
-  const revisao = { ...outubro, unidadesNoArquivo: 110 };
+  const revisao = { ...outubro, unidadesNoArquivo: 110, relatorioParcial: true };
   const mesclado = mesclarDados(
     { ...base, vendasSetoresEstimadas: [setembro, outubro] },
     { ...base, vendasSetoresEstimadas: [revisao] },
@@ -30,6 +30,7 @@ it("preserva estimativas mensais no backup e atualiza apenas a competência rece
 it("valida integridade de competência, unidades e operação", () => {
   const base = criarBase();
   expect(vendaSetorEstimadaMensalSchema.safeParse(outubro).success).toBe(true);
+  expect(vendaSetorEstimadaMensalSchema.safeParse({ ...outubro, relatorioParcial: "true" }).success).toBe(false);
   expect(vendaSetorEstimadaMensalSchema.safeParse({
     ...outubro, unidadesNoArquivo: 70,
   }).success).toBe(false);
