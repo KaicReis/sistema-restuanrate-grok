@@ -14,6 +14,7 @@ import { operacoes } from "@/lib/v2";
 import { useSistema } from "./context";
 import { Panel } from "./ui";
 import { RelatorioInsumos } from "./relatorio-insumos";
+import { VendasAnotai } from "./vendas-anotai";
 
 const indicadores = {
   fixos: { nome: "Fixos cadastrados", curto: "Fixos" },
@@ -213,10 +214,16 @@ export function Relatorios() {
 
   return (
     <div className="reports-workspace">
-      <section className="report-summary" aria-label="Resumo do mês">
+      {setor === "a-vila" ? <VendasAnotai detalhado /> : (
+        <button type="button" className="text-button anotai-grupo" onClick={() => {
+          setOperacao("a-vila");
+          if (!consolidado) selecionar("a-vila", mes);
+        }}>Ver vendas consolidadas da Vila</button>
+      )}
+      <section className="report-summary" aria-label="Custos e resultado do mês">
         <div className="report-head">
           <div>
-            <p className="report-scope">{nome}</p>
+            <p className="report-scope">Custos e resultado · {nome}</p>
             <h2>{mesLongo.format(dataMes(mes))}</h2>
           </div>
           <div className="report-controls">
@@ -230,7 +237,7 @@ export function Relatorios() {
               </label>
             )}
             <label>
-              <span>Período dos gráficos</span>
+              <span>Período dos custos e do DRE</span>
               <select value={periodo} onChange={(e) => setPeriodo(Number(e.target.value))}>
                 <option value={3}>3 meses</option>
                 <option value={6}>6 meses</option>
@@ -238,7 +245,7 @@ export function Relatorios() {
               </select>
             </label>
             <button type="button" className="button" onClick={() => exportar(relatorio, nome)}>
-              <Download size={17} aria-hidden="true" /> Baixar CSV
+              <Download size={17} aria-hidden="true" /> Baixar CSV de custos e DRE
             </button>
           </div>
         </div>

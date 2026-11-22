@@ -65,7 +65,7 @@ const pages = [
   { id: "restaurantes", label: "Restaurantes", icon: Building2 },
 ] as const;
 const descriptions: Record<Page, string> = {
-  relatorios: "Acompanhe custos, compras e resultados por competência.",
+  relatorios: "Consulte vendas do Anotaí, compras, custos e resultados.",
   dre: "Confira receitas, custos e resultado por competência.",
   equilibrio: "Calcule quanto precisa faturar para cobrir os custos.",
   "fluxo-caixa": "Acompanhe entradas, saídas e o saldo previsto.",

@@ -184,6 +184,14 @@ export function Dre() {
             {consolidado
               ? "O resultado da Vila depende do fechamento de todas as operações. Complete os valores pendentes em cada uma."
               : "Complete o fechamento e informe o CMV e as despesas variáveis realizados no DNA mensal. Use zero quando o valor realizado for zero."}
+            {consolidado && Boolean(db.vendasAnotai?.length) && (
+              <>
+                {" "}O Anotaí traz as vendas da Vila sem identificar a operação de cada pedido.{" "}
+                <button type="button" className="text-button" onClick={() => ir("relatorios")}>
+                  Ver vendas importadas
+                </button>
+              </>
+            )}
           </p>
         </div>
       )}

@@ -109,6 +109,7 @@ export interface Database {
   movimentosCaixa?: import("./fluxo-caixa").MovimentoCaixa[];
   fechamentosFinanceiros?: import("./financeiro").FechamentoFinanceiro[];
   compras?: import("./purchases").Compra[];
+  vendasAnotai?: import("./vendas-anotai").VendaAnotaiMensal[];
   importacoes?: { data: unknown; criadoEm: string }[];
   receitas?: ReceitaCasa[];
   alugueis?: Rateio[];

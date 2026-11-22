@@ -14,6 +14,7 @@ import { dinheiro, percentual, paraCentavos } from "@/lib/dna";
 import { useSistema } from "./context";
 import { Field, Modal, Money, Panel, formNumber, formString } from "./ui";
 import { Numeric } from "./numeric";
+import { VendasAnotai } from "./vendas-anotai";
 export function Vila() {
   const { db, mes, atualizar, selecionar, ir } = useSistema(),
     [config, setConfig] = useState(false),
@@ -68,13 +69,13 @@ export function Vila() {
       <div className="consolidado-summary">
         <div>
           <span className="consolidado-label"><Building2 size={16} aria-hidden="true" /> Todas as operações</span>
-          <h2>Resultados do grupo</h2>
+          <h2>Visão geral da Vila</h2>
           <p>{c.rows.map(({ nome }) => nome).join(" · ")}</p>
         </div>
         <div className="reports-overview-actions">
           <button type="button" className="button cream" onClick={() => ir("relatorios")}>
             <ChartColumnIncreasing size={16} aria-hidden="true" />
-            Relatórios de custos
+            Relatórios
           </button>
           <button type="button" className="button cream" onClick={() => setConfig(true)}>
             <Settings2 size={16} aria-hidden="true" />
@@ -82,6 +83,8 @@ export function Vila() {
           </button>
         </div>
       </div>
+      <VendasAnotai />
+      <h2 className="vila-dna-indicadores">Indicadores de referência do DNA</h2>
       <div className="consolidado-metrics">
         {metrics.map(([label, value]) => (
           <div className="stat" key={label}>
@@ -126,7 +129,7 @@ export function Vila() {
         Margem = receita − CMV − variáveis − impostos − fixos.
       </div>
       <Panel
-        title="Faturamento por operação"
+        title="Faturamento de referência por operação"
         subtitle="Comparativo e participação no grupo"
       >
         {!c.receita && (
@@ -170,7 +173,7 @@ export function Vila() {
       </Panel>
       <Panel
         title="Evolução mês a mês"
-        subtitle="Faturamento consolidado e margem gerencial"
+        subtitle="Faturamento de referência e margem gerencial do DNA"
       >
         {!meses.some((m) => consolidar(db, m).receita > 0) ? (
           <p className="empty-chart">

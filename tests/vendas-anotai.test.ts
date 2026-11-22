@@ -1,0 +1,43 @@
+import { expect, it } from "vitest";
+import { mesclarDados } from "../src/lib/import-data";
+import { validarBackup } from "../src/lib/storage";
+import { criarBase } from "../src/lib/storage/seed";
+import { vendaAnotaiMensalSchema, vendasAnotaiSchema, type VendaAnotaiMensal } from "../src/lib/vendas-anotai";
+
+const zero = { pedidos: 0, subtotal: 0, frete: 0, total: 0 };
+const outubro: VendaAnotaiMensal = {
+  competencia: "2026-10",
+  canais: {
+    delivery: { pedidos: 2, subtotal: 2_300, frete: 400, total: 2_700 },
+    retirada: zero,
+    salao: { pedidos: 1, subtotal: 1_200, frete: 0, total: 1_200 },
+  },
+  pedidosExportados: 4,
+  salaoDesde: "2026-10-16",
+};
+
+it("preserva competências de vendas ao mesclar um backup e atualiza o mês recebido", () => {
+  const base = criarBase();
+  const setembro = { ...outubro, competencia: "2026-09", salaoDesde: undefined };
+  const correcao = { ...outubro, pedidosExportados: 5 };
+  const merged = mesclarDados(
+    { ...base, vendasAnotai: [setembro, outubro] },
+    { ...base, vendasAnotai: [correcao] },
+  );
+  expect(validarBackup(JSON.parse(JSON.stringify(merged))).vendasAnotai).toEqual([
+    setembro,
+    correcao,
+  ]);
+  expect(mesclarDados(merged, base).vendasAnotai).toEqual([setembro, correcao]);
+});
+
+it("rejeita divergências de valores, cobertura e competências duplicadas", () => {
+  expect(vendaAnotaiMensalSchema.safeParse(outubro).success).toBe(true);
+  expect(vendaAnotaiMensalSchema.safeParse({ ...outubro, salaoDesde: "2026-10-32" }).success).toBe(false);
+  expect(vendaAnotaiMensalSchema.safeParse({ ...outubro, salaoDesde: "2026-11-01" }).success).toBe(false);
+  expect(vendaAnotaiMensalSchema.safeParse({ ...outubro, pedidosExportados: 2 }).success).toBe(false);
+  expect(vendaAnotaiMensalSchema.safeParse({
+    ...outubro, canais: { ...outubro.canais, delivery: { ...outubro.canais.delivery, total: 2_800 } },
+  }).success).toBe(false);
+  expect(vendasAnotaiSchema.safeParse([outubro, outubro]).success).toBe(false);
+});
