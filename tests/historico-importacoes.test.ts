@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compactarBackup, compactarHistorico, MAX_BYTES_IMPORTACOES, MAX_IMPORTACOES } from "../src/lib/historico-importacoes";
+import { compactarBackup, compactarHistorico, LIMITE_BYTES_SINCRONIZACAO, MAX_BYTES_IMPORTACOES, MAX_IMPORTACOES } from "../src/lib/historico-importacoes";
 import { mesclarDados } from "../src/lib/import-data";
 import { validarBackup } from "../src/lib/storage";
 import { migrar } from "../src/lib/storage/migrate";
@@ -53,5 +53,22 @@ describe("histórico de importação", () => {
     const comprimido = compactarBackup(db).importacoes ?? [];
     expect(comprimido).toEqual(caros.slice(-3));
     expect(new TextEncoder().encode(JSON.stringify(comprimido)).byteLength).toBeLessThanOrEqual(MAX_BYTES_IMPORTACOES);
+  });
+
+  it("faz o histórico caber ao lado do documento ativo sem alterar suas coleções", () => {
+    const db = {
+      ...migrar(criarBase()),
+      legadoV1: { texto: "á".repeat(1_700_000) },
+      importacoes: [
+        { data: { texto: "á".repeat(300_000) }, criadoEm: "2026-01-02" },
+        { data: { texto: "á".repeat(100_000) }, criadoEm: "2026-01-01" },
+      ],
+    };
+    const resultado = compactarBackup(db);
+    expect(resultado.legadoV1).toEqual(db.legadoV1);
+    expect(resultado.insumos).toEqual(db.insumos);
+    expect(resultado.importacoes).toEqual([db.importacoes[1]]);
+    expect(new TextEncoder().encode(JSON.stringify({ data: resultado, revision: 1 })).byteLength)
+      .toBeLessThanOrEqual(LIMITE_BYTES_SINCRONIZACAO);
   });
 });
