@@ -3,6 +3,7 @@ import { compraRegistradaSchema } from "./purchases";
 import { categoriasCaixa, LIMITE_CENTAVOS_CAIXA } from "./fluxo-caixa";
 import { faturamentosConsolidadosSchema, vendasAnotaiSchema } from "./vendas-anotai";
 import { vendasSetoresEstimadasSchema } from "./vendas-estimadas-setor";
+import { vendasSetoresCanaisSchema } from "./vendas-setor-canal";
 const num = z.number().finite().nonnegative();
 export const capitalSchema = z.object({
   restaurante_id: z.string(),
@@ -84,6 +85,7 @@ export const v3Schema = z.object({
   capitais: z.array(capitalSchema).optional(),
   compras: z.array(compraRegistradaSchema).optional(),
   vendasAnotai: vendasAnotaiSchema.optional(),
+  vendasSetorCanal: vendasSetoresCanaisSchema.optional(),
   faturamentosConsolidados: faturamentosConsolidadosSchema.optional(),
   vendasSetoresEstimadas: vendasSetoresEstimadasSchema.optional(),
   importacoes: z

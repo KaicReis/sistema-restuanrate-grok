@@ -1,0 +1,113 @@
+.faturamento-matriz {
+  min-width: 0;
+}
+
+.faturamento-matriz .panel-head {
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.faturamento-matriz-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.faturamento-matriz-filtros label {
+  display: grid;
+  flex: 1 1 auto;
+  gap: 4px;
+  color: var(--muted);
+  font-size: .84rem;
+  font-weight: 650;
+}
+
+.faturamento-matriz-filtros select {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  max-width: none;
+}
+
+.faturamento-matriz-aviso {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 13px 14px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: #f4f6f1;
+}
+
+.faturamento-matriz-aviso svg {
+  color: var(--report-green);
+  margin-top: 2px;
+}
+
+.faturamento-matriz-aviso p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: .875rem;
+}
+
+.faturamento-matriz-importacao {
+  margin-top: 12px;
+}
+
+.faturamento-matriz .report-table-wrap {
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+
+.faturamento-matriz .report-table-wrap:focus-visible {
+  outline: 2px solid var(--report-green);
+  outline-offset: 2px;
+}
+
+.faturamento-matriz .report-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.faturamento-matriz .report-table th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  min-width: 7.5rem;
+  white-space: normal;
+}
+
+.faturamento-matriz .report-table tbody th {
+  background: var(--paper);
+}
+
+.faturamento-matriz .report-table tfoot :is(th, td),
+.faturamento-matriz-total {
+  background: #edf3eb;
+  color: #253e35;
+  font-weight: 650;
+}
+
+.faturamento-matriz .report-table tfoot :is(th, td) {
+  border-bottom: 0;
+}
+
+.faturamento-matriz-cobertura,
+.faturamento-matriz-parcial {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: .875rem;
+}
+
+.faturamento-matriz-parcial {
+  margin: 0 0 10px;
+  color: #76500f;
+}
+
+@media (max-width: 565px) {
+  .faturamento-matriz-filtros {
+    flex: 1 0 100%;
+  }
+}

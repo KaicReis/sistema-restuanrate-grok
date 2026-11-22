@@ -27,6 +27,48 @@
   font-weight: 650;
 }
 
+.anotai-conferencia {
+  display: grid;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.anotai-conferencia h3,
+.anotai-conferencia dl,
+.anotai-conferencia dd,
+.anotai-conferencia p {
+  margin: 0;
+}
+
+.anotai-conferencia-numeros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+  gap: 8px;
+}
+
+.anotai-conferencia-numeros > div {
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+}
+
+.anotai-conferencia-numeros dt,
+.anotai-conferencia p {
+  font-size: .875rem;
+}
+
+.anotai-conferencia-numeros dd {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.anotai-conferencia .anotai-conferencia-pendencia {
+  padding: 10px;
+  border-radius: 9px;
+  background: #f6efdd;
+  color: #624416;
+}
 .anotai-head h2 {
   display: flex;
   align-items: center;

@@ -20,7 +20,6 @@
   max-width: none;
 }
 
-.estimativa-realizado,
 .estimativa-resumo {
   display: flex;
   align-items: center;
@@ -34,26 +33,17 @@
   color: #23473a;
 }
 
-.estimativa-realizado {
-  background: #1c4b3d;
-  color: #fdf9f1;
-}
-
-.estimativa-realizado > div,
 .estimativa-resumo > div {
   display: grid;
   gap: 3px;
 }
 
 .estimativa-resumo span,
-.estimativa-resumo p,
-.estimativa-realizado span,
-.estimativa-realizado p {
+.estimativa-resumo p {
   margin: 0;
   font-size: .88rem;
 }
 
-.estimativa-realizado > div strong,
 .estimativa-resumo > div strong {
   font-size: clamp(1.12rem, 2.2vw, 1.55rem);
   font-variant-numeric: tabular-nums;
@@ -123,6 +113,20 @@
   margin: 0;
   color: var(--muted);
   font-size: .875rem;
+}
+
+.estimativa-pendencias {
+  margin: 9px 0;
+  font-size: .875rem;
+}
+
+.estimativa-pendencias summary {
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.estimativa-pendencias ul {
+  padding-left: 1.2rem;
 }
 
 @media (max-width: 565px) {

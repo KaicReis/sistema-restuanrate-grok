@@ -4,6 +4,12 @@ import type { Database } from "./types";
 const inteiroNaoNegativo = z.number().int().nonnegative();
 const competencia = z.string().regex(/^(?!0000)\d{4}-(0[1-9]|1[0-2])$/);
 
+function fimDaCompetencia(mes: string) {
+  const data = new Date(`${mes}-01T00:00:00Z`);
+  data.setUTCMonth(data.getUTCMonth() + 1, 0);
+  return `${mes}-${data.getUTCDate()}`;
+}
+
 export const totaisAnotaiSchema = z.strictObject({
   pedidos: inteiroNaoNegativo,
   subtotal: inteiroNaoNegativo,
@@ -15,6 +21,25 @@ export const totaisAnotaiSchema = z.strictObject({
   "Valores incompatíveis com os pedidos e o frete informados.",
 );
 
+const painelAnotaiSchema = z.strictObject({
+  pedidos: inteiroNaoNegativo,
+  cancelados: inteiroNaoNegativo,
+  totalVendas: inteiroNaoNegativo,
+  periodoDe: z.iso.date(),
+  periodoAte: z.iso.date(),
+}).refine(
+  ({ pedidos, cancelados, periodoDe, periodoAte }) => cancelados <= pedidos && periodoDe <= periodoAte,
+  "O período e as contagens do painel precisam ser válidos.",
+);
+
+const conferenciaAnotaiSchema = z.strictObject({
+  cancelados: totaisAnotaiSchema,
+  expirados: totaisAnotaiSchema,
+  rejeitados: totaisAnotaiSchema,
+  descontosInformativosSemRejeitados: inteiroNaoNegativo,
+  painel: painelAnotaiSchema.optional(),
+});
+
 export const vendaAnotaiMensalSchema = z.strictObject({
   competencia,
   canais: z.strictObject({
@@ -25,6 +50,7 @@ export const vendaAnotaiMensalSchema = z.strictObject({
   pedidosExportados: inteiroNaoNegativo,
   salaoDesde: z.iso.date().optional(),
   periodoAte: z.iso.date().optional(),
+  conferencia: conferenciaAnotaiSchema.optional(),
 }).refine(
   ({ competencia, salaoDesde }) => !salaoDesde || salaoDesde.startsWith(competencia + "-"),
   { path: ["salaoDesde"], message: "A data de cobertura do salão deve pertencer à competência." },
@@ -32,11 +58,20 @@ export const vendaAnotaiMensalSchema = z.strictObject({
   ({ competencia, periodoAte }) => !periodoAte || periodoAte.startsWith(competencia + "-"),
   { path: ["periodoAte"], message: "A data final do relatório deve pertencer à competência." },
 ).refine(
-  ({ canais, pedidosExportados }) => {
+  ({ canais, pedidosExportados, conferencia, competencia, periodoAte }) => {
     const totais = Object.values(canais);
     const pedidos = totais.reduce((soma, canal) => soma + canal.pedidos, 0);
     const total = totais.reduce((soma, canal) => soma + canal.total, 0);
-    return pedidos <= pedidosExportados && Number.isSafeInteger(total);
+    const outros = conferencia
+      ? [conferencia.cancelados, conferencia.expirados, conferencia.rejeitados]
+      : [];
+    const linhas = pedidos + outros.reduce((soma, status) => soma + status.pedidos, 0);
+    const totalExportado = total + outros.reduce((soma, status) => soma + status.total, 0);
+    const painel = conferencia?.painel;
+    return (!painel || (painel.periodoDe === `${competencia}-01` &&
+        painel.periodoAte === (periodoAte ?? fimDaCompetencia(competencia)))) &&
+      (conferencia ? linhas === pedidosExportados : linhas <= pedidosExportados) &&
+      Number.isSafeInteger(totalExportado + (conferencia?.descontosInformativosSemRejeitados ?? 0));
   },
   "Os totais dos canais devem ser compatíveis com os pedidos exportados.",
 );
@@ -74,6 +109,28 @@ export function totalizarVendasAnotai(venda: VendaAnotaiMensal) {
   }), { subtotal: 0, pedidos: 0 });
 }
 
+export function conferirPainelAnotai(venda: VendaAnotaiMensal) {
+  const conferencia = venda.conferencia;
+  if (!conferencia) return undefined;
+  const { subtotal, pedidos } = totalizarVendasAnotai(venda);
+  const frete = Object.values(venda.canais).reduce((soma, canal) => soma + canal.frete, 0);
+  const finalizados = { pedidos, subtotal, frete, total: subtotal + frete };
+  const { cancelados, expirados, rejeitados, painel } = conferencia;
+  const pedidosSemRejeitados = venda.pedidosExportados - rejeitados.pedidos;
+  const totalSemRejeitados = finalizados.total + cancelados.total + expirados.total;
+  const totalComDescontosRepostos = totalSemRejeitados + conferencia.descontosInformativosSemRejeitados;
+  const mesmasContagens = painel?.pedidos === pedidosSemRejeitados &&
+    painel.cancelados === cancelados.pedidos + expirados.pedidos;
+  return {
+    ...conferencia,
+    finalizados,
+    pedidosSemRejeitados,
+    totalSemRejeitados,
+    totalComDescontosRepostos,
+    mesmasContagens,
+    diferenca: painel === undefined ? undefined : painel.totalVendas - totalSemRejeitados,
+  };
+}
 export function inicioSalaoAnotai(vendas: VendaAnotaiMensal[]) {
   return vendas.flatMap(({ salaoDesde }) => salaoDesde ? [salaoDesde] : []).sort()[0];
 }

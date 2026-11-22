@@ -110,6 +110,7 @@ export function Modal({
   return (
     <dialog
       className="modal"
+      aria-label={title}
       ref={(el) => {
         if (el && !el.open) el.showModal();
       }}

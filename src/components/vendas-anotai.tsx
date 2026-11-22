@@ -7,6 +7,7 @@ import {
   faturamentoAnotai,
   faturamentoConsolidadoNoMes,
   coberturaSalaoAnotai,
+  conferirPainelAnotai,
   inicioSalaoAnotai,
   totalizarVendasAnotai as totalizar,
   type VendaAnotaiMensal,
@@ -188,6 +189,59 @@ function AplicarFaturamento({ venda, inicioSalao }: { venda: VendaAnotaiMensal; 
   );
 }
 
+function ConferenciaAnotai({ venda }: { venda: VendaAnotaiMensal }) {
+  const resumo = conferirPainelAnotai(venda);
+  if (!resumo) return null;
+  const { finalizados, painel, mesmasContagens, diferenca } = resumo;
+  const linhas = [
+    { nome: "Finalizados", dados: finalizados },
+    { nome: "Cancelados", dados: resumo.cancelados },
+    { nome: "Expirados", dados: resumo.expirados },
+    { nome: "Rejeitados", dados: resumo.rejeitados },
+  ];
+  return (
+    <section className="anotai-conferencia" aria-label="Conferência do total com o Anotaí">
+      <h3>Conferência com o painel do Anotaí</h3>
+      <dl className="anotai-conferencia-numeros">
+        <div><dt>Finalizados sem frete</dt><dd>{dinheiro(finalizados.subtotal)}</dd></div>
+        <div><dt>Frete dos finalizados</dt><dd>{dinheiro(finalizados.frete)}</dd></div>
+        <div><dt>Finalizados com frete</dt><dd>{dinheiro(finalizados.total)}</dd></div>
+        {painel && <div><dt>Total na imagem do Anotaí</dt><dd>{dinheiro(painel.totalVendas)}</dd></div>}
+      </dl>
+      {painel && (
+        <p className="anotai-conferencia-pendencia">
+          {mesmasContagens
+            ? `As contagens coincidem ao considerar ${formatos.numero.format(resumo.pedidosSemRejeitados)} pedidos e agrupar cancelados e expirados.`
+            : "As contagens do painel e do arquivo precisam ser conferidas."}
+          {" "}Somar as linhas com frete dá <strong>{dinheiro(resumo.totalSemRejeitados)}</strong>.
+          {diferenca !== undefined && diferenca !== 0 && (
+            <> A soma fica <strong>{dinheiro(Math.abs(diferenca))} {diferenca > 0 ? "abaixo" : "acima"}</strong> do painel no mesmo período. A fórmula exata desse total está pendente de confirmação.</>
+          )}
+        </p>
+      )}
+      <details className="anotai-tabela">
+        <summary>Ver contagem e valores por status</summary>
+        <div>
+          <table>
+            <thead>
+              <tr><th scope="col">Status no arquivo</th><th scope="col">Linhas</th><th scope="col">Sem frete</th><th scope="col">Frete</th><th scope="col">Com frete</th></tr>
+            </thead>
+            <tbody>
+              {linhas.map(({ nome, dados }) => (
+                <tr key={nome}>
+                  <th scope="row">{nome}</th><td>{formatos.numero.format(dados.pedidos)}</td>
+                  <td>{dinheiro(dados.subtotal)}</td><td>{dinheiro(dados.frete)}</td><td>{dinheiro(dados.total)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="anotai-cobertura">A Gestão soma a coluna de subtotal dos pedidos finalizados. O Anotaí descreve o cartão como total sem considerar descontos ou taxas. Somar os {dinheiro(resumo.descontosInformativosSemRejeitados)} da coluna de descontos informativos ao teste com frete daria {dinheiro(resumo.totalComDescontosRepostos)}.</p>
+      </details>
+    </section>
+  );
+}
+
 export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
   const { db, mes, selecionar, ir } = useSistema();
   const vendas = [...(db.vendasAnotai ?? [])].sort((a, b) => a.competencia.localeCompare(b.competencia));
@@ -202,7 +256,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
       <div className="anotai-head">
         <div>
           <h2 id="anotai-titulo"><ShoppingBag size={21} aria-hidden="true" /> Faturamento realizado da Vila</h2>
-          <p>Anotaí · Pedidos finalizados · Sem frete</p>
+          <p>Exportação de pedidos do Anotaí · Finalizados · Sem frete</p>
         </div>
         <div className="anotai-acoes">
           {atual && <AplicarFaturamento venda={atual} inicioSalao={inicioSalao} />}
@@ -234,6 +288,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
           <Modalidades venda={referencia} inicioSalao={inicioSalao} />
         </div>
       )}
+      {detalhado && atual && <ConferenciaAnotai venda={atual} />}
       {detalhado && vendas.length > 0 && <EvolucaoAnotai vendas={vendas} mes={mes} inicioSalao={inicioSalao} />}
       {inicioSalao && (
         <p className="anotai-cobertura">Os relatórios incluem vendas do salão a partir de {formatos.dia.format(new Date(`${inicioSalao}T12:00:00Z`))}.</p>

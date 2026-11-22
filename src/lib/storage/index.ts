@@ -295,6 +295,20 @@ export function validarBackup(value: unknown): Database {
   if ((db.vendasSetoresEstimadas ?? []).some(({ setores }) =>
     setores.some(({ restaurante_id }) => !idsOperacoes.has(restaurante_id)),
   )) throw new Error("Estimativa de vendas sem setor válido.");
+  for (const matriz of db.vendasSetorCanal ?? []) {
+    const venda = db.vendasAnotai?.find(({ competencia }) => competencia === matriz.competencia);
+    const subtotais = { delivery: 0, retirada: 0, salao: 0 };
+    for (const { restaurante_id, canal, subtotal } of matriz.linhas) {
+      if (!idsOperacoes.has(restaurante_id)) throw new Error("Venda por setor e canal sem operação válida.");
+      subtotais[canal] += subtotal;
+    }
+    if (!venda || matriz.periodoAte !== venda.periodoAte ||
+        subtotais.delivery !== venda.canais.delivery.subtotal ||
+        subtotais.retirada !== venda.canais.retirada.subtotal ||
+        subtotais.salao !== venda.canais.salao.subtotal) {
+      throw new Error("O relatório por setor e canal precisa fechar com os pedidos do Anotaí na mesma competência.");
+    }
+  }
   for (const rows of [
     db.capitais ?? [],
     db.compras ?? [],

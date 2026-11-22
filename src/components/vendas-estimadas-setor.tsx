@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { dinheiro } from "@/lib/dna";
 import { operacoes } from "@/lib/v2";
-import { totalizarVendasAnotai } from "@/lib/vendas-anotai";
 import { useSistema } from "./context";
 import { Panel } from "./ui";
 import "./vendas-estimadas-setor.css";
@@ -16,6 +15,11 @@ const mesLongo = new Intl.DateTimeFormat("pt-BR", {
 const numero = new Intl.NumberFormat("pt-BR");
 const diaMes = new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "2-digit", timeZone: "UTC" });
 const nomeMes = (mes: string) => mesLongo.format(new Date(`${mes}-01T12:00:00Z`));
+const motivoPendente = {
+  preco: "Preço da versão vendida a confirmar",
+  setor: "Setor do pedido a identificar",
+  produto: "Produto a identificar",
+};
 
 export function VendasEstimadasSetor({ setor }: { setor: string }) {
   const { db, mes } = useSistema();
@@ -34,11 +38,6 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
   const unidades = linhas.reduce((soma, { dados }) => soma + (dados?.unidades ?? 0), 0);
   const temEstimativa = linhas.some(({ dados }) => dados !== undefined);
   const maior = Math.max(1, ...linhas.map(({ dados }) => dados?.valor ?? 0));
-  const vendas = grupo && registro?.periodoAte ? db.vendasAnotai?.find(
-    (venda) => venda.competencia === registro.competencia && venda.periodoAte === registro.periodoAte,
-  ) : undefined;
-  const realizado = vendas ? totalizarVendasAnotai(vendas).subtotal : undefined;
-  const diferenca = realizado === undefined ? undefined : total - realizado;
 
   return (
     <div className="estimativa-panel">
@@ -66,17 +65,6 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
                 ? `Itens até ${diaMes.format(new Date(`${registro.periodoAte}T12:00:00Z`))}`
                 : "Relatório parcial de itens"}</strong></p>
             )}
-            {realizado !== undefined && diferenca !== undefined && (
-              <div className="estimativa-realizado">
-                <div>
-                  <span>Faturamento realizado da Vila no Anotaí</span>
-                  <strong>{dinheiro(realizado)}</strong>
-                </div>
-                <p>{diferenca === 0
-                  ? "A estimativa coincide com o total dos pedidos neste período."
-                  : `Os preços de referência geram uma estimativa ${dinheiro(Math.abs(diferenca))} ${diferenca > 0 ? "acima" : "abaixo"} do total dos pedidos.`}</p>
-              </div>
-            )}
             <div className="estimativa-resumo" aria-live="polite">
               <div>
                 <span>{grupo ? "Soma dos setores a preços de referência" : "Valor a preços de referência"}</span>
@@ -100,7 +88,17 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
                 </div>
               ))}
             </dl>
-            <p className="estimativa-cobertura">O Anotaí informa o valor final por pedido. O arquivo por produto informa quantidades, sem o valor cobrado por item. Para yakissobas e risotos agrupados, os sabores do relatório de adicionais ponderam o preço. Itens sem preço de referência ficam fora da estimativa.</p>
+            {grupo && Boolean(registro.itensPendentes?.length) && (
+              <details className="estimativa-pendencias">
+                <summary>Itens fora da estimativa</summary>
+                <ul>
+                  {registro.itensPendentes?.map(({ item, unidades, motivo }) => (
+                    <li key={item}><strong>{numero.format(unidades)} × {item}</strong> · {motivoPendente[motivo]}</li>
+                  ))}
+                </ul>
+              </details>
+            )}
+            <p className="estimativa-cobertura">A estimativa usa os preços de referência do cardápio. O faturamento realizado vem do arquivo de pedidos. Para yakissobas e risotos agrupados, os sabores do relatório de adicionais ponderam o preço.</p>
           </>
         ) : (
           <p className="report-empty">Nenhuma competência com estimativa por setor está disponível.</p>

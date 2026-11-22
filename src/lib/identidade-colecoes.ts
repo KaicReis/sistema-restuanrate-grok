@@ -2,7 +2,7 @@ export const colecoesImportaveis = [
   "restaurantes", "dnas", "canais", "insumos", "produtos", "combos", "precos",
   "receitas", "alugueis", "capitais", "compras", "saldosCaixa", "movimentosCaixa",
   "fechamentosFinanceiros", "vendasAnotai", "vendasSetoresEstimadas",
-  "faturamentosConsolidados",
+  "vendasSetorCanal", "faturamentosConsolidados",
 ] as const;
 
 export type ColecaoImportavel = (typeof colecoesImportaveis)[number];
@@ -11,6 +11,7 @@ export function identidadeRegistro(colecao: ColecaoImportavel, registro: Record<
   switch (colecao) {
     case "alugueis":
     case "vendasAnotai":
+    case "vendasSetorCanal":
     case "vendasSetoresEstimadas":
     case "faturamentosConsolidados":
       return String(registro.competencia);

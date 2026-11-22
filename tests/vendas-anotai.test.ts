@@ -5,6 +5,7 @@ import { criarBase } from "../src/lib/storage/seed";
 import {
   faturamentoAnotai,
   faturamentoConsolidadoNoMes,
+  conferirPainelAnotai,
   inicioSalaoAnotai,
   vendaAnotaiMensalSchema,
   vendasAnotaiSchema,
@@ -36,6 +37,30 @@ it("preserva competências de vendas ao mesclar um backup e atualiza o mês rece
     correcao,
   ]);
   expect(mesclarDados(merged, base).vendasAnotai).toEqual([setembro, correcao]);
+});
+
+it("compara contagens e totais do painel sem misturar cancelados com o realizado", () => {
+  const venda = vendaAnotaiMensalSchema.parse({
+    ...outubro,
+    pedidosExportados: 6,
+    periodoAte: "2026-10-22",
+    conferencia: {
+      cancelados: { pedidos: 1, subtotal: 300, frete: 0, total: 300 },
+      expirados: { pedidos: 1, subtotal: 600, frete: 100, total: 700 },
+      rejeitados: { pedidos: 1, subtotal: 80, frete: 20, total: 100 },
+      descontosInformativosSemRejeitados: 200,
+      painel: { pedidos: 5, cancelados: 2, totalVendas: 5000, periodoDe: "2026-10-01", periodoAte: "2026-10-22" },
+    },
+  });
+  expect(conferirPainelAnotai(venda)).toMatchObject({
+    finalizados: { pedidos: 3, subtotal: 3500, frete: 400, total: 3900 },
+    totalSemRejeitados: 4900,
+    totalComDescontosRepostos: 5100,
+    mesmasContagens: true,
+    diferenca: 100,
+  });
+  expect(faturamentoAnotai(venda).valor).toBe(3500);
+  expect(vendaAnotaiMensalSchema.safeParse({ ...venda, periodoAte: "2026-10-21" }).success).toBe(false);
 });
 
 it("rejeita divergências de valores, cobertura e competências duplicadas", () => {

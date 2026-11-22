@@ -14,6 +14,7 @@ import { operacoes } from "@/lib/v2";
 import { useSistema } from "./context";
 import { Panel } from "./ui";
 import { RelatorioInsumos } from "./relatorio-insumos";
+import { FaturamentoMatriz } from "./faturamento-matriz";
 import { VendasAnotai } from "./vendas-anotai";
 import { VendasEstimadasSetor } from "./vendas-estimadas-setor";
 
@@ -221,6 +222,7 @@ export function Relatorios() {
           if (!consolidado) selecionar("a-vila", mes);
         }}>Ver vendas consolidadas da Vila</button>
       )}
+      <FaturamentoMatriz key={mes} setor={setor} />
       <VendasEstimadasSetor setor={setor} />
       <section className="report-summary" aria-label="Custos e resultado do mês">
         <div className="report-head">
