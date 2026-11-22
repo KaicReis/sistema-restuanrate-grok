@@ -40,13 +40,16 @@ const conferenciaAnotaiSchema = z.strictObject({
   painel: painelAnotaiSchema.optional(),
 });
 
-export const vendaAnotaiMensalSchema = z.strictObject({
-  competencia,
-  canais: z.strictObject({
+const canaisAnotaiSchema = z.strictObject({
     delivery: totaisAnotaiSchema,
     retirada: totaisAnotaiSchema,
     salao: totaisAnotaiSchema,
-  }),
+  });
+
+export const vendaAnotaiMensalSchema = z.strictObject({
+  competencia,
+  canais: canaisAnotaiSchema,
+  expiradosPorCanal: canaisAnotaiSchema.optional(),
   pedidosExportados: inteiroNaoNegativo,
   salaoDesde: z.iso.date().optional(),
   periodoAte: z.iso.date().optional(),
@@ -58,7 +61,7 @@ export const vendaAnotaiMensalSchema = z.strictObject({
   ({ competencia, periodoAte }) => !periodoAte || periodoAte.startsWith(competencia + "-"),
   { path: ["periodoAte"], message: "A data final do relatório deve pertencer à competência." },
 ).refine(
-  ({ canais, pedidosExportados, conferencia, competencia, periodoAte }) => {
+  ({ canais, expiradosPorCanal, pedidosExportados, conferencia, competencia, periodoAte }) => {
     const totais = Object.values(canais);
     const pedidos = totais.reduce((soma, canal) => soma + canal.pedidos, 0);
     const total = totais.reduce((soma, canal) => soma + canal.total, 0);
@@ -67,11 +70,16 @@ export const vendaAnotaiMensalSchema = z.strictObject({
       : [];
     const linhas = pedidos + outros.reduce((soma, status) => soma + status.pedidos, 0);
     const totalExportado = total + outros.reduce((soma, status) => soma + status.total, 0);
+    const expirados = Object.values(expiradosPorCanal ?? {});
+    const corresponde = !expiradosPorCanal || !conferencia ||
+      (["pedidos", "subtotal", "frete", "total"] as const).every((campo) =>
+        expirados.reduce((soma, canal) => soma + canal[campo], 0) === conferencia.expirados[campo]);
+    const linhasPagas = pedidos + expirados.reduce((soma, canal) => soma + canal.pedidos, 0);
     const painel = conferencia?.painel;
-    return (!painel || (painel.periodoDe === `${competencia}-01` &&
+    return corresponde && linhasPagas <= pedidosExportados && (!painel || (painel.periodoDe === `${competencia}-01` &&
         painel.periodoAte === (periodoAte ?? fimDaCompetencia(competencia)))) &&
       (conferencia ? linhas === pedidosExportados : linhas <= pedidosExportados) &&
-      Number.isSafeInteger(totalExportado + (conferencia?.descontosInformativosSemRejeitados ?? 0));
+      Number.isSafeInteger(totalExportado + (conferencia?.descontosInformativosSemRejeitados ?? expirados.reduce((soma, canal) => soma + canal.total, 0)));
   },
   "Os totais dos canais devem ser compatíveis com os pedidos exportados.",
 );
@@ -102,8 +110,20 @@ export const faturamentosConsolidadosSchema = z.array(faturamentoConsolidadoSche
 
 export type FaturamentoConsolidado = z.infer<typeof faturamentoConsolidadoSchema>;
 
+export function pedidosRealizadosNoCanal(venda: VendaAnotaiMensal, canal: keyof VendaAnotaiMensal["canais"]): TotaisAnotai {
+  const base = venda.canais[canal];
+  const extra = venda.expiradosPorCanal?.[canal];
+  if (!extra) return base;
+  return {
+    pedidos: base.pedidos + extra.pedidos,
+    subtotal: base.subtotal + extra.subtotal,
+    frete: base.frete + extra.frete,
+    total: base.total + extra.total,
+  };
+}
+
 export function totalizarVendasAnotai(venda: VendaAnotaiMensal) {
-  return Object.values(venda.canais).reduce((soma, canal) => ({
+  return (["delivery", "retirada", "salao"] as const).map((canal) => pedidosRealizadosNoCanal(venda, canal)).reduce((soma, canal) => ({
     subtotal: soma.subtotal + canal.subtotal,
     pedidos: soma.pedidos + canal.pedidos,
   }), { subtotal: 0, pedidos: 0 });
@@ -112,7 +132,8 @@ export function totalizarVendasAnotai(venda: VendaAnotaiMensal) {
 export function conferirPainelAnotai(venda: VendaAnotaiMensal) {
   const conferencia = venda.conferencia;
   if (!conferencia) return undefined;
-  const { subtotal, pedidos } = totalizarVendasAnotai(venda);
+  const subtotal = Object.values(venda.canais).reduce((soma, canal) => soma + canal.subtotal, 0);
+  const pedidos = Object.values(venda.canais).reduce((soma, canal) => soma + canal.pedidos, 0);
   const frete = Object.values(venda.canais).reduce((soma, canal) => soma + canal.frete, 0);
   const finalizados = { pedidos, subtotal, frete, total: subtotal + frete };
   const { cancelados, expirados, rejeitados, painel } = conferencia;
@@ -138,7 +159,7 @@ export function inicioSalaoAnotai(vendas: VendaAnotaiMensal[]) {
 export function coberturaSalaoAnotai(venda: VendaAnotaiMensal, inicioSalao?: string) {
   const { competencia, periodoAte } = venda;
   const inicio = inicioSalao ?? venda.salaoDesde;
-  if (!inicio) return venda.canais.salao.pedidos > 0 ? "integral" : "ausente";
+  if (!inicio) return pedidosRealizadosNoCanal(venda, "salao").pedidos > 0 ? "integral" : "ausente";
   if (inicio.slice(0, 7) > competencia || (periodoAte && inicio > periodoAte)) return "ausente";
   return inicio > `${competencia}-01` ? "parcial" : "integral";
 }

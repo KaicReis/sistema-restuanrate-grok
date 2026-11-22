@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { Restaurante } from "./types";
-import { vendaAnotaiMensalSchema, type VendaAnotaiMensal } from "./vendas-anotai";
+import { pedidosRealizadosNoCanal, vendaAnotaiMensalSchema, type VendaAnotaiMensal } from "./vendas-anotai";
 
 const canais = ["delivery", "retirada", "salao"] as const;
 const canalSchema = z.enum(canais);
@@ -172,7 +172,10 @@ function lerPedidos(pedidosCsv: string, referencia: VendaAnotaiMensal) {
   };
   for (const registro of registros) {
     const { numero: linha, campos } = registro;
-    if (status !== undefined && normalizar(campos[status]) !== "finalizado") continue;
+    if (status !== undefined) {
+      const situacao = normalizar(campos[status]);
+      if (situacao !== "finalizado" && !(referencia.expiradosPorCanal && situacao === "pedido online expirado")) continue;
+    }
     const local = `Pedidos, linha ${linha}`;
     const chave = chavePedido(campos[numero], campos[data], referencia, local);
     if (pedidos.has(chave)) throw new Error(`${local}: número e data de pedido repetidos.`);
@@ -183,7 +186,7 @@ function lerPedidos(pedidosCsv: string, referencia: VendaAnotaiMensal) {
     pedidos.set(chave, { linha, canal: tipo, subtotal: valor, somaItens: 0, temItens: false });
   }
   for (const canal of canais) {
-    const esperado = referencia.canais[canal];
+    const esperado = pedidosRealizadosNoCanal(referencia, canal);
     if (totais[canal].pedidos !== esperado.pedidos || totais[canal].subtotal !== esperado.subtotal)
       throw new Error(`Pedidos: a quantidade ou o subtotal de ${canal === "salao" ? "salão" : canal} diverge do Anotaí para o período.`);
   }
@@ -210,7 +213,7 @@ export function importarVendasSetorCanal({ pedidosCsv, itensCsv, setores, refere
     const local = `Itens, linha ${linha}`;
     const chave = chavePedido(campos[numero], campos[data], referencia, local);
     const pedido = pedidos.get(chave);
-    if (!pedido) throw new Error(`${local}: pedido sem correspondência entre os finalizados.`);
+    if (!pedido) throw new Error(`${local}: pedido sem correspondência entre os pedidos contabilizados.`);
     const textoSetor = campos[setor];
     const correspondencias = setores.filter(({ nome }) => nome === textoSetor);
     const operacao = setores.find(({ id }) => id === textoSetor) ?? (correspondencias.length === 1 ? correspondencias[0] : undefined);

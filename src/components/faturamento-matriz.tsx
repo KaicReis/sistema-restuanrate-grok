@@ -65,7 +65,7 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
     <div className="faturamento-matriz">
       <Panel
         title="Faturamento real por setor e canal"
-        subtitle="Subtotais dos pedidos finalizados no Anotaí, sem frete."
+        subtitle="Subtotais dos pedidos contabilizados no Anotaí, sem frete."
         action={
           <div className="faturamento-matriz-filtros">
             <label>
@@ -143,7 +143,7 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
                 )}
               </table>
             </div>
-            <p className="faturamento-matriz-cobertura">Valores cobrados nos itens de pedidos finalizados, após descontos. Os totais somam os canais com cobertura.</p>
+            <p className="faturamento-matriz-cobertura">Valores cobrados nos itens de pedidos contabilizados, após descontos. Os totais somam os canais com cobertura.</p>
           </>
         )}
         {grupo && venda && (

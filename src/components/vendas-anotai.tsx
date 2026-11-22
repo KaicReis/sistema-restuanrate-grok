@@ -8,6 +8,7 @@ import {
   faturamentoConsolidadoNoMes,
   coberturaSalaoAnotai,
   conferirPainelAnotai,
+  pedidosRealizadosNoCanal,
   inicioSalaoAnotai,
   totalizarVendasAnotai as totalizar,
   type VendaAnotaiMensal,
@@ -41,14 +42,14 @@ function estaCoberto(canal: Filtro, venda: VendaAnotaiMensal, inicioSalao?: stri
 }
 
 function dadosCanal(venda: VendaAnotaiMensal, canal: Filtro) {
-  return canal === "todos" ? totalizar(venda) : venda.canais[canal];
+  return canal === "todos" ? totalizar(venda) : pedidosRealizadosNoCanal(venda, canal);
 }
 
 function Modalidades({ venda, inicioSalao }: { venda: VendaAnotaiMensal; inicioSalao?: string }) {
   return (
     <dl className="anotai-canais">
       {canais.map(({ id, nome }) => {
-        const dados = venda.canais[id];
+        const dados = pedidosRealizadosNoCanal(venda, id);
         const coberto = estaCoberto(id, venda, inicioSalao);
         return (
           <div key={id}>
@@ -154,7 +155,7 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
                       {venda.periodoAte && <small className="anotai-indicacao-parcial">{rotuloParcial(venda.periodoAte)}</small>}
                     </th>
                     {canais.map(({ id }) => (
-                      <td key={id}>{estaCoberto(id, venda, inicioSalao) ? dinheiro(venda.canais[id].subtotal) : "—"}</td>
+                      <td key={id}>{estaCoberto(id, venda, inicioSalao) ? dinheiro(pedidosRealizadosNoCanal(venda, id).subtotal) : "—"}</td>
                     ))}
                     <td>{dinheiro(total.subtotal)}</td><td>{formatos.numero.format(total.pedidos)}</td>
                   </tr>
@@ -236,7 +237,7 @@ function ConferenciaAnotai({ venda }: { venda: VendaAnotaiMensal }) {
             </tbody>
           </table>
         </div>
-        <p className="anotai-cobertura">A Gestão soma a coluna de subtotal dos pedidos finalizados. O Anotaí descreve o cartão como total sem considerar descontos ou taxas. Somar os {dinheiro(resumo.descontosInformativosSemRejeitados)} da coluna de descontos informativos ao teste com frete daria {dinheiro(resumo.totalComDescontosRepostos)}.</p>
+        <p className="anotai-cobertura">A Gestão soma a coluna de subtotal dos pedidos finalizados e dos expirados confirmados como pagos. O Anotaí descreve o cartão como total sem considerar descontos ou taxas. Somar os {dinheiro(resumo.descontosInformativosSemRejeitados)} da coluna de descontos informativos ao teste com frete daria {dinheiro(resumo.totalComDescontosRepostos)}.</p>
       </details>
     </section>
   );
@@ -256,7 +257,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
       <div className="anotai-head">
         <div>
           <h2 id="anotai-titulo"><ShoppingBag size={21} aria-hidden="true" /> Faturamento realizado da Vila</h2>
-          <p>Exportação de pedidos do Anotaí · Finalizados · Sem frete</p>
+          <p>Exportação de pedidos do Anotaí · Finalizados e expirados pagos · Sem frete</p>
         </div>
         <div className="anotai-acoes">
           {atual && <AplicarFaturamento venda={atual} inicioSalao={inicioSalao} />}
@@ -283,7 +284,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
             <span>{atual ? "" : "Último mês importado · "}{formatos.mes.format(dataMes(referencia.competencia))}</span>
             {referencia.periodoAte && <span className="anotai-selo-parcial">{rotuloParcial(referencia.periodoAte)}</span>}
             <strong>{dinheiro(total.subtotal)}</strong>
-            <small>{pedidos(total.pedidos)} finalizados</small>
+            <small>{pedidos(total.pedidos)} contabilizados</small>
           </div>
           <Modalidades venda={referencia} inicioSalao={inicioSalao} />
         </div>

@@ -60,6 +60,11 @@ it("compara contagens e totais do painel sem misturar cancelados com o realizado
     diferenca: 100,
   });
   expect(faturamentoAnotai(venda).valor).toBe(3500);
+  const comExpirados = vendaAnotaiMensalSchema.parse({
+    ...venda, expiradosPorCanal: { delivery: venda.conferencia!.expirados, salao: zero, retirada: zero },
+  });
+  expect(faturamentoAnotai(comExpirados).valor).toBe(4100);
+  expect(conferirPainelAnotai(comExpirados)).toEqual(conferirPainelAnotai(venda));
   expect(vendaAnotaiMensalSchema.safeParse({ ...venda, periodoAte: "2026-10-21" }).success).toBe(false);
 });
 

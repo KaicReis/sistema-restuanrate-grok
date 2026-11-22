@@ -1,3 +1,4 @@
+import { pedidosRealizadosNoCanal } from "../vendas-anotai";
 import { v3Schema } from "../validation-v3";
 import type { Database } from "../types";
 import { migrar } from "./migrate";
@@ -303,9 +304,9 @@ export function validarBackup(value: unknown): Database {
       subtotais[canal] += subtotal;
     }
     if (!venda || matriz.periodoAte !== venda.periodoAte ||
-        subtotais.delivery !== venda.canais.delivery.subtotal ||
-        subtotais.retirada !== venda.canais.retirada.subtotal ||
-        subtotais.salao !== venda.canais.salao.subtotal) {
+        subtotais.delivery !== pedidosRealizadosNoCanal(venda, "delivery").subtotal ||
+        subtotais.retirada !== pedidosRealizadosNoCanal(venda, "retirada").subtotal ||
+        subtotais.salao !== pedidosRealizadosNoCanal(venda, "salao").subtotal) {
       throw new Error("O relatório por setor e canal precisa fechar com os pedidos do Anotaí na mesma competência.");
     }
   }
