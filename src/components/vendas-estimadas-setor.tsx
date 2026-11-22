@@ -57,7 +57,7 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
             {registro.relatorioParcial && (
               <p className="estimativa-parcial">
                 <strong>Relatório parcial de itens</strong>
-                <span>O arquivo de itens tem cobertura própria. O total do Anotaí reúne os pedidos finalizados do CSV.</span>
+                <span>A estimativa depende dos produtos identificados no arquivo de itens. O CSV traz o valor de cada pedido finalizado.</span>
               </p>
             )}
             <div className="estimativa-resumo" aria-live="polite">
@@ -66,7 +66,7 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
                 <strong>{temEstimativa ? dinheiro(total) : "—"}</strong>
               </div>
               {grupo ? (
-                <p><strong>{numero.format(unidades)} de {numero.format(registro.unidadesNoArquivo)}</strong> unidades do arquivo com valor estimado.</p>
+                <p><strong>{numero.format(unidades)} de {numero.format(registro.unidadesNoArquivo - (registro.unidadesExcluidas ?? 0))}</strong> unidades consideradas com valor estimado.</p>
               ) : (
                 <p>{temEstimativa ? `${numero.format(unidades)} unidades com valor estimado.` : "Sem estimativa para este setor no mês."}</p>
               )}

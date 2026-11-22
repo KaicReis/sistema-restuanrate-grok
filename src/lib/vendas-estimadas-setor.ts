@@ -14,14 +14,15 @@ const vendaSetorSchema = z.strictObject({
 export const vendaSetorEstimadaMensalSchema = z.strictObject({
   competencia: z.string().regex(/^(?!0000)\d{4}-(0[1-9]|1[0-2])$/),
   unidadesNoArquivo: inteiroNaoNegativo,
+  unidadesExcluidas: inteiroNaoNegativo.optional(),
   setores: z.array(vendaSetorSchema),
   relatorioParcial: z.boolean().optional(),
 }).refine(
   ({ setores }) => new Set(setores.map((s) => s.restaurante_id)).size === setores.length,
   { path: ["setores"], message: "Há setores repetidos na mesma competência." },
 ).refine(
-  ({ setores, unidadesNoArquivo }) =>
-    setores.reduce((soma, setor) => soma + setor.unidades, 0) <= unidadesNoArquivo &&
+  ({ setores, unidadesNoArquivo, unidadesExcluidas = 0 }) =>
+    setores.reduce((soma, setor) => soma + setor.unidades, 0) <= unidadesNoArquivo - unidadesExcluidas &&
     Number.isSafeInteger(setores.reduce((soma, setor) => soma + setor.valor, 0)),
   { path: ["setores"], message: "A soma dos setores deve ser compatível com o arquivo." },
 );
