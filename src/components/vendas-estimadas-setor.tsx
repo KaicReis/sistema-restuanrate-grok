@@ -75,7 +75,7 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
                 </div>
               ))}
             </dl>
-            <p className="estimativa-cobertura">Usamos o cardápio do salão e as referências de delivery para itens ou variantes com preço próprio. O arquivo não informa o canal, o preço de cada venda ou os descontos por item. Itens sem correspondência ficam fora da conta.</p>
+            <p className="estimativa-cobertura">Usamos preços de referência do salão e do delivery. Para yakissobas e risotos agrupados, usamos a média ponderada pelos sabores do relatório de adicionais de cada mês. As quantidades vêm do relatório de itens principais. Itens sem correspondência ficam fora da conta.</p>
           </>
         ) : (
           <p className="report-empty">Nenhuma competência com estimativa por setor está disponível.</p>
