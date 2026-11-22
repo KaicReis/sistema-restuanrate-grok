@@ -286,6 +286,12 @@ export function validarBackup(value: unknown): Database {
     ) || new Set(db.combos.map((c) => c.id)).size !== db.combos.length
   )) throw new Error("Combo inválido. Revise os produtos, embalagens e quantidades da operação.");
   v3Schema.parse(db);
+  const idsOperacoes = new Set(db.restaurantes
+    .filter((r) => r.id !== "a-vila" && !r.grupo)
+    .map((r) => r.id));
+  if ((db.vendasSetoresEstimadas ?? []).some(({ setores }) =>
+    setores.some(({ restaurante_id }) => !idsOperacoes.has(restaurante_id)),
+  )) throw new Error("Estimativa de vendas sem setor válido.");
   for (const rows of [
     db.capitais ?? [],
     db.compras ?? [],
@@ -294,11 +300,7 @@ export function validarBackup(value: unknown): Database {
     db.fechamentosFinanceiros ?? [],
   ])
     for (const row of rows)
-      if (
-        !db.restaurantes.some(
-          (r) => r.id === row.restaurante_id && r.id !== "a-vila" && !r.grupo,
-        )
-      )
+      if (!idsOperacoes.has(row.restaurante_id))
         throw new Error("Operação v3 inválida");
   if (
     new Set((db.compras ?? []).map((c) => c.id)).size !==

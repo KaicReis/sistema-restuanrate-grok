@@ -15,6 +15,7 @@ import { useSistema } from "./context";
 import { Panel } from "./ui";
 import { RelatorioInsumos } from "./relatorio-insumos";
 import { VendasAnotai } from "./vendas-anotai";
+import { VendasEstimadasSetor } from "./vendas-estimadas-setor";
 
 const indicadores = {
   fixos: { nome: "Fixos cadastrados", curto: "Fixos" },
@@ -220,6 +221,7 @@ export function Relatorios() {
           if (!consolidado) selecionar("a-vila", mes);
         }}>Ver vendas consolidadas da Vila</button>
       )}
+      <VendasEstimadasSetor setor={setor} />
       <section className="report-summary" aria-label="Custos e resultado do mês">
         <div className="report-head">
           <div>

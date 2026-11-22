@@ -18,9 +18,10 @@ export function mesclarDados(atual: Database, recebido: Database): Database {
     "movimentosCaixa",
     "fechamentosFinanceiros",
     "vendasAnotai",
+    "vendasSetoresEstimadas",
   ] as const) {
     const identity = (r: Record<string, unknown>) =>
-      key === "alugueis" || key === "vendasAnotai"
+      key === "alugueis" || key === "vendasAnotai" || key === "vendasSetoresEstimadas"
         ? String(r.competencia)
         : key === "capitais" ||
             key === "dnas" ||

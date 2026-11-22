@@ -110,6 +110,7 @@ export interface Database {
   fechamentosFinanceiros?: import("./financeiro").FechamentoFinanceiro[];
   compras?: import("./purchases").Compra[];
   vendasAnotai?: import("./vendas-anotai").VendaAnotaiMensal[];
+  vendasSetoresEstimadas?: import("./vendas-estimadas-setor").VendaSetorEstimadaMensal[];
   importacoes?: { data: unknown; criadoEm: string }[];
   receitas?: ReceitaCasa[];
   alugueis?: Rateio[];
