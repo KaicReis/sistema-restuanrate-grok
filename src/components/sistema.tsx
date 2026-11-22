@@ -23,6 +23,7 @@ import {
   Wallet,
   ArrowRightLeft,
   ChartNoAxesCombined,
+  ChartColumnIncreasing,
   Target,
   ShoppingCart,
   Settings2,
@@ -40,12 +41,14 @@ import { Context, type Page } from "./context";
 import { Overview, DNAEditor } from "./dna";
 import { Canais, Restaurantes } from "./cadastros";
 import { Vila } from "./vila";
+import { Relatorios } from "./relatorios";
 import { dnaComRateio } from "@/lib/v2";
 import { Insumos, Fichas, Receitas } from "./producao";
 import { Combos } from "./combos";
 import { Precos } from "./precos";
 import { Modal } from "./ui";
 const pages = [
+  { id: "relatorios", label: "Relatórios", icon: ChartColumnIncreasing },
   { id: "dre", label: "DRE gerencial", icon: ChartNoAxesCombined },
   { id: "equilibrio", label: "Ponto de equilíbrio", icon: Target },
   { id: "fluxo-caixa", label: "Fluxo de caixa", icon: ArrowRightLeft },
@@ -62,6 +65,7 @@ const pages = [
   { id: "restaurantes", label: "Restaurantes", icon: Building2 },
 ] as const;
 const descriptions: Record<Page, string> = {
+  relatorios: "Acompanhe custos, compras e resultados por competência.",
   dre: "Confira receitas, custos e resultado por competência.",
   equilibrio: "Calcule quanto precisa faturar para cobrir os custos.",
   "fluxo-caixa": "Acompanhe entradas, saídas e o saldo previsto.",
@@ -77,7 +81,7 @@ const descriptions: Record<Page, string> = {
   precos: "Compare preços praticados e preços sugeridos por canal.",
   restaurantes: "Gerencie as operações cadastradas na Vila.",
 };
-const financeiro = ["dre", "equilibrio", "fluxo-caixa", "capital"] as const;
+const financeiro = ["relatorios", "dre", "equilibrio", "fluxo-caixa", "capital"] as const;
 const paginasConsolidado: readonly string[] = ["visao", ...financeiro, "restaurantes"];
 const ordemOperacoes = ["a-vila", "bora", "nativos", "bar"];
 function preparar(db: Database, id: string, mes: string) {
@@ -579,7 +583,9 @@ export default function Sistema() {
               key={`${id}:${mes}:${page}:${filtro}:${revisao}`}
               className="page-content"
             >
-              {page === "dre" ? (
+              {page === "relatorios" ? (
+                <Relatorios />
+              ) : page === "dre" ? (
                 <Dre />
               ) : page === "equilibrio" ? (
                 <PontoEquilibrio />

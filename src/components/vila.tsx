@@ -1,7 +1,7 @@
 "use client";
 import { insumoArquivado } from "@/lib/insumos";
 import { useState } from "react";
-import { Building2, Settings2 } from "lucide-react";
+import { Building2, ChartColumnIncreasing, Settings2 } from "lucide-react";
 import { preparoPendente } from "./readiness";
 import {
   consolidar,
@@ -71,10 +71,16 @@ export function Vila() {
           <h2>Resultados do grupo</h2>
           <p>{c.rows.map(({ nome }) => nome).join(" · ")}</p>
         </div>
-        <button type="button" className="button cream" onClick={() => setConfig(true)}>
-          <Settings2 size={16} aria-hidden="true" />
-          Aluguel e rateio
-        </button>
+        <div className="reports-overview-actions">
+          <button type="button" className="button cream" onClick={() => ir("relatorios")}>
+            <ChartColumnIncreasing size={16} aria-hidden="true" />
+            Relatórios de custos
+          </button>
+          <button type="button" className="button cream" onClick={() => setConfig(true)}>
+            <Settings2 size={16} aria-hidden="true" />
+            Aluguel e rateio
+          </button>
+        </div>
       </div>
       <div className="consolidado-metrics">
         {metrics.map(([label, value]) => (

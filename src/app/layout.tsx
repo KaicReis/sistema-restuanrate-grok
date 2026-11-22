@@ -5,6 +5,7 @@ import "./workspace-shell.css";
 import "./workspace-overview.css";
 import "./workspace-workflows.css";
 import "./workspace-financeiro.css";
+import "./workspace-reports.css";
 export const metadata: Metadata = {
   title: "DNA • Gestão e precificação de restaurantes",
   description:
