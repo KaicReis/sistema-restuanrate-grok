@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { basePrecificacaoSchema } from "./base-precificacao";
 import { compraRegistradaSchema } from "./purchases";
 import { categoriasCaixa, LIMITE_CENTAVOS_CAIXA } from "./fluxo-caixa";
 import { faturamentosConsolidadosSchema, vendasAnotaiSchema } from "./vendas-anotai";
@@ -79,6 +80,7 @@ const fechamentoFinanceiro = z
     "Os descontos e estornos não podem superar a receita bruta.",
   );
 export const v3Schema = z.object({
+  basesPrecificacao: z.array(basePrecificacaoSchema).max(2000).optional(),
   saldosCaixa: z.array(saldoCaixa).max(20000).optional(),
   movimentosCaixa: z.array(movimentoCaixa).max(20000).optional(),
   fechamentosFinanceiros: z.array(fechamentoFinanceiro).max(20000).optional(),

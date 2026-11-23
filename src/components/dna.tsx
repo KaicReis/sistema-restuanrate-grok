@@ -30,6 +30,7 @@ import {
 } from "@/lib/dna";
 import { historicoVila, novosCanais } from "@/lib/storage/seed";
 import type { CustoFixo } from "@/lib/types";
+import { dnaParaPrecificacao } from "@/lib/base-precificacao";
 import { useSistema } from "./context";
 import { VendasEstimadasSetor } from "./vendas-estimadas-setor";
 import { Field, Money, Panel, Modal, formNumber, formString } from "./ui";
@@ -41,8 +42,9 @@ export function Overview() {
   );
   const canal = canais.find((c) => c.id === canalId) ?? canais[0];
   const fixos = fixosOperacionais(dna);
+  const faturamentoPrecificacao = dnaParaPrecificacao(db, dna).faturamento;
   const result = calcularPrecoDNA({
-    faturamentoReferencia: dna.faturamento,
+    faturamentoReferencia: faturamentoPrecificacao,
     custosFixosOperacionais: fixos,
     variaveis: canal ? taxaCanal(canal) : 0,
     impostos: dna.imposto / 100,
@@ -102,17 +104,17 @@ export function Overview() {
         </header>
         <div className="overview-metrics">
           <Stat
-            label="Faturamento de referência"
-            value={dna.faturamento ? dinheiro(dna.faturamento) : "Não informado"}
-            note={dna.tipoFaturamento === "meta" ? "Meta da competência" : "Valor cadastrado no DNA"}
+            label="Base de faturamento para precificação"
+            value={faturamentoPrecificacao ? dinheiro(faturamentoPrecificacao) : "Não informado"}
+            note={db.basesPrecificacao?.some((base) => base.restaurante_id === restaurante.id && base.modo !== "mensal") ? "Base fixa da operação" : "Referência do DNA do mês"}
             icon={<CircleDollarSign />}
           />
           <Stat
             label="Fixos operacionais"
             value={dinheiro(fixos)}
             note={
-              dna.faturamento
-                ? `${percentual(fixos / dna.faturamento)} do faturamento de referência`
+              faturamentoPrecificacao
+                ? `${percentual(fixos / faturamentoPrecificacao)} da base de precificação`
                 : "Informe o faturamento para comparar"
             }
             icon={<Wallet />}
@@ -173,9 +175,9 @@ export function Overview() {
             <div className="overview-empty">
               <Target size={24} aria-hidden="true" />
               <div>
-                <h3>{dna.faturamento ? "A margem desejada não cabe neste cenário" : "Defina a receita de referência"}</h3>
+                <h3>{faturamentoPrecificacao ? "A margem desejada não cabe neste cenário" : "Defina a receita de referência"}</h3>
                 <p>
-                  {dna.faturamento
+                  {faturamentoPrecificacao
                     ? "Revise faturamento, despesas ou taxas para calcular quanto sobra para o custo direto."
                     : "Informe o faturamento e as despesas para ver como cada R$ 100 são distribuídos."}
                 </p>
@@ -208,7 +210,7 @@ export function Overview() {
             {
               title: "DNA do mês",
               text: "Receita, despesas e meta de margem",
-              done: dna.faturamento > 0,
+              done: faturamentoPrecificacao > 0,
               page: "dna" as const,
             },
             {
@@ -696,8 +698,9 @@ function OverviewIndicators() {
             c.competencia === dna.competencia,
         )
         .map((c) => {
+          const faturamentoPrecificacao = dnaParaPrecificacao(db, dna).faturamento;
           const r = calcularPrecoDNA({
-            faturamentoReferencia: dna.faturamento,
+            faturamentoReferencia: faturamentoPrecificacao,
             custosFixosOperacionais: fixosOperacionais(dna),
             variaveis: taxaCanal(c),
             impostos: dna.imposto / 100,
@@ -707,7 +710,7 @@ function OverviewIndicators() {
           return (
             <div
               key={c.id}
-              className={`mini-card ${dna.faturamento && !r.viavel ? "invalid" : ""}`}
+              className={`mini-card ${faturamentoPrecificacao && !r.viavel ? "invalid" : ""}`}
             >
               <h3>{c.nome}</h3>
               {r.viavel ? (
@@ -730,7 +733,7 @@ function OverviewIndicators() {
                   </p>
                 </>
               ) : (
-                <p>{dna.faturamento ? r.motivo : "Informe o faturamento"}</p>
+                <p>{faturamentoPrecificacao ? r.motivo : "Informe a base de faturamento"}</p>
               )}
             </div>
           );

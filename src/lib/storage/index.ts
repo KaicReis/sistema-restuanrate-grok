@@ -293,6 +293,11 @@ export function validarBackup(value: unknown): Database {
   const idsOperacoes = new Set(db.restaurantes
     .filter((r) => r.id !== "a-vila" && !r.grupo)
     .map((r) => r.id));
+  const bases = db.basesPrecificacao ?? [];
+  if (bases.some(({ restaurante_id }) => !idsOperacoes.has(restaurante_id)) ||
+      new Set(bases.map(({ restaurante_id }) => restaurante_id)).size !== bases.length) {
+    throw new Error("Base de precificação sem operação válida ou duplicada.");
+  }
   if ((db.vendasSetoresEstimadas ?? []).some(({ setores }) =>
     setores.some(({ restaurante_id }) => !idsOperacoes.has(restaurante_id)),
   )) throw new Error("Estimativa de vendas sem setor válido.");
