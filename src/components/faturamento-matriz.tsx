@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { FileSpreadsheet } from "lucide-react";
 import { dinheiro } from "@/lib/dna";
-import { coberturaSalaoAnotai, inicioSalaoAnotai, pedidosRealizadosNoCanal, ticketMedioAnotai } from "@/lib/vendas-anotai";
+import { pedidosRealizadosNoCanal, ticketMedioAnotai } from "@/lib/vendas-anotai";
 import type { CanalVenda } from "@/lib/vendas-setor-canal";
+import { resumoVendas, selecionarLinhasVendas } from "@/lib/resumo-vendas";
 import { operacoes } from "@/lib/v2";
 import { useSistema } from "./context";
 import { ImportarVendasSetorCanal } from "./importar-vendas-setor-canal";
@@ -28,34 +29,23 @@ function nomeMes(competencia: string) {
 }
 
 export function FaturamentoMatriz({ setor }: { setor: string }) {
-  const { db, mes } = useSistema();
-  const [mesEscolhido, setMesEscolhido] = useState("");
-  const competencia = mesEscolhido || mes;
+  const { db, mes, selecionar } = useSistema();
   const [canal, setCanal] = useState<CanalVenda | "todos">("todos");
-  const historico = db.vendasSetorCanal ?? [];
-  const vendasAnotai = db.vendasAnotai ?? [];
-  const competencias = [...new Set([
-    mes,
-    ...historico.map((registro) => registro.competencia),
-    ...vendasAnotai.map((venda) => venda.competencia),
-  ])].sort().reverse();
-  const registro = historico.find((item) => item.competencia === competencia);
-  const venda = vendasAnotai.find((item) => item.competencia === competencia);
-  const coberturaSalao = venda && coberturaSalaoAnotai(venda, inicioSalaoAnotai(vendasAnotai));
+  const { registro, venda, coberturaSalao, periodoAte, parcial, total: totalApurado } = resumoVendas(db, mes, setor);
   const grupo = setor === "a-vila";
   const setores = operacoes(db).filter((item) => grupo || item.id === setor);
   const canaisVisiveis = canais.filter(({ id }) => canal === "todos" || id === canal);
   const comTotal = canaisVisiveis.length > 1;
   const linhas = setores.map(({ id, nome }) => {
-    const selecionadas = registro?.linhas.filter((item) => item.restaurante_id === id &&
-      canaisVisiveis.some(({ id: canalId }) => item.canal === canalId) &&
-      (item.canal !== "salao" || (coberturaSalao && coberturaSalao !== "ausente"))) ?? [];
+    const selecionadas = registro
+      ? selecionarLinhasVendas(registro, id, canaisVisiveis.map(({ id: canalId }) => canalId), coberturaSalao)
+      : [];
     const subtotal = selecionadas.reduce((total, item) => total + item.subtotal, 0);
     const quantidade = selecionadas.reduce((total, item) => total + (item.pedidos ?? 0), 0);
     const ticket = selecionadas.some((item) => item.pedidos === undefined)
       ? null : ticketMedioAnotai(subtotal, quantidade);
     const valores = canaisVisiveis.map(({ id: canalId }) => {
-      if (canalId === "salao" && (!coberturaSalao || coberturaSalao === "ausente")) return null;
+      if (canalId === "salao" && (coberturaSalao === "ausente")) return null;
       return selecionadas.find((item) => item.canal === canalId)?.subtotal ?? 0;
     });
     return { id, nome, valores, subtotal, ticket };
@@ -72,18 +62,38 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
 
   return (
     <div className="faturamento-matriz">
+      <section className="sales-hero panel" aria-labelledby="vendas-realizadas-titulo">
+        <div className="sales-hero-content">
+          <p className="sales-kicker">Vendas realizadas · Anotaí</p>
+          <h2 id="vendas-realizadas-titulo">{db.restaurantes.find(({ id }) => id === setor)?.nome} · {nomeMes(mes)}</h2>
+          <strong className={totalApurado === null ? "sales-missing" : "sales-amount"}>
+            {totalApurado === null ? "Sem dados para este período" : dinheiro(totalApurado)}
+          </strong>
+          <p>{totalApurado === null ? "Nenhum valor realizado foi apurado para esta seleção." : "Valores dos pedidos contabilizados, sem frete."}</p>
+          {totalApurado !== null && parcial && (
+            <p className="sales-coverage">
+              <strong>Dados parciais.</strong>{periodoAte && ` Dados até ${dataLonga.format(new Date(`${periodoAte}T12:00:00Z`))}.`}
+              {coberturaSalao === "ausente" && " Sem cobertura do salão."}
+              {coberturaSalao === "parcial" && " Cobertura parcial do salão."}
+            </p>
+          )}
+        </div>
+        {!registro && (
+          <div className="sales-hero-action">
+            <button type="button" className="button" onClick={() => {
+              const aviso = document.getElementById("vendas-detalhamento");
+              aviso?.focus({ preventScroll: true });
+              aviso?.scrollIntoView({ block: "nearest" });
+            }}>Ver o que falta</button>
+            {venda && <ImportarVendasSetorCanal key={mes} competencia={mes} />}
+          </div>
+        )}
+      </section>
       <Panel
-        title="Faturamento real por setor e canal"
-        subtitle="Subtotais dos pedidos contabilizados no Anotaí, sem frete."
-        action={
+        title={grupo ? "Vendas por setor e canal" : "Vendas por canal"}
+        subtitle="Pedidos contabilizados no Anotaí, sem frete."
+        action={registro && (
           <div className="faturamento-matriz-filtros">
-            <label>
-              <span>Mês do faturamento</span>
-              <select value={competencia} onChange={(evento) => setMesEscolhido(evento.target.value)}>
-                {competencias.map((item) => <option key={item} value={item}>{nomeMes(item)}</option>)}
-              </select>
-            </label>
-            {registro && (
               <label>
                 <span>Canal de venda</span>
                 <select value={canal} onChange={(evento) => setCanal(evento.target.value as typeof canal)}>
@@ -91,32 +101,31 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
                   {canais.map(({ id, nome }) => <option key={id} value={id}>{nome}</option>)}
                 </select>
               </label>
-            )}
           </div>
-        }
+        )}
       >
         {!registro ? (
-          <div className="faturamento-matriz-aviso" role="status">
+          <div className="faturamento-matriz-aviso" id="vendas-detalhamento" tabIndex={-1} role="status">
             <FileSpreadsheet size={19} aria-hidden="true" />
             <div>
-              <strong>Detalhamento pendente para {nomeMes(competencia)}</strong>
-              <p>Importe o CSV de pedidos do Anotaí e o CSV de itens da mesma competência. O CSV de pedidos informa o canal. O CSV de itens precisa trazer número e data do pedido, setor e valor líquido cobrado após descontos.</p>
-              {!venda && <p>Os totais do Anotaí da competência precisam estar disponíveis para conferir a importação.</p>}
-              {venda && !grupo && <p>Abra os relatórios da Vila para importar os dois arquivos.</p>}
+              <strong>Detalhamento pendente para {nomeMes(mes)}</strong>
+              {!venda && <p>Primeiro, os totais de pedidos deste mês precisam estar disponíveis na gestão para conferir os arquivos do Anotaí.</p>}
+              <p>Para separar as vendas, são necessários dois CSVs do mesmo mês: pedidos com canal de venda e itens com número e data do pedido, setor e valor cobrado após descontos.</p>
+              {grupo && setores.length > 0 && (
+                <ul className="sales-sector-missing">
+                  {setores.map(({ id, nome }) => (
+                    <li key={id}><button type="button" className="text-button" onClick={() => selecionar(id)}>{nome}</button><span>Sem detalhamento</span></li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         ) : setores.length === 0 ? (
           <p className="report-empty">Nenhuma operação disponível para exibir nesta seleção.</p>
         ) : (
           <>
-            {(registro.periodoAte || coberturaSalao === "parcial") && (
-              <p className="faturamento-matriz-parcial">
-                {registro.periodoAte && `Dados até ${dataLonga.format(new Date(`${registro.periodoAte}T12:00:00Z`))}.`}
-                {coberturaSalao === "parcial" && " Cobertura parcial do salão."}
-              </p>
-            )}
             <div className="report-table-wrap" tabIndex={0} role="region" aria-label="Tabela de faturamento por setor e canal">
-              <table className="report-table" aria-label={`Faturamento real de ${nomeMes(competencia)}`}>
+              <table className="report-table" aria-label={`Faturamento real de ${nomeMes(mes)}`}>
                 <thead>
                   <tr>
                     <th scope="col">Setor</th>
@@ -128,7 +137,7 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
                 <tbody>
                   {linhas.map(({ id, nome, valores, subtotal, ticket }) => (
                     <tr key={id}>
-                      <th scope="row">{nome}</th>
+                      <th scope="row">{grupo ? <button type="button" className="text-button" onClick={() => selecionar(id)}>{nome}</button> : nome}</th>
                       {valores.map((valor, indice) => (
                         <td key={canaisVisiveis[indice].id}>{valor === null ? "Sem cobertura" : dinheiro(valor)}</td>
                       ))}
@@ -159,9 +168,9 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
             {registro.linhas.some((item) => item.pedidos === undefined) && <p className="faturamento-matriz-cobertura">Reimporte os arquivos deste mês para calcular o ticket médio por setor.</p>}
           </>
         )}
-        {grupo && venda && (
+        {grupo && venda && registro && (
           <div className="faturamento-matriz-importacao">
-            <ImportarVendasSetorCanal key={competencia} competencia={competencia} />
+            <ImportarVendasSetorCanal key={mes} competencia={mes} />
           </div>
         )}
       </Panel>

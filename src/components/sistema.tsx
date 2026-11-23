@@ -11,7 +11,6 @@ import {
   ArrowUpFromLine,
   Building2,
   CalendarDays,
-  ChevronDown,
   CircleHelp,
   Dna,
   FlaskConical,
@@ -42,6 +41,7 @@ import { Overview, DNAEditor } from "./dna";
 import { Canais, Restaurantes } from "./cadastros";
 import { Vila } from "./vila";
 import { Relatorios } from "./relatorios";
+import { FaturamentoMatriz } from "./faturamento-matriz";
 import { dnaComRateio } from "@/lib/v2";
 import { Insumos, Fichas, Receitas } from "./producao";
 import { Combos } from "./combos";
@@ -83,6 +83,7 @@ const descriptions: Record<Page, string> = {
 };
 const financeiro = ["relatorios", "dre", "equilibrio", "fluxo-caixa", "capital"] as const;
 const paginasConsolidado: readonly string[] = ["visao", ...financeiro, "restaurantes"];
+const paginasConsulta = new Set<Page>(["visao", "relatorios", "dre", "equilibrio", "fluxo-caixa", "capital"]);
 const ordemOperacoes = ["a-vila", "bora", "nativos", "bar"];
 function preparar(db: Database, id: string, mes: string) {
   if (!db.dnas.some((d) => d.restaurante_id === id && d.competencia === mes))
@@ -139,9 +140,6 @@ export default function Sistema() {
     try {
       const data = repositorio.carregar(),
         first = data.restaurantes[0].id;
-      const before = JSON.stringify(data);
-      preparar(data, first, competenciaAtual());
-      if (JSON.stringify(data) !== before) repositorio.salvar(data);
       atual.current = data;
       setDb(data);
       setId(first);
@@ -200,23 +198,19 @@ export default function Sistema() {
       !confirm("Há alterações não salvas no DNA. Sair assim mesmo?")
     )
       return;
-    const prepared = preparar(structuredClone(atual.current), next, month);
-    if (
-      JSON.stringify(prepared) !== JSON.stringify(atual.current) &&
-      !atualizar((draft) => {
-        Object.assign(draft, prepared);
-      }, "")
-    )
-      return;
+    const mudarParaVisao = next !== id &&
+      (next === "a-vila" || id === "a-vila") &&
+      !paginasConsolidado.includes(page);
+    if (!mudarParaVisao && !paginasConsulta.has(page) && !prepararEdicao(next, month)) return;
     setId(next);
     setMes(month);
-    if (
-      next !== id &&
-      (next === "a-vila" || id === "a-vila") &&
-      !paginasConsolidado.includes(page)
-    ) {
-      setPage("visao");
-    }
+    if (mudarParaVisao) setPage("visao");
+  }
+  function prepararEdicao(operacao: string, month: string) {
+    if (!atual.current) return false;
+    const prepared = preparar(structuredClone(atual.current), operacao, month);
+    return JSON.stringify(prepared) === JSON.stringify(atual.current) ||
+      atualizar((draft) => { Object.assign(draft, prepared); }, "");
   }
   function exportar() {
     try {
@@ -317,6 +311,7 @@ export default function Sistema() {
       !confirm("Há alterações não salvas no DNA. Sair assim mesmo?")
     )
       return;
+    if (!paginasConsulta.has(p) && !prepararEdicao(id, mes)) return;
     setFiltro(filter);
     setPage(p);
     setMenu(false);
@@ -384,26 +379,6 @@ export default function Sistema() {
           >
             <X />
           </button>
-          <div className="restaurant-switch">
-            <span className="restaurant-avatar">
-              {restaurante.nome.charAt(0)}
-            </span>
-            <label>
-              <small>Operação ativa</small>
-              <select
-                aria-label="Restaurante ativo"
-                value={restaurante.id}
-                onChange={(e) => selecionar(e.target.value)}
-              >
-                {db.restaurantes.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.nome}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <ChevronDown size={15} />
-          </div>
           <nav aria-label="Menu principal">
             {[
               ["Operação", ["visao", "compras"]],
@@ -522,8 +497,8 @@ export default function Sistema() {
                 <h1>{titulo}</h1>
                 <p>{descriptions[page]}</p>
               </div>
-              <div className="month-select" role="group" aria-label="Competência">
-                <span><CalendarDays size={16} aria-hidden="true" /> Competência</span>
+              <div className="month-select" role="group" aria-label="Período">
+                <span><CalendarDays size={16} aria-hidden="true" /> Período</span>
                 <div className="month-controls">
                   <button
                     type="button"
@@ -538,7 +513,7 @@ export default function Sistema() {
                     <ChevronLeft />
                   </button>
                   <select
-                    aria-label="Mês da competência"
+                    aria-label="Mês"
                     value={mes.slice(5)}
                     onChange={(e) =>
                       selecionar(id, `${mes.slice(0, 4)}-${e.target.value}`)
@@ -555,7 +530,7 @@ export default function Sistema() {
                   </select>
                   <input
                     type="number"
-                    aria-label="Ano da competência"
+                    aria-label="Ano"
                     min="2000"
                     max="2100"
                     value={mes.slice(0, 4)}
@@ -583,6 +558,7 @@ export default function Sistema() {
               key={`${id}:${mes}:${page}:${filtro}:${revisao}`}
               className="page-content"
             >
+              {page === "visao" && <FaturamentoMatriz setor={restaurante.id} />}
               {page === "relatorios" ? (
                 <Relatorios />
               ) : page === "dre" ? (

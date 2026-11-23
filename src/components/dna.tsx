@@ -31,6 +31,7 @@ import {
 import { historicoVila, novosCanais } from "@/lib/storage/seed";
 import type { CustoFixo } from "@/lib/types";
 import { useSistema } from "./context";
+import { VendasEstimadasSetor } from "./vendas-estimadas-setor";
 import { Field, Money, Panel, Modal, formNumber, formString } from "./ui";
 export function Overview() {
   const { db, dna, restaurante, ir } = useSistema();
@@ -82,13 +83,17 @@ export function Overview() {
 
   return (
     <div className="overview-page">
+      <details className="panel vendas-disclosure">
+        <summary>Ver estimativa de vendas (não realizada)</summary>
+        <VendasEstimadasSetor setor={restaurante.id} />
+      </details>
       {dna.historico && (
         <p className="notice warning">Dados históricos de abril de 2025, usados para demonstração.</p>
       )}
       <section className="overview-finances" aria-labelledby="overview-finances-title">
         <header className="overview-finances-head">
           <div>
-            <h2 id="overview-finances-title">Resumo financeiro</h2>
+            <h2 id="overview-finances-title">Planejamento e precificação</h2>
             <p>{restaurante.nome}</p>
           </div>
           <button type="button" className="button" onClick={() => ir("dna")}>
@@ -98,8 +103,8 @@ export function Overview() {
         <div className="overview-metrics">
           <Stat
             label="Faturamento de referência"
-            value={dinheiro(dna.faturamento)}
-            note={dna.tipoFaturamento === "meta" ? "Meta da competência" : "Receita realizada"}
+            value={dna.faturamento ? dinheiro(dna.faturamento) : "Não informado"}
+            note={dna.tipoFaturamento === "meta" ? "Meta da competência" : "Valor cadastrado no DNA"}
             icon={<CircleDollarSign />}
           />
           <Stat

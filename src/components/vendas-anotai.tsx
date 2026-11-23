@@ -71,12 +71,11 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
   mes: string;
   inicioSalao?: string;
 }) {
-  const anos = [...new Set(vendas.map(({ competencia }) => competencia.slice(0, 4)))].sort().reverse();
-  const [ano, setAno] = useState(anos.includes(mes.slice(0, 4)) ? mes.slice(0, 4) : anos[0]);
+  const ano = mes.slice(0, 4);
   const [canal, setCanal] = useState<Filtro>("todos");
   const [foco, setFoco] = useState(mes);
   const serie = vendas.filter((venda) => venda.competencia.startsWith(ano + "-"));
-  const ativo = serie.find((venda) => venda.competencia === foco) ?? serie.at(-1);
+  const ativo = serie.find((venda) => venda.competencia === foco);
   const max = Math.max(1, ...serie.map((venda) =>
     estaCoberto(canal, venda, inicioSalao) ? dadosCanal(venda, canal).subtotal : 0,
   ));
@@ -90,17 +89,9 @@ function EvolucaoAnotai({ vendas, mes, inicioSalao }: {
     <div className="anotai-evolucao">
       <div className="anotai-evolucao-head">
         <div>
-          <h3>Evolução das vendas</h3>
-          <p className="anotai-total-ano">{dinheiro(totalAno.subtotal)} em {pedidos(totalAno.pedidos)} nos períodos importados de {ano}.{serie.some(({ periodoAte }) => periodoAte) && " A soma inclui meses parciais."}</p>
+          <h3>Histórico de vendas de {ano}</h3>
+          <p className="anotai-total-ano">{serie.length ? <>{dinheiro(totalAno.subtotal)} em {pedidos(totalAno.pedidos)} nos períodos importados de {ano}.{serie.some(({ periodoAte }) => periodoAte) && " A soma inclui meses parciais."}</> : "Nenhum mês importado neste ano."}</p>
         </div>
-        {anos.length > 1 && (
-          <label>
-            <span>Ano das vendas</span>
-            <select value={ano} onChange={(event) => setAno(event.target.value)}>
-              {anos.map((opcao) => <option key={opcao}>{opcao}</option>)}
-            </select>
-          </label>
-        )}
       </div>
       <div className="anotai-filtros" role="group" aria-label="Modalidade no gráfico de vendas">
         {modos.map(({ id, nome }) => (
@@ -251,7 +242,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
   const vendas = [...(db.vendasAnotai ?? [])].sort((a, b) => a.competencia.localeCompare(b.competencia));
   const atual = vendas.find((venda) => venda.competencia === mes);
   const ultima = vendas.at(-1);
-  const referencia = atual ?? ultima;
+  const referencia = atual;
   const total = referencia ? totalizar(referencia) : null;
   const ticket = total ? ticketMedioAnotai(total.subtotal, total.pedidos) : null;
   const inicioSalao = inicioSalaoAnotai(vendas);
@@ -285,7 +276,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
       {referencia && total && (
         <div className="anotai-mensal">
           <div className="anotai-total">
-            <span>{atual ? "" : "Último mês importado · "}{formatos.mes.format(dataMes(referencia.competencia))}</span>
+            <span>{formatos.mes.format(dataMes(referencia.competencia))}</span>
             {referencia.periodoAte && <span className="anotai-selo-parcial">{rotuloParcial(referencia.periodoAte)}</span>}
             <strong>{dinheiro(total.subtotal)}</strong>
             <small>{pedidos(total.pedidos)} contabilizados</small>
