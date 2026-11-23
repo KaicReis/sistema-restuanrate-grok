@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { dinheiro } from "@/lib/dna";
 import { montarRelatorio } from "@/lib/relatorios";
-import { operacoes } from "@/lib/v2";
 import { useSistema } from "./context";
 import { Panel } from "./ui";
 import { RelatorioInsumos } from "./relatorio-insumos";
@@ -206,24 +205,25 @@ function Ranking({ itens, vazio }: {
 
 export function Relatorios() {
   const { db, mes, restaurante, ir, selecionar } = useSistema();
-  const consolidado = restaurante.id === "a-vila";
-  const [operacao, setOperacao] = useState(restaurante.id);
   const [periodo, setPeriodo] = useState(6);
-  const setor = consolidado ? operacao : restaurante.id;
+  const setor = restaurante.id;
   const nome = db.restaurantes.find((item) => item.id === setor)?.nome ?? restaurante.nome;
   const relatorio = montarRelatorio(db, mes, setor, periodo);
   const atual = relatorio.atual;
 
   return (
     <div className="reports-workspace">
-      {setor === "a-vila" ? <VendasAnotai detalhado /> : (
-        <button type="button" className="text-button anotai-grupo" onClick={() => {
-          setOperacao("a-vila");
-          if (!consolidado) selecionar("a-vila", mes);
-        }}>Ver vendas consolidadas da Vila</button>
+      <FaturamentoMatriz setor={setor} />
+      <details className="panel vendas-disclosure">
+        <summary>Ver estimativa de vendas (não realizada)</summary>
+        <VendasEstimadasSetor setor={setor} />
+      </details>
+      {setor === "a-vila" && (
+        <details className="panel vendas-disclosure">
+          <summary>Ver conferência e histórico do Anotaí</summary>
+          <VendasAnotai detalhado />
+        </details>
       )}
-      <FaturamentoMatriz key={mes} setor={setor} />
-      <VendasEstimadasSetor setor={setor} />
       <section className="report-summary" aria-label="Custos e resultado do mês">
         <div className="report-head">
           <div>
@@ -231,15 +231,6 @@ export function Relatorios() {
             <h2>{mesLongo.format(dataMes(mes))}</h2>
           </div>
           <div className="report-controls">
-            {consolidado && (
-              <label>
-                <span>Operação</span>
-                <select value={setor} onChange={(e) => setOperacao(e.target.value)}>
-                  <option value="a-vila">A Vila (grupo)</option>
-                  {operacoes(db).map((r) => <option value={r.id} key={r.id}>{r.nome}</option>)}
-                </select>
-              </label>
-            )}
             <label>
               <span>Período dos custos e do DRE</span>
               <select value={periodo} onChange={(e) => setPeriodo(Number(e.target.value))}>
@@ -307,7 +298,7 @@ export function Relatorios() {
               <tbody>
                 {relatorio.setores.map((linha) => (
                   <tr key={linha.id}>
-                    <th scope="row"><button type="button" className="text-button" onClick={() => setOperacao(linha.id)}>{linha.nome}</button></th>
+                    <th scope="row"><button type="button" className="text-button" onClick={() => selecionar(linha.id)}>{linha.nome}</button></th>
                     <td>{valor(linha.fixos)}</td><td>{valor(linha.compras)}</td><td>{valor(linha.resultado)}</td>
                   </tr>
                 ))}

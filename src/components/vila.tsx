@@ -17,6 +17,7 @@ import { useSistema } from "./context";
 import { Field, Modal, Money, Panel, formNumber, formString } from "./ui";
 import { Numeric } from "./numeric";
 import { VendasAnotai } from "./vendas-anotai";
+import { VendasEstimadasSetor } from "./vendas-estimadas-setor";
 export function Vila() {
   const { db, mes, atualizar, selecionar, ir } = useSistema(),
     [config, setConfig] = useState(false),
@@ -70,8 +71,15 @@ export function Vila() {
           </button>
         </div>
       </div>
-      <VendasAnotai />
-      <h2 className="vila-dna-indicadores">Indicadores financeiros do mês</h2>
+      <details className="panel vendas-disclosure">
+        <summary>Ver estimativa de vendas (não realizada)</summary>
+        <VendasEstimadasSetor setor="a-vila" />
+      </details>
+      <details className="panel vendas-disclosure">
+        <summary>Ver totais por canal e histórico da Vila (sem separar por setor)</summary>
+        <VendasAnotai detalhado />
+      </details>
+      <h2 className="vila-dna-indicadores">Financeiro e DRE do mês</h2>
       <div className="consolidado-metrics">
         {metrics.map(([label, value]) => (
           <div className="stat" key={label}>
@@ -112,7 +120,7 @@ export function Vila() {
         {criterio === "igual-provisorio" && <p>Aluguel provisoriamente dividido em partes iguais entre as operações participantes. O rateio usa o faturamento realizado quando todos os valores estiverem disponíveis.</p>}
       </div>
       <Panel
-        title="Receita após abatimentos por operação"
+        title="Receita no DRE por operação"
         subtitle="Valores realizados no DRE de cada operação."
       >
         {c.rows.some((r) => r.receita === null) && (

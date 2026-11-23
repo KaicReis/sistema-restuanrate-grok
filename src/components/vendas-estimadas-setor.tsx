@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { dinheiro } from "@/lib/dna";
 import { operacoes } from "@/lib/v2";
 import { useSistema } from "./context";
@@ -23,11 +22,7 @@ const motivoPendente = {
 
 export function VendasEstimadasSetor({ setor }: { setor: string }) {
   const { db, mes } = useSistema();
-  const [mesEscolhido, setMesEscolhido] = useState("");
-  const historico = [...(db.vendasSetoresEstimadas ?? [])].sort(
-    (a, b) => b.competencia.localeCompare(a.competencia),
-  );
-  const registro = historico.find((item) => item.competencia === (mesEscolhido || mes)) ?? historico[0];
+  const registro = db.vendasSetoresEstimadas?.find((item) => item.competencia === mes);
   const grupo = setor === "a-vila";
   const operacoesVisiveis = operacoes(db).filter((item) => grupo || item.id === setor);
   const linhas = operacoesVisiveis.map((item) => ({
@@ -42,24 +37,11 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
   return (
     <div className="estimativa-panel">
       <Panel
-        title="Estimativa por setor"
-        subtitle="Quantidades dos relatórios de itens do Anotaí × preços de referência do cardápio"
-        action={registro && (
-          <label className="estimativa-competencia">
-            <span>Mês da estimativa</span>
-            <select value={registro.competencia} onChange={(e) => setMesEscolhido(e.target.value)}>
-              {historico.map(({ competencia, relatorioParcial }) => (
-                <option key={competencia} value={competencia}>{nomeMes(competencia)}{relatorioParcial ? " · Parcial" : ""}</option>
-              ))}
-            </select>
-          </label>
-        )}
+        title="Estimativa de vendas por setor"
+        subtitle={`${nomeMes(mes)} · Quantidade vendida × preço de referência. Não é faturamento realizado.`}
       >
         {registro ? (
           <>
-            {!mesEscolhido && registro.competencia !== mes && (
-              <p className="estimativa-cobertura">A competência selecionada não tem estimativa. Exibindo {nomeMes(registro.competencia)}.</p>
-            )}
             {registro.relatorioParcial && (
               <p className="estimativa-parcial"><strong>{registro.periodoAte
                 ? `Itens até ${diaMes.format(new Date(`${registro.periodoAte}T12:00:00Z`))}`
@@ -101,7 +83,7 @@ export function VendasEstimadasSetor({ setor }: { setor: string }) {
             <p className="estimativa-cobertura">A estimativa usa os preços de referência do cardápio. O faturamento realizado vem do arquivo de pedidos. Para yakissobas e risotos agrupados, os sabores do relatório de adicionais ponderam o preço.</p>
           </>
         ) : (
-          <p className="report-empty">Nenhuma competência com estimativa por setor está disponível.</p>
+          <p className="report-empty">Sem estimativa disponível para este período.</p>
         )}
       </Panel>
     </div>
