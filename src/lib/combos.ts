@@ -1,4 +1,5 @@
 import Decimal from "decimal.js";
+import { dnaParaPrecificacao } from "./base-precificacao";
 import { calcularMargens, calcularPrecoDNA, custoUnidadeUso, entradaPreco, insumoDeEmbalagem } from "./dna";
 import type { Canal, Database, Registro } from "./types";
 import { dnaComRateio, insumosMes } from "./v2";
@@ -15,7 +16,7 @@ export interface Combo extends Registro {
 export function cotarCombo(db: Database, combo: Combo, canal: Canal) {
   if (canal.restaurante_id !== combo.restaurante_id || canal.nome !== combo.canal)
     throw new Error("Canal do combo indisponível no mês.");
-  const dna = dnaComRateio(db, combo.restaurante_id, canal.competencia);
+  const dna = dnaParaPrecificacao(db, dnaComRateio(db, combo.restaurante_id, canal.competencia));
   const insumos = insumosMes(db, canal.competencia);
   const insumosEmbalagem = insumos.filter((i) => i.restaurante_id === combo.restaurante_id && insumoDeEmbalagem(i));
   const substituirEmbalagem = combo.embalagem !== undefined || Boolean(combo.embalagens?.length);

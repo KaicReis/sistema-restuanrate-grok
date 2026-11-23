@@ -1,6 +1,8 @@
 "use client";
 import { preparoPendente } from "./readiness";
 import { insumosMes } from "@/lib/v2";
+import { dnaParaPrecificacao } from "@/lib/base-precificacao";
+import { BasePrecificacao } from "./base-precificacao";
 import { Numeric } from "./numeric";
 import { useState } from "react";
 import { AlertTriangle, Check, Search, TrendingUp } from "lucide-react";
@@ -61,6 +63,7 @@ export function Precos() {
       : "todos";
   return (
     <div className="pricing-workspace">
+      <BasePrecificacao />
       <div className="pricing-filters">
         <div className="section-toolbar">
           <label className="search">
@@ -207,7 +210,7 @@ function PrecoCard({ produto, canal }: { produto: Produto; canal: Canal }) {
   let entrada;
   try {
     entrada = entradaPreco(
-      dna,
+      dnaParaPrecificacao(db, dna),
       canal,
       produto,
       insumosMes(db, dna.competencia),

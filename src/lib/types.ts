@@ -110,6 +110,7 @@ export interface Preco extends Registro {
   valor: number;
 }
 export interface Database {
+  basesPrecificacao?: import("./base-precificacao").BasePrecificacao[];
   combos?: import("./combos").Combo[];
   version: 1 | 2;
   capitais?: import("./capital").Capital[];

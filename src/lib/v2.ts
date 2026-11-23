@@ -1,3 +1,4 @@
+import { dnaParaPrecificacao } from "./base-precificacao";
 import type { Database, DNA, Insumo } from "./types";
 import {
   calcularPrecoDNA,
@@ -77,7 +78,7 @@ export function consolidar(db: Database, mes: string) {
       continue;
     try {
       const e = entradaPreco(
-          dnaComRateio(db, p.restaurante_id, mes),
+          dnaParaPrecificacao(db, dnaComRateio(db, p.restaurante_id, mes)),
           c,
           produto,
           insumos,
