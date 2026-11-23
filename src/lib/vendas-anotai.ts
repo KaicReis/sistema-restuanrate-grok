@@ -122,6 +122,10 @@ export function pedidosRealizadosNoCanal(venda: VendaAnotaiMensal, canal: keyof 
   };
 }
 
+export function ticketMedioAnotai(subtotal: number, pedidos: number) {
+  return pedidos > 0 ? Math.round(subtotal / pedidos) : null;
+}
+
 export function totalizarVendasAnotai(venda: VendaAnotaiMensal) {
   return (["delivery", "retirada", "salao"] as const).map((canal) => pedidosRealizadosNoCanal(venda, canal)).reduce((soma, canal) => ({
     subtotal: soma.subtotal + canal.subtotal,

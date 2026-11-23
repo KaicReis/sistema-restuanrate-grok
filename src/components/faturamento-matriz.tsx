@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { FileSpreadsheet } from "lucide-react";
 import { dinheiro } from "@/lib/dna";
-import { coberturaSalaoAnotai, inicioSalaoAnotai } from "@/lib/vendas-anotai";
+import { coberturaSalaoAnotai, inicioSalaoAnotai, pedidosRealizadosNoCanal, ticketMedioAnotai } from "@/lib/vendas-anotai";
 import type { CanalVenda } from "@/lib/vendas-setor-canal";
 import { operacoes } from "@/lib/v2";
 import { useSistema } from "./context";
@@ -46,20 +46,29 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
   const setores = operacoes(db).filter((item) => grupo || item.id === setor);
   const canaisVisiveis = canais.filter(({ id }) => canal === "todos" || id === canal);
   const comTotal = canaisVisiveis.length > 1;
-  const linhas = setores.map(({ id, nome }) => ({
-    id, nome,
-    valores: canaisVisiveis.map(({ id: canalId }) => {
+  const linhas = setores.map(({ id, nome }) => {
+    const selecionadas = registro?.linhas.filter((item) => item.restaurante_id === id &&
+      canaisVisiveis.some(({ id: canalId }) => item.canal === canalId) &&
+      (item.canal !== "salao" || (coberturaSalao && coberturaSalao !== "ausente"))) ?? [];
+    const subtotal = selecionadas.reduce((total, item) => total + item.subtotal, 0);
+    const quantidade = selecionadas.reduce((total, item) => total + (item.pedidos ?? 0), 0);
+    const ticket = selecionadas.some((item) => item.pedidos === undefined)
+      ? null : ticketMedioAnotai(subtotal, quantidade);
+    const valores = canaisVisiveis.map(({ id: canalId }) => {
       if (canalId === "salao" && (!coberturaSalao || coberturaSalao === "ausente")) return null;
-      return registro?.linhas.find(
-        (item) => item.restaurante_id === id && item.canal === canalId,
-      )?.subtotal ?? 0;
-    }),
-  }));
+      return selecionadas.find((item) => item.canal === canalId)?.subtotal ?? 0;
+    });
+    return { id, nome, valores, subtotal, ticket };
+  });
   const totais = canaisVisiveis.map((_, indice) => {
     const valores = linhas.flatMap(({ valores }) => valores[indice] === null ? [] : [valores[indice]]);
     return valores.length ? valores.reduce((total, valor) => total + valor, 0) : null;
   });
   const total = totais.reduce<number>((soma, valor) => soma + (valor ?? 0), 0);
+
+  const pedidosDaVila = venda ? canaisVisiveis.reduce((soma, { id }, i) =>
+    soma + (totais[i] === null ? 0 : pedidosRealizadosNoCanal(venda, id).pedidos), 0) : 0;
+  const ticketDaVila = ticketMedioAnotai(total, pedidosDaVila);
 
   return (
     <div className="faturamento-matriz">
@@ -113,10 +122,11 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
                     <th scope="col">Setor</th>
                     {canaisVisiveis.map(({ id, nome }) => <th scope="col" key={id}>{nome}</th>)}
                     {comTotal && <th scope="col">Total apurado</th>}
+                    <th scope="col">Ticket médio</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {linhas.map(({ id, nome, valores }) => (
+                  {linhas.map(({ id, nome, valores, subtotal, ticket }) => (
                     <tr key={id}>
                       <th scope="row">{nome}</th>
                       {valores.map((valor, indice) => (
@@ -124,9 +134,10 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
                       ))}
                       {comTotal && (
                         <td className="faturamento-matriz-total">
-                          {dinheiro(valores.reduce<number>((soma, valor) => soma + (valor ?? 0), 0))}
+                          {dinheiro(subtotal)}
                         </td>
                       )}
+                      <td>{ticket === null ? "—" : dinheiro(ticket)}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -138,12 +149,14 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
                         <td key={canaisVisiveis[indice].id}>{valor === null ? "Sem cobertura" : dinheiro(valor)}</td>
                       ))}
                       {comTotal && <td>{dinheiro(total)}</td>}
+                      <td>{ticketDaVila === null ? "—" : dinheiro(ticketDaVila)}</td>
                     </tr>
                   </tfoot>
                 )}
               </table>
             </div>
-            <p className="faturamento-matriz-cobertura">Valores cobrados nos itens de pedidos contabilizados, após descontos. Os totais somam os canais com cobertura.</p>
+            <p className="faturamento-matriz-cobertura">Valores cobrados nos itens de pedidos contabilizados, após descontos. O ticket médio do setor divide o subtotal pelo número de pedidos que contêm itens do setor, nos canais selecionados.</p>
+            {registro.linhas.some((item) => item.pedidos === undefined) && <p className="faturamento-matriz-cobertura">Reimporte os arquivos deste mês para calcular o ticket médio por setor.</p>}
           </>
         )}
         {grupo && venda && (

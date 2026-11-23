@@ -11,6 +11,7 @@ const linhaSchema = z.strictObject({
   restaurante_id: z.string().min(1),
   canal: canalSchema,
   subtotal: z.number().int().nonnegative(),
+  pedidos: z.number().int().positive().optional(),
 });
 
 export const vendaSetorCanalMensalSchema = z.strictObject({
@@ -206,7 +207,7 @@ export function importarVendasSetorCanal({ pedidosCsv, itensCsv, setores, refere
   const data = coluna(nomes, "data", "Itens");
   const setor = coluna(nomes, "setor", "Itens");
   const valor = coluna(nomes, "valor_liquido", "Itens");
-  const linhas = new Map<string, z.infer<typeof linhaSchema>>();
+  const linhas = new Map<string, { venda: z.infer<typeof linhaSchema>; pedidos: Set<string> }>();
 
   for (const registro of registros) {
     const { numero: linha, campos } = registro;
@@ -225,8 +226,15 @@ export function importarVendasSetorCanal({ pedidosCsv, itensCsv, setores, refere
       throw new Error(`${local}: os itens ultrapassam o subtotal do pedido sem frete.`);
     const chaveLinha = JSON.stringify([operacao.id, pedido.canal]);
     const atual = linhas.get(chaveLinha);
-    if (atual) atual.subtotal += centavos;
-    else linhas.set(chaveLinha, { restaurante_id: operacao.id, canal: pedido.canal, subtotal: centavos });
+    if (atual) {
+      atual.venda.subtotal += centavos;
+      atual.pedidos.add(chave);
+    } else {
+      linhas.set(chaveLinha, {
+        venda: { restaurante_id: operacao.id, canal: pedido.canal, subtotal: centavos },
+        pedidos: new Set([chave]),
+      });
+    }
   }
 
   for (const pedido of pedidos.values())
@@ -236,6 +244,6 @@ export function importarVendasSetorCanal({ pedidosCsv, itensCsv, setores, refere
   return vendaSetorCanalMensalSchema.parse({
     competencia: referencia.competencia,
     ...(referencia.periodoAte ? { periodoAte: referencia.periodoAte } : {}),
-    linhas: [...linhas.values()],
+    linhas: [...linhas.values()].map(({ venda, pedidos }) => ({ ...venda, pedidos: pedidos.size })),
   });
 }

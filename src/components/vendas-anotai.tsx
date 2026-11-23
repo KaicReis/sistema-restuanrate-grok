@@ -9,6 +9,7 @@ import {
   coberturaSalaoAnotai,
   conferirPainelAnotai,
   pedidosRealizadosNoCanal,
+  ticketMedioAnotai,
   inicioSalaoAnotai,
   totalizarVendasAnotai as totalizar,
   type VendaAnotaiMensal,
@@ -51,11 +52,13 @@ function Modalidades({ venda, inicioSalao }: { venda: VendaAnotaiMensal; inicioS
       {canais.map(({ id, nome }) => {
         const dados = pedidosRealizadosNoCanal(venda, id);
         const coberto = estaCoberto(id, venda, inicioSalao);
+        const ticket = ticketMedioAnotai(dados.subtotal, dados.pedidos);
         return (
           <div key={id}>
             <dt>{nome}</dt>
             <dd><strong>{coberto ? dinheiro(dados.subtotal) : "—"}</strong></dd>
             <dd>{coberto ? pedidos(dados.pedidos) : "Sem cobertura"}</dd>
+            {coberto && ticket !== null && <dd>Ticket médio {dinheiro(ticket)}</dd>}
           </div>
         );
       })}
@@ -250,6 +253,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
   const ultima = vendas.at(-1);
   const referencia = atual ?? ultima;
   const total = referencia ? totalizar(referencia) : null;
+  const ticket = total ? ticketMedioAnotai(total.subtotal, total.pedidos) : null;
   const inicioSalao = inicioSalaoAnotai(vendas);
 
   return (
@@ -285,6 +289,7 @@ export function VendasAnotai({ detalhado = false }: { detalhado?: boolean }) {
             {referencia.periodoAte && <span className="anotai-selo-parcial">{rotuloParcial(referencia.periodoAte)}</span>}
             <strong>{dinheiro(total.subtotal)}</strong>
             <small>{pedidos(total.pedidos)} contabilizados</small>
+            {ticket !== null && <small>Ticket médio {dinheiro(ticket)}</small>}
           </div>
           <Modalidades venda={referencia} inicioSalao={inicioSalao} />
         </div>

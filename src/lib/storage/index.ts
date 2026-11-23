@@ -299,8 +299,10 @@ export function validarBackup(value: unknown): Database {
   for (const matriz of db.vendasSetorCanal ?? []) {
     const venda = db.vendasAnotai?.find(({ competencia }) => competencia === matriz.competencia);
     const subtotais = { delivery: 0, retirada: 0, salao: 0 };
-    for (const { restaurante_id, canal, subtotal } of matriz.linhas) {
+    for (const { restaurante_id, canal, subtotal, pedidos } of matriz.linhas) {
       if (!idsOperacoes.has(restaurante_id)) throw new Error("Venda por setor e canal sem operação válida.");
+      if (venda && pedidos !== undefined && pedidos > pedidosRealizadosNoCanal(venda, canal).pedidos)
+        throw new Error("A quantidade de pedidos do setor supera o total do canal.");
       subtotais[canal] += subtotal;
     }
     if (!venda || matriz.periodoAte !== venda.periodoAte ||

@@ -30,7 +30,8 @@ const pedidosCsv = [
 
 const itensCsv = [
   "pedido,data,setor,valor_liquido",
-  "100,2026-11-01,nativos,89.40",
+  "100,2026-11-01,nativos,69.40",
+  "100,2026-11-01,nativos,20.00",
   "100,2026-11-01, Bar ,39.90",
   '100,2026-11-02,"Bora Burguer, ""Casa""",70.37',
   "100,2026-11-02,bar,20.00",
@@ -47,11 +48,11 @@ it("cruza pedido e data, distribui pedidos mistos e agrega os valores líquidos 
   expect(resultado).toMatchObject({ competencia: "2026-11", periodoAte: "2026-11-21" });
   expect(resultado.linhas).toHaveLength(5);
   expect(resultado.linhas).toEqual(expect.arrayContaining([
-    { restaurante_id: "nativos", canal: "salao", subtotal: 10_640 },
-    { restaurante_id: "bar", canal: "salao", subtotal: 3_990 },
-    { restaurante_id: "bora", canal: "delivery", subtotal: 7_037 },
-    { restaurante_id: "bar", canal: "delivery", subtotal: 2_000 },
-    { restaurante_id: "bora", canal: "retirada", subtotal: 1_590 },
+    { restaurante_id: "nativos", canal: "salao", subtotal: 10_640, pedidos: 2 },
+    { restaurante_id: "bar", canal: "salao", subtotal: 3_990, pedidos: 1 },
+    { restaurante_id: "bora", canal: "delivery", subtotal: 7_037, pedidos: 1 },
+    { restaurante_id: "bar", canal: "delivery", subtotal: 2_000, pedidos: 1 },
+    { restaurante_id: "bora", canal: "retirada", subtotal: 1_590, pedidos: 1 },
   ]));
 });
 
@@ -94,7 +95,7 @@ it("rejeita um setor que não pertence às operações disponíveis", () => {
 
 it("rejeita valores de itens diferentes do subtotal de cada pedido, mesmo com a mesma soma por canal", () => {
   expect(() => importar({
-    itensCsv: itensCsv.replace("89.40", "90.40").replace("17.00", "16.00"),
+    itensCsv: itensCsv.replace("69.40", "70.40").replace("17.00", "16.00"),
   })).toThrow();
 });
 
