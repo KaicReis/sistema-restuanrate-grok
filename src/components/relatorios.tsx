@@ -13,6 +13,7 @@ import { montarRelatorio } from "@/lib/relatorios";
 import { useSistema } from "./context";
 import { Panel } from "./ui";
 import { RelatorioInsumos } from "./relatorio-insumos";
+import { PedidosRecebidosAnotai } from "./pedidos-recebidos-anotai";
 import { FaturamentoMatriz } from "./faturamento-matriz";
 import { VendasAnotai } from "./vendas-anotai";
 import { VendasEstimadasSetor } from "./vendas-estimadas-setor";
@@ -214,6 +215,7 @@ export function Relatorios() {
   return (
     <div className="reports-workspace">
       <FaturamentoMatriz setor={setor} />
+      {setor === "a-vila" && <PedidosRecebidosAnotai />}
       <details className="panel vendas-disclosure">
         <summary>Ver estimativa de vendas (não realizada)</summary>
         <VendasEstimadasSetor setor={setor} />

@@ -131,3 +131,48 @@ it("rejeita pedidos após a data final de uma competência parcial", () => {
     itensCsv: itensCsv.replace("2026-11-03", "2026-11-22"),
   })).toThrow();
 });
+
+const produtos = [
+  { nome: "Temáki de Salmão", restaurante_id: "nativos" },
+  { nome: "Joy", restaurante_id: "nativos" },
+  { nome: "Cerveja 350", restaurante_id: "bar" },
+  { nome: "Cerveja 600", restaurante_id: "bar" },
+  { nome: "Hambúrguer", restaurante_id: "bora" },
+  { nome: "Batata", restaurante_id: "bora" },
+];
+const itensComProdutos = [
+  "pedido;data;produto;valor_liquido",
+  "100;2026-11-01;TEMAKI   de Salmão;69,40",
+  "100;2026-11-01;Joy;20,00",
+  "100;2026-11-01;Cerveja 350;39,90",
+  "100;2026-11-02;Hambúrguer;70,37",
+  "100;2026-11-02;Cerveja 600;20,00",
+  "101;2026-11-03;Batata;15,90",
+  "102;2026-11-04;Joy;17,00",
+].join("\n");
+
+it("classifica pelo catálogo, mantém a modalidade e separa os itens da mesma mesa", () => {
+  expect(importar({ itensCsv: itensComProdutos, produtos })).toEqual(importar());
+});
+it("não adivinha uma variação ou produto identificado por nome aproximado", () => {
+  expect(() => importar({ itensCsv: itensComProdutos.replace("Cerveja 350", "Cerveja 355"), produtos })).toThrow(/não cadastrado/u);
+});
+it("bloqueia duplicidade de nome entre setores", () => {
+  const ambiguos = [...produtos, { nome: "Cerveja 350", restaurante_id: "nativos" }];
+  expect(() => importar({ itensCsv: itensComProdutos, produtos: ambiguos })).toThrow(/em mais de um setor/u);
+});
+it("rejeita setor fora das operações ativas", () => {
+  const comItemInativo = produtos.map((p) => p.nome === "Joy" ? { ...p, restaurante_id: "a-vila" } : p);
+  expect(() => importar({ itensCsv: itensComProdutos, produtos: comItemInativo })).toThrow(/sem setor ativo/u);
+});
+it("não aceita setor manual contrário ao catálogo na mesma linha", () => {
+  const [cabecalho, primeiro, ...resto] = itensComProdutos.split("\n");
+  const csv = [cabecalho + ";setor", primeiro + ";bar", ...resto.map((x) => x + ";")].join("\n");
+  expect(() => importar({ itensCsv: csv, produtos })).toThrow(/diverge do setor/u);
+});
+it("continua exigindo reconciliação centavo a centavo por pedido", () => {
+  expect(() => importar({
+    itensCsv: itensComProdutos.replace("69,40", "70,40").replace("17,00", "16,00"),
+    produtos,
+  })).toThrow(/subtotal.*sem frete/u);
+});

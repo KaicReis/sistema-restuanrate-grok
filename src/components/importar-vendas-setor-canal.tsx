@@ -7,7 +7,7 @@ import { importarVendasSetorCanal, LIMITE_CSV_VENDAS } from "@/lib/vendas-setor-
 import { useSistema } from "./context";
 import { Field, Modal } from "./ui";
 
-const modelosItens = "data:text/csv;charset=utf-8,pedido%3Bdata%3Bsetor%3Bvalor_liquido%0D%0A";
+const modelosItens = "data:text/csv;charset=utf-8,pedido%3Bdata%3Bproduto%3Bvalor_liquido%0D%0A";
 const mesBR = new Intl.DateTimeFormat("pt-BR", { month: "long", year: "numeric", timeZone: "UTC" });
 
 function arquivoCsv(formulario: FormData, campo: string, nome: string) {
@@ -51,7 +51,7 @@ export function ImportarVendasSetorCanal({ competencia }: { competencia: string 
         try {
           const referencia = draft.vendasAnotai?.find((venda) => venda.competencia === competencia);
           if (!referencia) throw new Error("Os totais do Anotaí deixaram de estar disponíveis para esse mês.");
-          const matriz = importarVendasSetorCanal({ pedidosCsv, itensCsv, setores: operacoes(draft), referencia });
+          const matriz = importarVendasSetorCanal({ pedidosCsv, itensCsv, setores: operacoes(draft), produtos: draft.produtos, referencia });
           draft.vendasSetorCanal = [
             ...(draft.vendasSetorCanal ?? []).filter((venda) => venda.competencia !== competencia),
             matriz,
@@ -85,7 +85,7 @@ export function ImportarVendasSetorCanal({ competencia }: { competencia: string 
             <Field label="CSV de pedidos" hint="Use a exportação de Pedidos do Anotaí ou um CSV com pedido, data, canal e subtotal_sem_frete.">
               <input name="pedidos" type="file" accept=".csv,text/csv" required disabled={importando} />
             </Field>
-            <Field label="CSV de itens" hint="Vincule cada item ao número e à data do pedido. Use o nome exato ou o ID do setor e o valor em reais, com os descontos já abatidos.">
+            <Field label="CSV de itens" hint="Vincule cada item ao número e à data do pedido. Informe o nome do produto no catálogo e o valor em reais após descontos. O Gestão identifica o setor. Arquivos antigos com a coluna setor continuam aceitos.">
               <input name="itens" type="file" accept=".csv,text/csv" required disabled={importando} />
             </Field>
             <p className="muted">Envie os dois arquivos do mesmo período, em UTF-8, com até 10 MB por arquivo. Use datas em DD/MM/AAAA ou AAAA-MM-DD.</p>
