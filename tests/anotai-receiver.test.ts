@@ -128,6 +128,27 @@ describe("Gestão recebe lotes Anotaí", () => {
     expect(x.order.allocated).toEqual([]);
     expect(x.order.pending.map(p => p.cents).reduce((n, c) => n + c, 0)).toBe(2300);
     expect(JSON.stringify(x.order)).not.toContain("Nome não cadastrado");
-    expect(x.order.pending.some(p => p.reason.includes("cadastro inicial"))).toBe(true);
+    expect(x.order.pending.some(p => p.reason.includes("cadastro único no Bar"))).toBe(true);
   });
+
+  it("classifica só a Long neck revisada no Bar e mantém variante pendente", () => {
+    const body = sample();
+    const bar = { id: "long-neck-bar", nome: "Long neck", restaurante_id: "bar" };
+    body.orders[0].items[0].name = " LONG   NECK  ";
+    const origem = [...produtos, bar];
+    const [ok] = prepararPedidos(body, unit, origem, setores);
+    expect(ok.order.allocated).toEqual([{ sectorId: "bar", cents: 800 }, { sectorId: "nativos", cents: 1500 }]);
+    expect(ok.order.pending).toEqual([]);
+    const [semBar] = prepararPedidos(body, unit, origem, setores.filter(s => s.id !== "bar"));
+    const [duplicado] = prepararPedidos(body, unit, [...origem, { ...bar, id: "duplicado" }], setores);
+    for (const resultado of [semBar, duplicado]) {
+      expect(resultado.order.pending).toMatchObject([{ cents: 800, items: 1 }]);
+      expect(resultado.order.allocated).toEqual([{ sectorId: "nativos", cents: 1500 }]);
+    }
+    body.orders[0].items[0].name = "Corona Long neck";
+    const [variante] = prepararPedidos(body, unit, [...origem, { id: "var", nome: "Corona Long neck", restaurante_id: "nativos" }], setores);
+    expect(variante.order.pending).toMatchObject([{ cents: 800, items: 1 }]);
+    expect(variante.order.allocated).toEqual([{ sectorId: "nativos", cents: 1500 }]);
+  });
+
 });
