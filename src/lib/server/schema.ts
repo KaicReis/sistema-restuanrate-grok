@@ -31,3 +31,5 @@ export const attempts = pgTable("login_attempts", {
   count: integer("count").notNull(),
   expires: timestamp("expires", { withTimezone: true }).notNull(),
 });
+
+export { anotaiPedidosRecebidos } from "./anotai-pedidos-schema";

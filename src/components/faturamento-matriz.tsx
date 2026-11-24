@@ -110,7 +110,7 @@ export function FaturamentoMatriz({ setor }: { setor: string }) {
             <div>
               <strong>Detalhamento pendente para {nomeMes(mes)}</strong>
               {!venda && <p>Primeiro, os totais de pedidos deste mês precisam estar disponíveis na gestão para conferir os arquivos do Anotaí.</p>}
-              <p>Para separar as vendas, são necessários dois CSVs do mesmo mês: pedidos com canal de venda e itens com número e data do pedido, setor e valor cobrado após descontos.</p>
+              <p>Para separar as vendas, são necessários dois CSVs do mesmo mês: pedidos com canal de venda e itens com número e data do pedido, nome do produto e valor cobrado após descontos. O setor vem do catálogo do Gestão.</p>
               {grupo && setores.length > 0 && (
                 <ul className="sales-sector-missing">
                   {setores.map(({ id, nome }) => (

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import type { Restaurante } from "./types";
+import type { Produto, Restaurante } from "./types";
+import { classificadorProdutoSetor } from "./classificar-produto-setor";
 import { pedidosRealizadosNoCanal, vendaAnotaiMensalSchema, type VendaAnotaiMensal } from "./vendas-anotai";
 
 const canais = ["delivery", "retirada", "salao"] as const;
@@ -194,18 +195,29 @@ function lerPedidos(pedidosCsv: string, referencia: VendaAnotaiMensal) {
   return pedidos;
 }
 
-export function importarVendasSetorCanal({ pedidosCsv, itensCsv, setores, referencia }: {
+export function importarVendasSetorCanal({ pedidosCsv, itensCsv, setores, referencia, produtos = [] }: {
   pedidosCsv: string;
   itensCsv: string;
   setores: readonly Pick<Restaurante, "id" | "nome">[];
   referencia: VendaAnotaiMensal;
+  produtos?: readonly Pick<Produto, "nome" | "restaurante_id">[];
 }): VendaSetorCanalMensal {
   vendaAnotaiMensalSchema.parse(referencia);
   const pedidos = lerPedidos(pedidosCsv, referencia);
   const { nomes, registros } = lerCsv(itensCsv, "Itens");
   const numero = coluna(nomes, "pedido", "Itens");
   const data = coluna(nomes, "data", "Itens");
-  const setor = coluna(nomes, "setor", "Itens");
+  const setor = nomes.indexOf("setor");
+  const produto = nomes.indexOf("produto");
+  if (setor < 0 && produto < 0) throw new Error('Itens: informe a coluna “produto” ou “setor”.');
+  const classificar = classificadorProdutoSetor(produtos, setores);
+  const setoresPorId = new Map(setores.map((s) => [s.id, s]));
+  const setoresPorNome = new Map<string, string[]>();
+  for (const s of setores) {
+    const ids = setoresPorNome.get(s.nome) ?? [];
+    ids.push(s.id);
+    setoresPorNome.set(s.nome, ids);
+  }
   const valor = coluna(nomes, "valor_liquido", "Itens");
   const linhas = new Map<string, { venda: z.infer<typeof linhaSchema>; pedidos: Set<string> }>();
 
@@ -215,23 +227,35 @@ export function importarVendasSetorCanal({ pedidosCsv, itensCsv, setores, refere
     const chave = chavePedido(campos[numero], campos[data], referencia, local);
     const pedido = pedidos.get(chave);
     if (!pedido) throw new Error(`${local}: pedido sem correspondência entre os pedidos contabilizados.`);
-    const textoSetor = campos[setor];
-    const correspondencias = setores.filter(({ nome }) => nome === textoSetor);
-    const operacao = setores.find(({ id }) => id === textoSetor) ?? (correspondencias.length === 1 ? correspondencias[0] : undefined);
-    if (!operacao) throw new Error(`${local}: use o ID ou o nome exato de um setor cadastrado.`);
+    const textoSetor = setor >= 0 ? campos[setor] : "";
+    const textoProduto = produto >= 0 ? campos[produto] : "";
+    const correspondencias = setoresPorNome.get(textoSetor) ?? [];
+    const setorDeclarado = setoresPorId.get(textoSetor)?.id ?? (correspondencias.length === 1 ? correspondencias[0] : undefined);
+    if (textoSetor && !setorDeclarado)
+      throw new Error(`${local}: use o ID ou o nome exato de um setor cadastrado.`);
+    let setorId = setorDeclarado;
+    if (textoProduto) {
+      const classificacao = classificar(textoProduto);
+      if ("motivo" in classificacao)
+        throw new Error(`${local}: produto “${textoProduto.slice(0, 100)}” ${classificacao.motivo}. Confira o catálogo antes de importar.`);
+      if (setorDeclarado && setorDeclarado !== classificacao.setor)
+        throw new Error(`${local}: o setor informado diverge do setor do produto no catálogo.`);
+      setorId = classificacao.setor;
+    }
+    if (!setorId) throw new Error(`${local}: informe um produto ou setor cadastrado.`);
     const centavos = paraCentavos(campos[valor], local);
     pedido.temItens = true;
     pedido.somaItens += centavos;
     if (pedido.somaItens > pedido.subtotal)
       throw new Error(`${local}: os itens ultrapassam o subtotal do pedido sem frete.`);
-    const chaveLinha = JSON.stringify([operacao.id, pedido.canal]);
+    const chaveLinha = JSON.stringify([setorId, pedido.canal]);
     const atual = linhas.get(chaveLinha);
     if (atual) {
       atual.venda.subtotal += centavos;
       atual.pedidos.add(chave);
     } else {
       linhas.set(chaveLinha, {
-        venda: { restaurante_id: operacao.id, canal: pedido.canal, subtotal: centavos },
+        venda: { restaurante_id: setorId, canal: pedido.canal, subtotal: centavos },
         pedidos: new Set([chave]),
       });
     }
