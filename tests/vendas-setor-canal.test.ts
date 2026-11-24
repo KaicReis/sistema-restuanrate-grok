@@ -176,3 +176,10 @@ it("continua exigindo reconciliação centavo a centavo por pedido", () => {
     produtos,
   })).toThrow(/subtotal.*sem frete/u);
 });
+
+it("aplica no CSV a mesma classificação revisada de Long neck para o Bar", () => {
+  const itens = itensComProdutos.replace("Cerveja 350", "Long neck");
+  const dupla = [...produtos, { nome: "Long neck", restaurante_id: "nativos" }, { nome: "Long neck", restaurante_id: "bar" }];
+  expect(importar({ itensCsv: itens, produtos: dupla })).toEqual(importar());
+  expect(() => importar({ itensCsv: itens, produtos: dupla.slice(0, -1) })).toThrow(/cadastro único no Bar/u);
+});

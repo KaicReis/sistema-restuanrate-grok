@@ -101,11 +101,7 @@ export function prepararPedidos(
     const setorValores = new Map<string, number>();
     const pendencias = new Map<string, { cents: number; items: number }>();
     for (const item of p.items) {
-      const nome = item.name.toLocaleLowerCase("pt-BR").trim().replace(/\s+/gu, " ");
-      // O cadastro inicial conhecido tem a long neck no Sushi, conflitante com a regra do dono.
-      // Deixe pendente somente se o seed incorreto ainda estiver presente. Não altera o catálogo.
-      const seedIncorreto = nome === "long neck" && produtos.some(x => x.id === "seed-p111" && x.restaurante_id === "nativos");
-      const resultado = seedIncorreto ? { motivo: "cadastro inicial de Long neck precisa de revisão" } : classificar(item.name);
+      const resultado = classificar(item.name);
       if ("setor" in resultado) setorValores.set(resultado.setor, (setorValores.get(resultado.setor) ?? 0) + item.valueCents);
       else {
         const ant = pendencias.get(resultado.motivo) ?? { cents: 0, items: 0 };
